@@ -2,7 +2,7 @@
 #define _JASPER_PHYSICS_WORLD_H_
 
 #include "Common.h"
-#include <btBulletDynamicsCommon.h>
+#include <bullet\btBulletDynamicsCommon.h>
 
 namespace Jasper {
 

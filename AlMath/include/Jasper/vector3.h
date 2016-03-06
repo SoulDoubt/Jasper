@@ -8,7 +8,7 @@
 #endif
 #include <string>
 
-#include <btBulletDynamicsCommon.h>
+#include <bullet\btBulletDynamicsCommon.h>
 
 #ifndef DEG_TO_RAD
 #define DEG_TO_RAD(theta) (((float)(M_PI / 180.0f)) * theta)
@@ -397,6 +397,10 @@ public:
 
 
 };
+
+inline Vector4 operator/(const Vector4& v, float f) {
+	return Vector4(v.x / f, v.y / f, v.z / f, v.w / f);
+}
 
 inline bool Vector4::Compare(const Vector4& o) const {
 	return ((x == o.x) && (y == o.y) && (z == o.z) && (w == o.w));

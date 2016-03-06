@@ -4,7 +4,7 @@
 #include "Common.h"
 #include "matrix.h"
 #include "quaternion.h"
-#include <btBulletDynamicsCommon.h>
+#include <bullet\btBulletDynamicsCommon.h>
 
 namespace Jasper {
 
