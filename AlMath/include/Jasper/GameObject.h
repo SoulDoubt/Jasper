@@ -1,0 +1,279 @@
+#ifndef _JASPER_GAME_OBJECT_H_
+#define _JASPER_GAME_OBJECT_H_
+
+#include "Common.h"
+#include <string>
+#include <algorithm>
+#include <typeinfo>
+#include <map>
+#include <typeindex>
+#include <vector>
+#include <memory>
+#include "Component.h"
+#include "Transform.h"
+
+
+
+namespace Jasper {
+
+class Scene;
+
+ALIGN16 class GameObject
+{
+public:
+
+	using GroupedComponentMap = std::map<std::type_index, std::vector<std::unique_ptr<Component>>>;
+
+	ALIGN_16_OPERATORS
+
+		GameObject();
+	GameObject(std::string name);
+	virtual ~GameObject();
+
+	std::string GetName() const;
+	void SetName(std::string name);
+
+	std::string GetTag() const;
+	void SetTag(std::string tag);
+
+	std::vector<std::unique_ptr<GameObject>>& Children();
+	std::vector<std::unique_ptr<Component>>& Components();
+
+	Transform GetLocalTransform() const;
+
+	Transform& GetLocalTransform() {
+		return m_transform;
+	}
+
+	void SetLocalTransform(const Transform& newTransform) {
+		m_transform = newTransform;
+	}
+
+	Transform GetWorldTransform() const;
+
+	virtual void Initialize();
+	virtual void Destroy();
+	virtual void Awake();
+	virtual void Start();
+	virtual void FixedUpdate();
+	virtual void Update(float dt);
+	virtual void LateUpdate();
+	
+	GameObject& AttachComponent(std::unique_ptr<Component> component);
+
+	Component* DetachComponent(Component& copm);
+
+	GameObject& AttachChild(std::unique_ptr<GameObject> child);
+	GameObject& AttachNewChild(const std::string& name);
+
+	std::unique_ptr<GameObject> DetachChild(const GameObject& child);
+
+
+	Component* FindComponentByName(std::string name);
+	GameObject* FindChildByName(std::string name);
+	Component* GetComponentByID(int id);
+
+	void Enable() { m_enabled = true; }
+	void Disable() { m_enabled = false; }
+	bool IsEnabled() const { return m_enabled; }
+	void SetParemt(GameObject* parent);
+
+	template <typename T>
+	T* FindFirstComponentByType();
+
+	Component* FindComponentByID(int id);
+
+	void SetScene(Scene* scene);
+	Scene* GetScene() const;
+
+	template<typename T>
+	std::vector<std::unique_ptr<Component>>* FindComponentsByType();
+
+	template<typename T, typename... Args>
+	T* AttachNewComponent(Args... args);
+
+	template<typename T>
+	T* GetComponentByType();
+
+	template<typename T>
+	std::vector<T*> GetComponentsByType();
+
+private:
+	std::string m_name;
+	std::string m_tag;
+	GameObject* m_parent;
+	Transform m_transform;
+	bool m_enabled;
+
+	Scene* m_scene;
+
+	std::vector<std::unique_ptr<Component>> m_components;
+	std::vector<std::unique_ptr<GameObject>> m_children;
+
+	GroupedComponentMap m_groupedComponents;
+
+protected:
+
+	bool m_isDestroyed = false;
+	bool m_isRenderable = false;
+	virtual void AwakeCurrent();
+	void AwakeChildren();
+	virtual void StartCurrent();
+	void StartChildren();
+	virtual void UpdateCurrent(float dt);
+	void UpdateChildren(float dt);
+	virtual void DestroyCurrent();
+	void DestroyChildren();
+
+
+};
+
+inline GameObject::GameObject() : m_components(), m_children() {
+	m_name = "Unnamed Game object";
+	m_tag = "";
+	m_parent = nullptr;
+	Initialize();
+}
+
+inline GameObject::GameObject(std::string name) : m_components(), m_children() {
+	m_name = name;
+	m_tag = "";
+	m_parent = nullptr;
+	Initialize();
+}
+
+inline std::string GameObject::GetName() const {
+	return m_name;
+}
+
+inline void GameObject::SetName(std::string name) {
+	m_name = name;
+}
+
+inline std::string GameObject::GetTag() const {
+	return m_tag;
+}
+
+inline void GameObject::SetTag(std::string tag) {
+	m_tag = tag;
+}
+
+inline std::vector<std::unique_ptr<GameObject>>& GameObject::Children() {
+	return m_children;
+}
+
+inline std::vector<std::unique_ptr<Component>>&  GameObject::Components() {
+	return m_components;
+}
+
+inline Transform GameObject::GetLocalTransform() const {
+	return m_transform;
+}
+
+inline void GameObject::SetParemt(GameObject* parent) {
+	m_parent = parent;
+}
+
+inline void GameObject::SetScene(Scene * scene)
+{
+	m_scene = scene;
+}
+
+inline Scene * GameObject::GetScene() const
+{
+	return m_scene;
+}
+
+template <typename T>
+T* GameObject::FindFirstComponentByType() {
+	std::vector<std::unique_ptr<Component>>* c = FindComponentsByType<T>();
+	if (c) {
+		return (T*)(c->at(0).get());
+	}
+	return nullptr;
+}
+
+inline Component* GameObject::FindComponentByID(int id) {
+	auto found = std::find_if(begin(m_components), end(m_components),
+		[&](const std::unique_ptr<Component>& c)
+	{
+		return c->ComponentID == id;
+	});
+	if (found != end(m_components)) {
+		return found->get();
+	}
+	return nullptr;
+}
+
+template<typename T>
+inline  std::vector<std::unique_ptr<Component>>* GameObject::FindComponentsByType() {
+	if (!std::is_base_of<Component, T>::value) {
+		return nullptr;
+	}
+	if (m_groupedComponents.size() == 0) {
+		return nullptr;
+	}
+	const std::type_index id(typeid(T));
+	for (auto& group : m_groupedComponents) {
+		if (group.first == id) {
+			return &m_groupedComponents[id];
+		}
+	}
+	return nullptr;
+}
+
+
+inline GameObject& GameObject::AttachComponent(std::unique_ptr<Component> component) {
+	
+	component->SetGameObject(this);	
+	//m_groupedComponents[std::type_index(typeid(*component))].push_back(move(component));
+	m_components.push_back(std::move(component));
+	return *this;
+}
+
+template<typename T, typename... Args>
+inline T* GameObject::AttachNewComponent(Args... args)
+{
+	auto upc = std::make_unique<T>(args...);
+	T* p = upc.get();
+	this->AttachComponent(std::move(upc));
+	return p;
+
+}
+
+template<typename T>
+inline T * GameObject::GetComponentByType()
+{
+	if (!std::is_base_of<Component, T>::value) {
+		return nullptr;
+	}
+	for (auto& c : m_components) {
+		if (T* found = dynamic_cast<T*>(c.get())) {
+			return found;
+		}
+	}
+}
+
+template<typename T>
+inline std::vector<T*> GameObject::GetComponentsByType()
+{
+	if (!std::is_base_of<Component, T>::value) {
+		return nullptr;
+	}
+	std::vector<T*> ret;
+	for (auto c : m_components) {
+		if (T* found = dynamic_cast<T*>(c)) {
+			ret.push_back(found);
+		}
+	}
+	return ret;
+}
+
+}
+
+
+#endif // _JASPER_GAME_OBJECT_H_
+
+
+
+
