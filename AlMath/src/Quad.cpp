@@ -29,6 +29,11 @@ namespace Jasper {
 		FlipTextureCoords();
 	}
 
+	Quad::Quad(const Vector3 & normal, const Vector3 & point)
+	{
+
+	}
+
 
 	Quad::~Quad()
 	{

@@ -3,8 +3,8 @@
 out vec4 fcolor;
 smooth in vec2 outTexCoords;
 smooth in vec3 outNormal;
-smooth in vec3 eyeSpaceVertPosition;
 smooth in vec4 outVertColor;
+in vec3 eyeSpaceVertPosition;
 
 uniform sampler2D colorMap;
 uniform int isTextured;
@@ -51,6 +51,6 @@ void main()
 	vec4 texture_color = texture(colorMap, outTexCoords);
 	vec3 lighting_contribution = ambient_color + diffuse_color + specular_color;
 
-	fcolor =  texture_color * vec4(lighting_contribution, 1.0);				
+	fcolor =  vec4(1, 0, 0, 1);//texture_color * vec4(lighting_contribution, 1.0);				
 
 }

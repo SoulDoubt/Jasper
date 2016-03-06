@@ -19,6 +19,7 @@ public:
 	Quad();
 	explicit Quad(const Vector3& size, AxisAlignment align);
 	Quad(const Vector3& size, int repeatU, int repeatV, AxisAlignment align);
+	Quad(const Vector3& normal, const Vector3& point);
 	~Quad();
 
 	virtual void Initialize() override;

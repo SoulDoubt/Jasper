@@ -19,7 +19,7 @@ namespace Jasper {
 
 using namespace std;
 
-Scene::Scene() : m_camera(Camera::CameraType::FIRST_PERSON)
+Scene::Scene() : m_camera(Camera::CameraType::FLYING)
 {
 
 
@@ -106,12 +106,12 @@ void Scene::Initialize() {
 	auto mr2 = cubechild->AttachNewComponent<MeshRenderer>(childMesh);
 	cubechild->GetLocalTransform().Translate({0.0f, 1.5f, 0.0f});*/
 
-	//auto model = make_unique<Model>("Larry_Craft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
-	////model->GetLocalTransform().SetScale(Vector3({ 0.25f, 0.25f, 0.25f }));
-	//model->GetLocalTransform().Translate(Vector3(4.0f, -.25f, -8.0f));
-	//model->GetLocalTransform().SetScale(Vector3{ 1.0f, 1.0f, 1.0f });
-	//model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));
-	//m_rootNode->AttachChild(move(model));	
+	auto model = make_unique<Model>("Larry_Craft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
+	//model->GetLocalTransform().SetScale(Vector3({ 0.25f, 0.25f, 0.25f }));
+	model->GetLocalTransform().Translate(Vector3(4.0f, -.25f, -8.0f));
+	model->GetLocalTransform().Scale = Vector3{ 1.0f, 1.0f, 1.0f };
+	model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));
+	m_rootNode->AttachChild(move(model));	
 	
 
 	/*auto sphereObject = CreateEmptyGameObject("sphere0", m_rootNode.get());

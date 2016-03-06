@@ -87,6 +87,7 @@ void Camera::Rotate(float pitch, float roll, float yaw)
 		yrot = Quaternion::FromAxisAndAngle(WORLD_Y_AXIS, DEG_TO_RAD(yaw));
 		transform.Orientation = yrot * transform.Orientation;	
 	}
+	//transform.Orientation = Normalize(transform.Orientation);
 	//transform.Orientation =  orientation;
 }
 

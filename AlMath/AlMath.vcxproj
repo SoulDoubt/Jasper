@@ -159,12 +159,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\a1irvin\Documents\Visual Studio 2015\Projects\AlMath\AlMath\include;C:\Users\a1irvin\Documents\Visual Studio 2015\Projects\AlMath\AlMath\ThirdParty\include;C:\Users\a1irvin\Documents\Code\bullet3-2.83.7\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Al\Documents\GitHub\Jasper\AlMath\ThirdParty\include;C:\Users\Al\Documents\GitHub\Jasper\AlMath\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>glfw3.lib;glew32s.lib;Bullet3Collision_Debug.lib;Bullet3Dynamics_Debug.lib;LinearMath_Debug.lib;OpenGL32.Lib;Bullet3Common_Debug.lib;BulletCollision_Debug.lib;BulletDynamics_Debug.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\a1irvin\Documents\Visual Studio 2015\Projects\AlMath\AlMath\ThirdParty\lib;C:\Users\a1irvin\Documents\Code\BulletBuild\lib\Debug;C:\Users\a1irvin\Documents\Code\ThirdParty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Al\Documents\GitHub\Jasper\AlMath\ThirdParty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -177,7 +177,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\Al\Documents\GitHub\Jasper\AlMath\ThirdParty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;assimp.lib;Bullet3Common_Debug.lib;BulletCollision_Debug.lib;BulletDynamics_Debug.lib;LinearMath_Debug.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;assimp.lib;Bullet3Common_Debug.lib;BulletCollision_Debug.lib;BulletDynamics_Debug.lib;LinearMath_Debug.lib;glfw3.lib;Bullet3Collision_Debug.lib;Bullet3Dynamics_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
