@@ -2,7 +2,6 @@
 #define _GL_ERROR_H_
 
 #include <gl\glew.h>
-#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
 #define GLERRORCHECK checkGError(__FILE__, __LINE__)

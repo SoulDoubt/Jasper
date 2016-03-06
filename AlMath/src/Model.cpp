@@ -40,7 +40,7 @@ void Model::Initialize()
 
 	ProcessAiSceneNode(scene, scene->mRootNode);
 
-	int sz = m_meshManager.GetSize();
+	size_t sz = m_meshManager.GetSize();
 	printf("Loaded %d meshes in model: %s", sz, this->GetName().c_str());
 
 }

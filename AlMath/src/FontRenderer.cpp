@@ -18,11 +18,11 @@ namespace Jasper {
 	stbtt_bakedchar m_cdata[96];
 
 	FontRenderer::FontRenderer()
-		: m_vertexBuffer(OGLBuffer::BufferType::VERTEX),
-		m_indexBuffer(OGLBuffer::BufferType::INDEX)
+		: m_vertexBuffer(GLBuffer::BufferType::VERTEX),
+		m_indexBuffer(GLBuffer::BufferType::INDEX)
 	{
-		m_vertexBuffer.SetUsagePattern(OGLBuffer::UsagePattern::DynamicDraw);
-		m_indexBuffer.SetUsagePattern(OGLBuffer::UsagePattern::DynamicDraw);
+		m_vertexBuffer.SetUsagePattern(GLBuffer::UsagePattern::DynamicDraw);
+		m_indexBuffer.SetUsagePattern(GLBuffer::UsagePattern::DynamicDraw);
 		m_shader = make_unique<FontShader>();
 	}
 

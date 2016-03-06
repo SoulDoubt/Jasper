@@ -3,7 +3,7 @@
 
 #include "Component.h"
 #include "Transform.h"
-#include "OGLBuffer.h"
+#include "GLBuffer.h"
 #include "Mesh.h"
 #include <memory>
 #include <vector>
@@ -19,8 +19,8 @@ class MeshRenderer : public Component
 {
 private:
 
-	OGLBuffer m_vertexBuffer;
-	OGLBuffer m_indexBuffer;
+	GLBuffer m_vertexBuffer;
+	GLBuffer m_indexBuffer;
 
 protected:
 

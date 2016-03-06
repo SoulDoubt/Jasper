@@ -5,10 +5,11 @@
 #include "Component.h"
 #include "vector3.h"
 #include "vector4.h"
-#include "OGLBuffer.h"
+#include "GLBuffer.h"
+#include "Texture.h"
+
 #include <vector>
 #include <memory>
-#include "Texture.h"
 
 namespace Jasper {
 

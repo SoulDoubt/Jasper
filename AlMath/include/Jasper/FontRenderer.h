@@ -3,7 +3,7 @@
 
 
 #include "MeshRenderer.h"
-#include "OGLBuffer.h"
+#include "GLBuffer.h"
 #include "matrix.h"
 #include "FontShader.h"
 
@@ -29,8 +29,8 @@ private:
 	Matrix4 m_projectionMatrix;
 	Matrix4 m_viewMatrix;
 
-	OGLBuffer m_vertexBuffer;
-	OGLBuffer m_indexBuffer;
+	GLBuffer m_vertexBuffer;
+	GLBuffer m_indexBuffer;
 
 	std::unique_ptr<FontShader> m_shader;
 
