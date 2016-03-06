@@ -1,9 +1,9 @@
-#ifndef _OGL_BUFFER_H_
-#define _OGL_BUFFER_H_
+#ifndef _GL_BUFFER_H_
+#define _GL_BUFFER_H_
 
 namespace Jasper {
 
-class OGLBuffer
+class GLBuffer
 {
 public:
 
@@ -25,9 +25,9 @@ public:
 		DynamicCopy = 0x88EA  // GL_DYNAMIC_COPY
 	};
 
-	OGLBuffer();
-	explicit OGLBuffer(OGLBuffer::BufferType type);
-	~OGLBuffer();
+	GLBuffer();
+	explicit GLBuffer(GLBuffer::BufferType type);
+	~GLBuffer();
 
 	bool Create();
 	void Destroy();

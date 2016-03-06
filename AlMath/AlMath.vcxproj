@@ -39,7 +39,7 @@
     <ClInclude Include="include\Jasper\Mesh.h" />
     <ClInclude Include="include\Jasper\MeshRenderer.h" />
     <ClInclude Include="include\Jasper\Model.h" />
-    <ClInclude Include="include\Jasper\OGLBuffer.h" />
+    <ClInclude Include="include\Jasper\GLBuffer.h" />
     <ClInclude Include="include\Jasper\PhysicsCollider.h" />
     <ClInclude Include="include\Jasper\PhysicsWorld.h" />
     <ClInclude Include="include\Jasper\PlaneCollider.h" />
@@ -83,7 +83,7 @@
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
     <ClCompile Include="src\Model.cpp" />
-    <ClCompile Include="src\OGLBuffer.cpp" />
+    <ClCompile Include="src\GLBuffer.cpp" />
     <ClCompile Include="src\PhysicsCollider.cpp" />
     <ClCompile Include="src\PhysicsWorld.cpp" />
     <ClCompile Include="src\PlaneCollider.cpp" />
@@ -172,6 +172,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\Al\Documents\GitHub\Jasper\AlMath\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

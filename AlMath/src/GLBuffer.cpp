@@ -1,26 +1,26 @@
-#include <Jasper\OGLBuffer.h>
+#include <Jasper\GLBuffer.h>
 #include <cassert>
 #include <gl\glew.h>
 
 namespace Jasper {
 
-	OGLBuffer::OGLBuffer() : OGLBuffer(BufferType::VERTEX)
+	GLBuffer::GLBuffer() : GLBuffer(BufferType::VERTEX)
 	{
 	}
 
-	OGLBuffer::OGLBuffer(OGLBuffer::BufferType type) : m_type(type), m_usage(UsagePattern::StaticDraw)
+	GLBuffer::GLBuffer(GLBuffer::BufferType type) : m_type(type), m_usage(UsagePattern::StaticDraw)
 	{
 	}
 
 
-	OGLBuffer::~OGLBuffer()
+	GLBuffer::~GLBuffer()
 	{
 		if (IsCreated()) {
 			Destroy();
 		}
 	}
 
-	bool OGLBuffer::Create()
+	bool GLBuffer::Create()
 	{
 		glGenBuffers(1, &m_bufferID);
 		if (m_bufferID > 0) {
@@ -29,7 +29,7 @@ namespace Jasper {
 		return false;
 	}
 
-	void OGLBuffer::Destroy()
+	void GLBuffer::Destroy()
 	{
 		assert(m_bufferID != 0);
 		if (m_bufferID > 0) {
@@ -37,12 +37,12 @@ namespace Jasper {
 		}
 	}
 
-	bool OGLBuffer::IsCreated() const
+	bool GLBuffer::IsCreated() const
 	{
 		return m_bufferID != 0;
 	}
 
-	bool OGLBuffer::Bind()
+	bool GLBuffer::Bind()
 	{
 		assert(m_bufferID != 0);
 		if (m_bufferID > 0) {
@@ -52,7 +52,7 @@ namespace Jasper {
 		return false;
 	}
 
-	void OGLBuffer::Release()
+	void GLBuffer::Release()
 	{
 		assert(m_bufferID != 0);
 		if (m_bufferID > 0) {
@@ -60,17 +60,17 @@ namespace Jasper {
 		}
 	}
 
-	GLuint OGLBuffer::BufferID() const
+	GLuint GLBuffer::BufferID() const
 	{
 		return m_bufferID;
 	}
 
-	void OGLBuffer::SetUsagePattern(UsagePattern usage)
+	void GLBuffer::SetUsagePattern(UsagePattern usage)
 	{
 		m_usage = usage;
 	}
 
-	void OGLBuffer::Allocate(const void * data, int count)
+	void GLBuffer::Allocate(const void * data, int count)
 	{
 		assert(m_bufferID != 0);
 		if (m_bufferID > 0) {
@@ -79,7 +79,7 @@ namespace Jasper {
 
 	}
 
-	void OGLBuffer::UpdateContents(int offset, int size, const void* data)
+	void GLBuffer::UpdateContents(int offset, int size, const void* data)
 	{
 		assert(m_bufferID != 0);
 		if (m_bufferID > 0) {
@@ -90,7 +90,7 @@ namespace Jasper {
 
 	}
 
-	int OGLBuffer::Size()
+	int GLBuffer::Size()
 	{
 		assert(m_bufferID > 0);
 		int sz = -1;
