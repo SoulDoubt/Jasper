@@ -2,9 +2,7 @@
 #define _MATRIX_H_
 
 #include <assert.h>
-#include "vector3.h"
-#include "vector4.h"
-
+#include "vector.h"
 
 #define MATRIX_INVERSE_EPSILON 1e-14
 #define MATRIX_EPSILON 1e-6

@@ -2,7 +2,7 @@
 #define _DIRECTIONAL_LIGHT_H_
 
 #include "Common.h"
-#include "vector4.h"
+#include "vector.h"
 #include "Transform.h"
 
 namespace Jasper {

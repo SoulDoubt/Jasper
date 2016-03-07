@@ -107,7 +107,7 @@ Matrix4 Matrix4::FromTransform(const Transform& tr) {
 	float yw = q.y * q.w;
 	float xw = q.x * q.w;
 
-	mat.mat[0].x = 1.0f - (2.0f * yy) - (2.0f * zz);
+	/*mat.mat[0].x = 1.0f - (2.0f * yy) - (2.0f * zz);
 	mat.mat[0].y = (2.0f * xy) - (2.0f * zw);
 	mat.mat[0].z = (2.0f * xz) + (2.0f * yw);
 	mat.mat[0].w = p.x;
@@ -133,7 +133,7 @@ Matrix4 Matrix4::FromTransform(const Transform& tr) {
 		scaleMat.mat[1].y = scale.y;
 		scaleMat.mat[2].z = scale.z;
 		return mat * scaleMat;
-	}
+	}*/
 
 	/*const Quaternion a = Normalize(tr.Orientation);
 	const Vector3 pos = tr.Position;
@@ -147,20 +147,20 @@ Matrix4 Matrix4::FromTransform(const Transform& tr) {
 	const float wy = a.w * a.y;
 	const float wz = a.w * a.z;
 */
-	//mat[0][0] = 1.0f - 2.0f * (yy + zz);
-	//mat[0][1] = 2.0f * (xy + zw);
-	//mat[0][2] = 2.0f * (xz - yw);
-	//mat[0][3] = p.x;
+	mat[0][0] = 1.0f - 2.0f * (yy + zz);
+	mat[0][1] = 2.0f * (xy + zw);
+	mat[0][2] = 2.0f * (xz - yw);
+	mat[0][3] = p.x;
 
-	//mat[1][0] = 2.0f * (xy - zw);
-	//mat[1][1] = 1.0f - 2.0f * (xx + zz);
-	//mat[1][2] = 2.0f * (yz + xw);
-	//mat[2][3] = p.y;
+	mat[1][0] = 2.0f * (xy - zw);
+	mat[1][1] = 1.0f - 2.0f * (xx + zz);
+	mat[1][2] = 2.0f * (yz + xw);
+	mat[2][3] = p.y;
 
-	//mat[2][0] = 2.0f * (xz + yw);
-	//mat[2][1] = 2.0f * (yz - xw);
-	//mat[2][2] = 1.0f - 2.0f * (xx + yy);
-	//mat[2][3] = p.z;
+	mat[2][0] = 2.0f * (xz + yw);
+	mat[2][1] = 2.0f * (yz - xw);
+	mat[2][2] = 1.0f - 2.0f * (xx + yy);
+	mat[2][3] = p.z;
 
 
 	return mat;

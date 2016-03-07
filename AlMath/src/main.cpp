@@ -1,4 +1,4 @@
-#include <Jasper\vector3.h>
+#include <Jasper\vector.h>
 #include <Jasper\matrix.h>
 #include <Jasper\GameObject.h>
 #include <Jasper\GLWindow.h>
@@ -6,11 +6,16 @@
 #include <Jasper\Cube.h>
 #include <Jasper\Material.h>
 #include <iostream>
+#include <Jasper\MathTest.h>
 
 using namespace std;
 using namespace Jasper;
 
 int main(int argc, char** argv) {
+
+	MathTest mathtest;
+	mathtest.testQuaternionMultiplication();
+	mathtest.testTransforms();
 
 	/*Matrix4 testFromTransform = Matrix4::FromTransform(*trans);
 	std::cout << "Matrix from transform: " << std::endl;

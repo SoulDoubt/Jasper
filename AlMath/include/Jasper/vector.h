@@ -35,6 +35,15 @@ inline Vector2 operator+(const Vector2& a, const Vector2& b) {
 	return Vector2(a.x + b.x, a.y + b.y);
 }
 
+
+inline Vector2 operator*(const Vector2& a, const float f) {
+	return Vector2(a.x * f, a.y * f);
+}
+
+inline Vector2 operator/(const Vector2& a, const float f) {
+	return Vector2(a.x / f, a.y / f);
+}
+
 inline float Length(const Vector2& vec) {
 	return sqrtf(vec.x * vec.x + vec.y * vec.y);
 
@@ -46,12 +55,10 @@ inline Vector2 Normalize(const Vector2& vec) {
 }
 
 
-ALIGN16
-class Vector3
+//ALIGN16
+struct Vector3
 {
-public:
-
-	ALIGN_16_OPERATORS
+	//ALIGN_16_OPERATORS
 
 	float x, y, z;
 
@@ -59,12 +66,14 @@ public:
 	Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
 	Vector3(const btVector3& v) : x(v.x()), y(v.y()), z(v.z()) {}
 
-	btVector3 AsBtVector3() { return btVector3(x, y, z); }
+	
 	
 	float Length() const;
 	float LengthSquared() const;
 	void Normalize();
 	Vector3 Normalized() const;
+
+	btVector3 AsBtVector3() { return btVector3(x, y, z); }
 
 	Vector3& operator=(const Vector3& o);
 
@@ -75,9 +84,9 @@ public:
 	//ctor3 operator-(const Vector3& o) const;
 	Vector3 operator-() const;
 
-	Vector3& operator+=(const Vector3& o);
-	Vector3& operator-=(const Vector3& o);
-	Vector3& operator*=(const float f);
+	//Vector3& operator+=(const Vector3& o);
+	//Vector3& operator-=(const Vector3& o);
+	//Vector3& operator*=(const float f);
 	Vector3& operator/=(const Vector3& o);
 	Vector3& operator/=(const float f);
 
@@ -92,7 +101,7 @@ public:
 
 	std::string ToString(int precision = 4) const;
 
-	float& operator[](int index) {
+	inline float& operator[](int index) {
 		return (&x)[index];
 	}
 
@@ -106,6 +115,29 @@ public:
 
 };
 
+
+
+inline Vector3& operator+=(Vector3& a, const Vector3& b) {
+	a.x += b.x;
+	a.y += b.y;
+	a.z += b.z;
+	return a;
+}
+
+inline Vector3& operator-=(Vector3& a, const Vector3& b) {
+	a.x -= b.x;
+	a.y -= b.y;
+	a.z -= b.z;
+	return a;
+}
+
+inline Vector3& operator*=(Vector3& a, float f) {
+	a.x *= f;
+	a.y *= f;
+	a.z *= f;
+	return a;
+}
+
 inline float Vector3::Length() const {
 	return sqrtf(x * x + y * y + z * z);
 }
@@ -118,13 +150,6 @@ inline float Length(const Vector3& a) {
 	return sqrtf(a.x * a.x + a.y * a.y + a.z * a.z);
 }
 
-//inline Vector3 Vector3::operator+(const Vector3& o) const {
-//	return Vector3(x + o.x, y + o.y, z + o.z);
-//}
-
-//inline Vector3 Vector3::operator-(const Vector3& o) const {
-//	return Vector3(x - o.x, y - o.y, z - o.z);
-//}
 
 inline Vector3 Vector3::operator*(const float f) const {
 	return Vector3(x * f, y * f, z * f);
@@ -138,19 +163,7 @@ inline Vector3 Vector3::operator/(const float f) const {
 	return Vector3(x / f, y / f, z / f);
 }
 
-inline Vector3& Vector3::operator+=(const Vector3& o) {
-	x += o.x;
-	y += o.y;
-	z += o.z;
-	return *this;
-}
 
-inline Vector3& Vector3::operator-=(const Vector3& o) {
-	x -= o.x;
-	y -= o.y;
-	z -= o.z;
-	return *this;
-}
 
 inline void Vector3::Normalize() {
 	float len = this->Length();
@@ -167,13 +180,6 @@ inline Vector3 Vector3::Normalized() const {
 inline Vector3 Normalize(const Vector3& v) {
 	float len = Length(v);
 	return Vector3(v.x / len, v.y / len, v.z / len);
-}
-
-inline Vector3& Vector3::operator*=(const float f) {
-	x *= f;
-	y *= f;
-	z *= f;
-	return *this;
 }
 
 inline Vector3& Vector3::operator/=(const Vector3& o) {

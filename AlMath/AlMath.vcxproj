@@ -32,6 +32,7 @@
     <ClInclude Include="include\Jasper\GameObject.h" />
     <ClInclude Include="include\Jasper\GLError.h" />
     <ClInclude Include="include\Jasper\GLWindow.h" />
+    <ClInclude Include="include\Jasper\MathTest.h" />
     <ClInclude Include="include\Jasper\LitShader.h" />
     <ClInclude Include="include\Jasper\Material.h" />
     <ClInclude Include="include\Jasper\matrix.h" />
@@ -60,8 +61,7 @@
     <ClInclude Include="include\Jasper\Texture.h" />
     <ClInclude Include="include\Jasper\Transform.h" />
     <ClInclude Include="include\Jasper\Triangle.h" />
-    <ClInclude Include="include\Jasper\vector3.h" />
-    <ClInclude Include="include\Jasper\vector4.h" />
+    <ClInclude Include="include\Jasper\vector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BasicShader.cpp" />
@@ -100,7 +100,6 @@
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Triangle.cpp" />
-    <ClCompile Include="src\vector3.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{878A960B-EAF5-4C15-B042-0DBC855E632A}</ProjectGuid>
