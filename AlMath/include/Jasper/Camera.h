@@ -3,7 +3,9 @@
 
 #include "Common.h"
 #include "Transform.h"
+#include "matrix.h"
 #include <memory>
+#include <bullet\btBulletDynamicsCommon.h>
 
 class btCollisionShape;
 class btRigidbody;
@@ -42,6 +44,10 @@ public:
 	}
 
 	Transform transform;
+	btTransform btt;
+
+	Quaternion m_orientation;
+	Vector3 m_position;
 
 private:
 

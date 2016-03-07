@@ -4,6 +4,7 @@
 #include <assert.h>
 #include "vector.h"
 
+
 #define MATRIX_INVERSE_EPSILON 1e-14
 #define MATRIX_EPSILON 1e-6
 
@@ -12,6 +13,7 @@ namespace Jasper {
 class Transform;
 
 class Matrix3 {
+
 
 public:
 
@@ -240,6 +242,7 @@ public:
 	}
 
 	static Matrix4 FromTransform(const Transform& tr);
+	static Matrix4 FromBtTransform(const btTransform& t);
 
 	float Determinant() const;
 	Matrix4 Inverted() const;
@@ -529,6 +532,8 @@ inline Matrix4& Matrix4::Rotate(float angle, const Vector3 & ax)
 	return *this;
 
 }
+
+
 
 }
 

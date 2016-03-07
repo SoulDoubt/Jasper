@@ -2,6 +2,7 @@
 #include <Jasper\quaternion.h>
 #include <Jasper\Transform.h>
 
+
 namespace Jasper {
 
 void Matrix4::CreatePerspectiveProjection(const float fov, const float aspect, const float nearPlane, const float farPlane) {
@@ -89,13 +90,34 @@ void Matrix4::CreateOrthographicProjection(const float left, const float right, 
 	*this *= m;
 }
 
+
+
 Matrix4 Matrix4::FromTransform(const Transform& tr) {
 
+
+	/*Vector3 x_axis = { 1.f, 0.f, 0.f };
+	Vector3 y_axis = { 0.f, 1.f, 0.f };
+	Vector3 z_axis = { 0.f, 0.f, 1.f };*/
+
+	Quaternion q = Normalize(tr.Orientation);
+
+	/*Vector3 x = x_axis * q;
+	Vector3 y = y_axis * q;
+	Vector3 z = z_axis * q;*/
+
+	auto p = tr.Position;
+
+	/*Vector4 vx = { x, p.x };
+	Vector4 vy = { y, p.y };
+	Vector4 vz = { z, p.z };
+	Vector4 vw = { 0.f, 0.f, 0.f, 1.f };*/
+	
 	Vector3 scale = tr.Scale;
 
-	Matrix4 mat;
-	Quaternion q = Normalize(tr.Orientation);
-	auto p = tr.Position;
+	//Matrix4 mat = Matrix4(vx, vy, vz, vw);
+
+	//return mat;	
+	
 
 	float xx = q.x * q.x;
 	float yy = q.y * q.y;
@@ -107,7 +129,9 @@ Matrix4 Matrix4::FromTransform(const Transform& tr) {
 	float yw = q.y * q.w;
 	float xw = q.x * q.w;
 
-	/*mat.mat[0].x = 1.0f - (2.0f * yy) - (2.0f * zz);
+	Matrix4 mat;
+
+	mat.mat[0].x = 1.0f - (2.0f * yy) - (2.0f * zz);
 	mat.mat[0].y = (2.0f * xy) - (2.0f * zw);
 	mat.mat[0].z = (2.0f * xz) + (2.0f * yw);
 	mat.mat[0].w = p.x;
@@ -133,8 +157,9 @@ Matrix4 Matrix4::FromTransform(const Transform& tr) {
 		scaleMat.mat[1].y = scale.y;
 		scaleMat.mat[2].z = scale.z;
 		return mat * scaleMat;
-	}*/
+	}
 
+	return mat;
 	/*const Quaternion a = Normalize(tr.Orientation);
 	const Vector3 pos = tr.Position;
 	const float xx = a.x * a.x;
@@ -146,7 +171,7 @@ Matrix4 Matrix4::FromTransform(const Transform& tr) {
 	const float wx = a.w * a.x;
 	const float wy = a.w * a.y;
 	const float wz = a.w * a.z;
-*/
+
 	mat[0][0] = 1.0f - 2.0f * (yy + zz);
 	mat[0][1] = 2.0f * (xy + zw);
 	mat[0][2] = 2.0f * (xz - yw);
@@ -164,7 +189,7 @@ Matrix4 Matrix4::FromTransform(const Transform& tr) {
 
 
 	return mat;
-
+	*/
 }
 
 }

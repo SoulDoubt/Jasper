@@ -3,29 +3,29 @@
 
 namespace Jasper {
 
-	PlaneCollider::PlaneCollider(const std::string& name, Mesh* mesh, PhysicsWorld* world)
-		:PhysicsCollider(name, mesh, world)
-	{
+PlaneCollider::PlaneCollider(const std::string& name, Mesh* mesh, PhysicsWorld* world)
+	:PhysicsCollider(name, mesh, world)
+{
 
 
-	}
+}
 
 
-	PlaneCollider::~PlaneCollider()
-	{
-	}
+PlaneCollider::~PlaneCollider()
+{
+}
 
-	void PlaneCollider::Awake()
-	{
-		auto go = GetGameObject();
-		auto& trans = go->GetLocalTransform();
-		auto& btTrans = trans.GetBtTransform();
-		m_collisionShape = new btStaticPlaneShape(btVector3(0.f, 1.f, 0.f), 0.f);
-		m_defaultMotionState = new btDefaultMotionState(btTrans);
-		btRigidBody::btRigidBodyConstructionInfo rbci(Mass, m_defaultMotionState, m_collisionShape, btVector3(0.f, -1.f, 0.f));
+void PlaneCollider::Awake()
+{
+	auto go = GetGameObject();
+	auto& trans = go->GetLocalTransform();
+	auto& btTrans = trans.GetBtTransform();
+	m_collisionShape = new btStaticPlaneShape(btVector3(0.f, 1.f, 0.f), 0.f);
+	m_defaultMotionState = new btDefaultMotionState(btTrans);
+	btRigidBody::btRigidBodyConstructionInfo rbci(Mass, m_defaultMotionState, m_collisionShape, btVector3(0.f, -1.f, 0.f));
 
-		m_rigidBody = new btRigidBody(rbci);
-		m_world->AddRigidBody(m_rigidBody);
+	m_rigidBody = new btRigidBody(rbci);
+	m_world->AddRigidBody(m_rigidBody);
 
-	}
+}
 }

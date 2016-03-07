@@ -8,7 +8,7 @@
 
 namespace Jasper {
 
-ALIGN16
+
 class Transform
 {
 
@@ -18,7 +18,11 @@ public:
 	Quaternion Orientation = {0.0f, 0.0f, 0.0f, 1.0f};
 	Vector3 Scale = {1.0f, 1.0f, 1.0f};
 
-	ALIGN_16_OPERATORS;
+	Transform(const Vector3& position, const Quaternion& orientation) {
+		Position = position;
+		Orientation = orientation;
+		Scale = { 1.0f, 1.0f, 1.0f };
+	}
 
 
 	Transform(const btTransform& btt) {

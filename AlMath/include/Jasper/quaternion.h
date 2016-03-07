@@ -121,18 +121,6 @@ inline Quaternion& Quaternion::operator-=(const Quaternion& o) {
 	return *this;
 }
 
-//inline Quaternion Quaternion::operator*(const Quaternion& o) const {
-//	Quaternion q;
-//
-//
-//
-//	q.w = w * o.w - x * o.x - y * o.y - z * o.z;
-//	q.x = w * o.x + x * o.w + y * o.z - z * o.y;
-//	q.y = w * o.y + y * o.w + z * o.x - x * o.z;
-//	q.z = w * o.z + z * o.w + x * o.y - y * o.x;
-//	return q;
-//}
-
 inline Quaternion operator*(const Quaternion& a, const Quaternion& b) {
 	Quaternion q;
 	q.x = a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y;
@@ -170,6 +158,11 @@ inline Quaternion & Quaternion::operator*=(const float f)
 }
 
 inline Vector3 operator*(const Quaternion& q, const Vector3& v) {
+	const Vector3 t = 2.0f * Cross(q.xyz(), v);
+	return (v + q.w * t + Cross(q.xyz(), t));
+}
+
+inline Vector3 operator*(const Vector3& v, const Quaternion& q) {
 	const Vector3 t = 2.0f * Cross(q.xyz(), v);
 	return (v + q.w * t + Cross(q.xyz(), t));
 }

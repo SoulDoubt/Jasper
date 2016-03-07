@@ -51,6 +51,6 @@ void main()
 	vec4 texture_color = texture(colorMap, outTexCoords);
 	vec3 lighting_contribution = ambient_color + diffuse_color + specular_color;
 
-	fcolor =  vec4(1, 0, 0, 1);//texture_color * vec4(lighting_contribution, 1.0);				
+	fcolor =  texture_color * vec4(lighting_contribution, 1.0);				
 
 }
