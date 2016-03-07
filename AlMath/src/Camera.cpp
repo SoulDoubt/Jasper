@@ -124,6 +124,7 @@ void Camera::Rotate(float pitch, float roll, float yaw)
 {
 	m_accumPitch += pitch;
 	btQuaternion orientation = btt.getRotation();
+	Quaternion qo = Quaternion(orientation.x(), orientation.y(), orientation.z(), orientation.w());
 
 	if (m_accumPitch > 90.f) {
 		pitch = 0.f;
@@ -135,18 +136,31 @@ void Camera::Rotate(float pitch, float roll, float yaw)
 	}
 
 	btQuaternion xrot, yrot;
+	Quaternion xr, yr;
 	if (pitch != 0.f) {
 		xrot = btQuaternion(WORLD_X_AXIS.AsBtVector3(), DEG_TO_RAD(pitch));
+		xr = Quaternion::FromAxisAndAngle(WORLD_X_AXIS, DEG_TO_RAD(pitch));
 		orientation = orientation * xrot;
+		qo = qo * xr;		
 	}
 
 	if (yaw != 0.f) {
 		yrot = btQuaternion(WORLD_Y_AXIS.AsBtVector3(), DEG_TO_RAD(yaw));
+		yr = Quaternion::FromAxisAndAngle(WORLD_Y_AXIS, DEG_TO_RAD(yaw));
 		orientation = yrot * orientation;
+		qo = yr * qo;		
 	}
-	btt.setRotation(orientation);
-	//transform.Orientation = Normalize(transform.Orientation);
-	//transform.Orientation =  orientation;
+	btt.setRotation(orientation);	
+
+	/* TEST */
+	Transform tr;
+	tr.Position = Vector3(btt.getOrigin().x(), btt.getOrigin().y(), btt.getOrigin().z());
+	tr.Orientation = qo;
+
+	Matrix4 myMatrix = Matrix4::FromTransform(tr);
+	Matrix4 btMatrix = FromBtTransform(btt);
+	printf("ff");
+	
 }
 
 void Camera::Translate(float x, float y, float z)
