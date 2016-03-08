@@ -27,6 +27,9 @@ public:
 
 	Vector3 HalfExtents;
 
+	uint TriCount = 0;
+	uint VertCount = 0;
+
 private:
 	std::string m_filename;
 	std::string m_directory;

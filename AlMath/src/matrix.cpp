@@ -93,32 +93,11 @@ void Matrix4::CreateOrthographicProjection(const float left, const float right, 
 
 
 Matrix4 Matrix4::FromTransform(const Transform& tr) {
-
-
-	/*Vector3 x_axis = { 1.f, 0.f, 0.f };
-	Vector3 y_axis = { 0.f, 1.f, 0.f };
-	Vector3 z_axis = { 0.f, 0.f, 1.f };*/
-
+	
 	Quaternion q = Normalize(tr.Orientation);
-
-	/*Vector3 x = x_axis * q;
-	Vector3 y = y_axis * q;
-	Vector3 z = z_axis * q;*/
-
-	auto p = tr.Position;
-
-	/*Vector4 vx = { x, p.x };
-	Vector4 vy = { y, p.y };
-	Vector4 vz = { z, p.z };
-	Vector4 vw = { 0.f, 0.f, 0.f, 1.f };*/
-	
-	Vector3 scale = tr.Scale;
-
-	//Matrix4 mat = Matrix4(vx, vy, vz, vw);
-
-	//return mat;	
-	
-
+	auto p = tr.Position;	
+	auto scale = tr.Scale;
+		
 	float xx = q.x * q.x;
 	float yy = q.y * q.y;
 	float yz = q.y * q.z;
@@ -160,36 +139,6 @@ Matrix4 Matrix4::FromTransform(const Transform& tr) {
 	}
 
 	return mat;
-	/*const Quaternion a = Normalize(tr.Orientation);
-	const Vector3 pos = tr.Position;
-	const float xx = a.x * a.x;
-	const float yy = a.y * a.y;
-	const float zz = a.z * a.z;
-	const float xy = a.x * a.y;
-	const float xz = a.x * a.z;
-	const float yz = a.y * a.z;
-	const float wx = a.w * a.x;
-	const float wy = a.w * a.y;
-	const float wz = a.w * a.z;
-
-	mat[0][0] = 1.0f - 2.0f * (yy + zz);
-	mat[0][1] = 2.0f * (xy + zw);
-	mat[0][2] = 2.0f * (xz - yw);
-	mat[0][3] = p.x;
-
-	mat[1][0] = 2.0f * (xy - zw);
-	mat[1][1] = 1.0f - 2.0f * (xx + zz);
-	mat[1][2] = 2.0f * (yz + xw);
-	mat[2][3] = p.y;
-
-	mat[2][0] = 2.0f * (xz + yw);
-	mat[2][1] = 2.0f * (yz - xw);
-	mat[2][2] = 1.0f - 2.0f * (xx + yy);
-	mat[2][3] = p.z;
-
-
-	return mat;
-	*/
 }
 
-}
+} // namespace jasper

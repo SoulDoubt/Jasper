@@ -18,15 +18,16 @@ namespace Jasper {
 
 class Scene;
 
-ALIGN16 class GameObject
+//ALIGN16
+class GameObject
 {
 public:
 
 	using GroupedComponentMap = std::map<std::type_index, std::vector<std::unique_ptr<Component>>>;
 
-	ALIGN_16_OPERATORS
+	//ALIGN_16_OPERATORS
 
-		GameObject();
+	GameObject();
 	GameObject(std::string name);
 	virtual ~GameObject();
 
@@ -252,6 +253,7 @@ inline T * GameObject::GetComponentByType()
 			return found;
 		}
 	}
+	return nullptr;
 }
 
 template<typename T>

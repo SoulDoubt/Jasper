@@ -109,8 +109,8 @@ void MeshRenderer::Render() {
 
 	
 
-	auto viewMatrix = gameObject->GetScene()->GetCamera().GetViewMatrix().Inverted();
-	auto camPos = gameObject->GetScene()->GetCamera().GetPosition();
+	auto viewMatrix = scene->GetCamera().GetViewMatrix().Inverted();
+	auto camPos = scene->GetCamera().GetPosition();
 
 	auto modelMatrix = modelTrans.TransformMatrix();
 	auto modelViewMatrix = viewMatrix * modelMatrix;

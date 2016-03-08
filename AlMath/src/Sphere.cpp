@@ -41,7 +41,7 @@ void Sphere::Initialize()
 		Indices.push_back(i + 1);
 	}
 
-	CalculateFaceNormals();
+	//CalculateFaceNormals();
 	CalculateHalfExtents();
 
 }

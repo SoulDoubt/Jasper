@@ -41,7 +41,15 @@ void Model::Initialize()
 	ProcessAiSceneNode(scene, scene->mRootNode);
 
 	size_t sz = m_meshManager.GetSize();
-	printf("Loaded %d meshes in model: %s", sz, this->GetName().c_str());
+	printf("\nLoaded %d meshes in model: %s", sz, this->GetName().c_str());
+	uint numTris = 0;
+	uint numVerts = 0;
+	
+	for (auto& m : m_meshManager.GetCache()) {
+		numTris += m->Indices.size() / 3;
+		numVerts += m->Vertices.size();
+	}
+	printf("\nModel Contains %d Vertices and %d Triangles.", numTris, numVerts);
 
 }
 

@@ -14,9 +14,9 @@ class Transform
 
 public:
 
-	Vector3 Position = {0.0f, 0.0f, 0.0f};
-	Quaternion Orientation = {0.0f, 0.0f, 0.0f, 1.0f};
-	Vector3 Scale = {1.0f, 1.0f, 1.0f};
+	Vector3 Position = { 0.0f, 0.0f, 0.0f };
+	Quaternion Orientation = { 0.0f, 0.0f, 0.0f, 1.0f };
+	Vector3 Scale = { 1.0f, 1.0f, 1.0f };
 
 	Transform(const Vector3& position, const Quaternion& orientation) {
 		Position = position;
@@ -34,16 +34,16 @@ public:
 	btTransform GetBtTransform() {
 		btTransform btt;
 		btVector3 pos = { Position.x, Position.y, Position.z };
-		btQuaternion q = btQuaternion(Orientation.x, Orientation.y , Orientation.z , Orientation.w);
+		btQuaternion q = btQuaternion(Orientation.x, Orientation.y, Orientation.z, Orientation.w);
 		btt.setOrigin(pos);
 		btt.setRotation(q);
 		return btt;
 	}
 
 	Transform() {
-				
+
 	}
-	
+
 	Matrix4 TransformMatrix() const;
 
 	Matrix3 NormalMatrix(Matrix4 mat) const;
@@ -54,7 +54,7 @@ public:
 	}
 
 	Transform& Rotate(const Vector3& axis, float angle);
-		
+
 
 	friend Transform operator*(const Transform& ps, const Transform& ls);
 	friend Transform& operator*=(Transform& ps, const Transform& ls);
@@ -63,7 +63,7 @@ public:
 		Position = { 0.f, 0.f, 0.f };
 		Orientation = { 0.f, 0.f, 0.f, 1.f };
 		Scale = { 1.f, 1.f, 1.f };
-	}		
+	}
 };
 
 inline Transform operator*(const Transform& ps, const Transform& ls) {

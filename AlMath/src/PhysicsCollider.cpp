@@ -36,6 +36,7 @@ void PhysicsCollider::Destroy()
 
 void PhysicsCollider::Awake()
 {
+	
 	Component::Awake();
 }
 
@@ -64,4 +65,5 @@ Transform PhysicsCollider::GetCurrentWorldTransform()
 	m_rigidBody->getMotionState()->getWorldTransform(trans);
 	return Transform(trans);
 }
-}
+
+} // namespace Jasper

@@ -19,7 +19,7 @@ namespace Jasper {
 
 using namespace std;
 
-Scene::Scene() : m_camera(Camera::CameraType::FLYING)
+Scene::Scene() : m_camera(Camera::CameraType::FIRST_PERSON)
 {
 
 
@@ -88,7 +88,7 @@ void Scene::Initialize() {
 	auto m1 = m_materialManager.CreateInstance<Material>(defaultShader);
 	m1->SetTexture2D("./textures/metal_tex.jpg");
 	m1->Shine = 32.0f;
-	m1->Diffuse = { 0.5f, 0.5f, 0.5f };
+	m1->Diffuse = { 0.8f, 0.8f, 0.8f };
 	m1->Ambient = { 0.5f, 0.5f, 0.5f };
 	m1->Specular = Vector3(0.9f, 0.9f, 0.9f);	
 	auto mr1 = cube->AttachNewComponent<MeshRenderer>(cubeMesh, m1);
@@ -98,30 +98,28 @@ void Scene::Initialize() {
 	bc->Mass = 100.0f;
 
 	/*auto cubechild = CreateEmptyGameObject("child_cube0", cube);
-	auto childMesh = m_meshManager.CreateMesh<Cube>(Vector3(0.5f, 0.5f, 0.5f));
+	auto childMesh = m_meshManager.CreateInstance<Cube>(Vector3(0.5f, 0.5f, 0.5f));
 	childMesh->FlipTextureCoords();
-	auto m2 = cubechild->AttachNewComponent<Material>();
-	m2->SetTexture2D("./textures/jasper.jpg");
-	m2->SetShader(bs);
-	auto mr2 = cubechild->AttachNewComponent<MeshRenderer>(childMesh);
-	cubechild->GetLocalTransform().Translate({0.0f, 1.5f, 0.0f});*/
+	auto m2 = m_materialManager.CreateInstance<Material>(defaultShader);
+	m2->SetTexture2D("./textures/jasper.jpg");	
+	auto mr2 = cubechild->AttachNewComponent<MeshRenderer>(childMesh, m2);
+	cubechild->GetLocalTransform().Translate({0.0f, 2.5f + 5.f, 0.0f});	*/
 
-	auto model = make_unique<Model>("Larry_Craft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
-	//model->GetLocalTransform().SetScale(Vector3({ 0.25f, 0.25f, 0.25f }));
+	auto model = make_unique<Model>("Larry_Craft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());	
 	model->GetLocalTransform().Translate(Vector3(4.0f, -.25f, -8.0f));
-	model->GetLocalTransform().Scale = Vector3{ 1.0f, 1.0f, 1.0f };
+	model->GetLocalTransform().Scale = Vector3{ 1.75f, 1.75f, 1.75f };
 	model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));
 	m_rootNode->AttachChild(move(model));	
 	
 
-	/*auto sphereObject = CreateEmptyGameObject("sphere0", m_rootNode.get());
+	auto sphereObject = CreateEmptyGameObject("sphere0", m_rootNode.get());
 	auto sphereMesh = m_meshManager.CreateInstance<Sphere>(1.0f);
 	auto sphereMat = m_materialManager.CreateInstance<Material>(defaultShader);
 	sphereMat->SetTexture2D("./textures/red.png");
 	auto sphereRenderer = sphereObject->AttachNewComponent<MeshRenderer>(sphereMesh, sphereMat);
 	auto sc = sphereObject->AttachNewComponent<SphereCollider>("sphere0_collider", sphereMesh, m_physicsWorld.get());
 	sc->Mass = 20.f;
-	sphereObject->GetLocalTransform().Translate({ 0.f, 2.f, -3.f });*/
+	sphereObject->GetLocalTransform().Translate({ 0.f, 25.f, -3.f });
 
 	DirectionalLight dl;
 	dl.SetPosition({ 0.0f, 15.0f, 0.0f });
