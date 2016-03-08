@@ -95,16 +95,16 @@ Matrix4 Camera::GetViewMatrix()
 
 	//Transform t = Transform(m_position, m_orientation);
 	//Matrix4 vm = Matrix4::FromTransform(t);
-	Matrix4 vm = FromBtTransform(btt);
+	Matrix4 vm = transform.TransformMatrix();
 	m_localXAxis = Vector3(vm.mat[0].x, vm.mat[1].x, vm.mat[2].x);
 	m_localYAxis = Vector3(vm.mat[0].y, vm.mat[1].y, vm.mat[2].y);
 	m_localZAxis = Vector3(vm.mat[0].z, vm.mat[1].z, vm.mat[2].z);
 	m_viewVector = -m_localZAxis;
 	//const auto pos = transform.Position;
-	const auto pos = btt.getOrigin();
-	//m_rigidBody->getMotionState()->setWorldTransform(transform.GetBtTransform());
-	m_rigidBody->getMotionState()->setWorldTransform(btt);
-	printf("Camera Position: %.3f, %.3f, %.3f Direction: %.3f, %.3f, %.3f \r", pos.x(), pos.y(), pos.z(), m_viewVector.x, m_viewVector.y, m_viewVector.z);
+	//const auto pos = transform.Position;
+	m_rigidBody->getMotionState()->setWorldTransform(transform.GetBtTransform());
+	//m_rigidBody->getMotionState()->setWorldTransform(btt);
+	//printf("Camera Position: %.3f, %.3f, %.3f Direction: %.3f, %.3f, %.3f \r", pos.x(), pos.y(), pos.z(), m_viewVector.x, m_viewVector.y, m_viewVector.z);
 	return vm;
 }
 
@@ -113,7 +113,8 @@ Matrix4 Camera::GetCubemapViewMatrix()
 	// removes the translation components for skybox rendering
 	//Transform t = Transform(m_position, m_orientation);
 	//Matrix4 vm = Matrix4::FromTransform(t);
-	Matrix4 vm = FromBtTransform(btt);
+	//Matrix4 vm = FromBtTransform(btt);
+	Matrix4 vm = transform.TransformMatrix();
 	vm.mat[0].w = 0.0f;
 	vm.mat[1].w = 0.0f;
 	vm.mat[2].w = 0.0f;
@@ -123,8 +124,10 @@ Matrix4 Camera::GetCubemapViewMatrix()
 void Camera::Rotate(float pitch, float roll, float yaw)
 {
 	m_accumPitch += pitch;
-	btQuaternion orientation = btt.getRotation();
-	Quaternion qo = Quaternion(orientation.x(), orientation.y(), orientation.z(), orientation.w());
+	//btQuaternion orientation = btt.getRotation();
+	Quaternion orientation = transform.Orientation;
+	//Quaternion qo = Quaternion(orientation.x(), orientation.y(), orientation.z(), orientation.w());
+	
 
 	if (m_accumPitch > 90.f) {
 		pitch = 0.f;
@@ -135,31 +138,35 @@ void Camera::Rotate(float pitch, float roll, float yaw)
 		m_accumPitch = -90.f;
 	}
 
-	btQuaternion xrot, yrot;
-	Quaternion xr, yr;
+	//btQuaternion xrot, yrot;
+	//Quaternion xr, yr;
+	Quaternion xrot, yrot;
 	if (pitch != 0.f) {
-		xrot = btQuaternion(WORLD_X_AXIS.AsBtVector3(), DEG_TO_RAD(pitch));
-		xr = Quaternion::FromAxisAndAngle(WORLD_X_AXIS, DEG_TO_RAD(pitch));
+		//xrot = btQuaternion(WORLD_X_AXIS.AsBtVector3(), DEG_TO_RAD(pitch));
+		xrot = Quaternion::FromAxisAndAngle(WORLD_X_AXIS, DEG_TO_RAD(pitch));
 		orientation = orientation * xrot;
-		qo = qo * xr;		
+		//qo = qo * xr;		
 	}
 
 	if (yaw != 0.f) {
-		yrot = btQuaternion(WORLD_Y_AXIS.AsBtVector3(), DEG_TO_RAD(yaw));
-		yr = Quaternion::FromAxisAndAngle(WORLD_Y_AXIS, DEG_TO_RAD(yaw));
+		//yrot = btQuaternion(WORLD_Y_AXIS.AsBtVector3(), DEG_TO_RAD(yaw));
+		yrot = Quaternion::FromAxisAndAngle(WORLD_Y_AXIS, DEG_TO_RAD(yaw));
 		orientation = yrot * orientation;
-		qo = yr * qo;		
+		//qo = yr * qo;		
 	}
-	btt.setRotation(orientation);	
+	//btt.setRotation(orientation);	
+	transform.Orientation = orientation;
 
 	/* TEST */
-	Transform tr;
+	/*Transform tr;
+	btVector3 abpos = btt.getOrigin();
+	btQuaternion abq = btt.getRotation();
 	tr.Position = Vector3(btt.getOrigin().x(), btt.getOrigin().y(), btt.getOrigin().z());
 	tr.Orientation = qo;
 
 	Matrix4 myMatrix = Matrix4::FromTransform(tr);
 	Matrix4 btMatrix = FromBtTransform(btt);
-	printf("ff");
+	printf("ff");*/
 	
 }
 
@@ -180,7 +187,8 @@ void Camera::Translate(const Vector3& vec)
 	else {
 		forwards = m_viewVector;
 	}
-	auto& current = btt.getOrigin();
+	auto& current = transform.Position;
+	//auto& current = btt.getOrigin();
 
 	/*btVector3 after = current.AsBtVector3();
 	after += m_localXAxis.AsBtVector3() * vec.x;
@@ -196,7 +204,8 @@ void Camera::Translate(const Vector3& vec)
 	to.setOrigin(after);*/
 
 	if (m_physicsWorld) {
-		btVector3 after = current;
+		//btVector3 after = current;
+		Vector3 after = current;
 		after += m_localXAxis.AsBtVector3() * vec.x;
 		after += WORLD_Y_AXIS.AsBtVector3() * vec.y;
 		after += forwards.AsBtVector3() * z;
@@ -204,12 +213,12 @@ void Camera::Translate(const Vector3& vec)
 		btTransform from, to;
 		from.setIdentity();
 		to.setIdentity();
-		from.setRotation(m_orientation.AsBtQuaternion());
-		to.setRotation(m_orientation.AsBtQuaternion());
-		from.setOrigin(current);
-		to.setOrigin(after);
+		/*from.setRotation(m_orientation.AsBtQuaternion());
+		to.setRotation(m_orientation.AsBtQuaternion());*/
+		from.setOrigin(current.AsBtVector3());
+		to.setOrigin(after.AsBtVector3());
 
-		btCollisionWorld::ClosestConvexResultCallback cb(current, after);
+		btCollisionWorld::ClosestConvexResultCallback cb(current.AsBtVector3(), after.AsBtVector3());
 		cb.m_collisionFilterMask = btBroadphaseProxy::DefaultFilter;
 
 		btConvexShape* cs = static_cast<btConvexShape*>(m_rigidBody->getCollisionShape());
@@ -217,13 +226,15 @@ void Camera::Translate(const Vector3& vec)
 		if (cb.hasHit()) {
 			float epsilon = 0.000001;
 			float min = btMax(epsilon, cb.m_closestHitFraction);
-			btVector3 newPos = current;
-			newPos.setInterpolate3(current, after, min);
+			btVector3 newPos = current.AsBtVector3();
+			newPos.setInterpolate3(current.AsBtVector3(), after.AsBtVector3(), min);
 			//transform.Position = Vector3(newPos);
-			btt.setOrigin(newPos);
+			//btt.setOrigin(newPos);
+			transform.Position = Vector3(newPos);
 		}
 		else {
-			btt.setOrigin(after);// = Vector3(after);
+			//btt.setOrigin(after.AsBtVector3());// = Vector3(after);
+			transform.Position = after;
 		}
 	}
 	else
@@ -231,12 +242,13 @@ void Camera::Translate(const Vector3& vec)
 		current += m_localXAxis.AsBtVector3() * vec.x;
 		current += WORLD_Y_AXIS.AsBtVector3() * vec.y;
 		current += forwards.AsBtVector3() * z;
-		btt.setOrigin(current);// = current;
+		//btt.setOrigin(current);// = current;
+		transform.Position = current;
 	}
 
-	//btTransform btt;
-	//btt.setRotation(m_orientation.AsBtQuaternion());
-	//btt.setOrigin(m_position.AsBtVector3());
+	btTransform btt;
+	btt.setRotation(transform.Orientation.AsBtQuaternion());
+	btt.setOrigin(transform.Position.AsBtVector3());
 
 	//m_rigidBody->getMotionState()->setWorldTransform(transform.GetBtTransform());
 	m_rigidBody->getMotionState()->setWorldTransform(btt);

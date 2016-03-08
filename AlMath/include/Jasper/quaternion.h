@@ -16,12 +16,12 @@ struct Angles {
 };
 
 
-ALIGN16
+//ALIGN16
 class Quaternion
 {
 public:
 
-	ALIGN_16_OPERATORS;
+	//ALIGN_16_OPERATORS;
 
 	Quaternion(float x, float y, float z, float w);
 	Quaternion(const Vector3& vector, float scalar);
@@ -40,8 +40,7 @@ public:
 	Quaternion operator+(const Quaternion& o) const;
 	Quaternion& operator+=(const Quaternion& o);
 	Quaternion operator-(const Quaternion& o) const;
-	Quaternion& operator-=(const Quaternion& o);
-	//Quaternion operator*(const Quaternion& o) const;
+	Quaternion& operator-=(const Quaternion& o);	
 	Quaternion& operator/=(const float f);
 	Quaternion operator/(const float f) const;
 	Quaternion& operator*=(const float f);
@@ -94,6 +93,7 @@ inline Quaternion& Quaternion::operator=(const Quaternion& o) {
 	x = o.x;
 	y = o.y;
 	z = o.z;
+	w = o.w;
 	return *this;
 }
 

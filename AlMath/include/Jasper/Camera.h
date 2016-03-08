@@ -14,7 +14,9 @@ namespace Jasper {
 
 class PhysicsWorld;
 
-ALIGN16
+// Must be aligned on 16 byte boundry because we hold a bTTransform by value.
+// and we want SIMD
+ALIGN16 
 class Camera
 {
 public:
