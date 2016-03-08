@@ -132,13 +132,13 @@ void MeshRenderer::Render() {
 	/*-----------*/
 
 
-	shader->SetTransformUniforms(modelTrans);
+	//shader->SetTransformUniforms(modelTrans);
 
 	shader->SetModelViewMatrix(modelViewMatrix);
 	shader->SetModelViewProjectionMatrix(mvp);
 	shader->SetNormalMatrix(normalMatrix);
 	// camera position needs to be in eye space
-	camPos = (modelViewMatrix * Vector4(camPos, 1.f)).AsVector3();
+	camPos = (viewMatrix * Vector4(camPos, 1.f)).AsVector3();
 	shader->SetCameraPosition(camPos);
 
 	auto dls = GetGameObject()->GetScene()->GetDirectionslLights();

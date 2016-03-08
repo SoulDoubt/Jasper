@@ -533,6 +533,16 @@ inline Matrix4& Matrix4::Rotate(float angle, const Vector3 & ax)
 
 }
 
+inline Matrix4 TranslationMatrix(const Vector3& vec) {
+	Matrix4 mat;
+	mat.SetToIdentity();
+	mat[0].w = vec.x;
+	mat[1].w = vec.y;
+	mat[2].w = vec.z;
+	mat[3].w = 1.0f;
+	
+}
+
 
 
 }

@@ -50,6 +50,7 @@ namespace Jasper {
 		glDrawElements(GL_TRIANGLES, m_elementCount, GL_UNSIGNED_INT, 0);
 		glDepthMask(GL_TRUE);
 		shader->Release();
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 		glBindVertexArray(0);
 		//GLERRORCHECK;
 	}

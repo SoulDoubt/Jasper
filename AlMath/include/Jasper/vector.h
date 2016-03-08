@@ -273,6 +273,9 @@ inline std::string Vector3::ToString(int precision) const {
 	return "(" + xval + "," + yval + "," + zval + ")";
 }
 
+
+
+
 class Vector4 {
 
 private:
