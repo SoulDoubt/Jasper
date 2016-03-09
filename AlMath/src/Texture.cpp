@@ -20,6 +20,7 @@ namespace Jasper {
 	bool Texture::Load(std::string filename)
 	{
 		int x, y, comp;
+
 		auto image = stbi_load(filename.c_str(), &x, &y, &comp, STBI_rgb_alpha);
 		if (image) {
 			printf("Loaded texture from: %s\n", filename.c_str());
@@ -37,10 +38,11 @@ namespace Jasper {
 			if (err != 0) {
 				printf("GL Error in texture load");
 			}*/
-			free(image);
+			stbi_image_free(image);
 			return true;
 		}
 		else {
+			printf("Failed to load texture from %s", filename.c_str());
 			return false;
 		}
 	}

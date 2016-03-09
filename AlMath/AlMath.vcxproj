@@ -19,9 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SceneRenderer.h" />
     <ClInclude Include="include\Jasper\BasicShader.h" />
     <ClInclude Include="include\Jasper\BoxCollider.h" />
     <ClInclude Include="include\Jasper\Camera.h" />
+    <ClInclude Include="include\Jasper\CapsuleCollider.h" />
     <ClInclude Include="include\Jasper\CharacterController.h" />
     <ClInclude Include="include\Jasper\Common.h" />
     <ClInclude Include="include\Jasper\Component.h" />
@@ -64,6 +66,7 @@
     <ClInclude Include="include\Jasper\vector.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\Jasper\CapsuleCollider.cpp" />
     <ClCompile Include="src\BasicShader.cpp" />
     <ClCompile Include="src\BoxCollider.cpp" />
     <ClCompile Include="src\Camera.cpp" />
@@ -171,11 +174,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Code\Jasper-master\AlMath\ThirdParty\include;C:\Code\Jasper-master\AlMath\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Code\Jasper\AlMath\include;C:\Code\Jasper-master\AlMath\ThirdParty\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Code\Jasper-master\AlMath\ThirdParty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Code\Jasper\AlMath\ThirdParty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32s.lib;assimp.lib;Bullet3Common_Debug.lib;BulletCollision_Debug.lib;BulletDynamics_Debug.lib;LinearMath_Debug.lib;glfw3.lib;Bullet3Collision_Debug.lib;Bullet3Dynamics_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

@@ -21,7 +21,7 @@ using namespace std;
 
 Scene::Scene() : m_camera(Camera::CameraType::FIRST_PERSON)
 {
-
+	
 
 }
 
@@ -61,12 +61,12 @@ void Scene::Initialize() {
 	skyboxMesh->SetCubemap(true); // we want to render the inside of the cube
 	auto skyboxShader = m_shaderManager.CreateInstance<SkyboxShader>();
 	auto skyboxMaterial = m_materialManager.CreateInstance<Material>(skyboxShader);
-	string posx = "./textures/arrakisday/posz.tga";
-	string negx = "./textures/arrakisday/negz.tga";
-	string posy = "./textures/arrakisday/posy.tga";
-	string negy = "./textures/arrakisday/negy.tga";
-	string posz = "./textures/arrakisday/negx.tga";
-	string negz = "./textures/arrakisday/posx.tga";
+	string posx = "./textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDayLeft2048.png";
+	string negx = "./textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDayright2048.png";
+	string posy = "./textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDayUp2048.png";
+	string negy = "./textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDayDown2048.png";
+	string posz = "./textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDayFront2048.png";
+	string negz = "./textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDayBack2048.png";
 	skyboxMaterial->SetCubemapTextures(posx, negx, posy, negy, posz, negz);	
 	auto skyboxRenderer = skybox->AttachNewComponent<SkyboxRenderer>(skyboxMesh, skyboxMaterial);
 	
@@ -80,22 +80,23 @@ void Scene::Initialize() {
 	auto floorMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
 	floorMaterial->SetTexture2D("./textures/cinder.jpg");
 	auto mr = floor->AttachNewComponent<MeshRenderer>(quadMesh, floorMaterial);	
-	floor->AttachNewComponent<PlaneCollider>("plane_collider", quadMesh, m_physicsWorld.get());
+	auto floorP = floor->AttachNewComponent<PlaneCollider>("plane_collider", quadMesh, m_physicsWorld.get());
 	floor->GetLocalTransform().Translate(Vector3( 0.0f, -1.f, 0.0f ));
+	floorP->Friction = 0.9f;
 
 	auto cube = CreateEmptyGameObject("cube_0", m_rootNode.get());
-	auto cubeMesh = m_meshManager.CreateInstance<Cube>(Vector3({ 5.f, 5.f, 1.f }));
+	auto cubeMesh = m_meshManager.CreateInstance<Cube>(Vector3({ 0.5f, 0.5f, 0.5f }));
 	auto m1 = m_materialManager.CreateInstance<Material>(defaultShader);
-	m1->SetTexture2D("./textures/metal_tex.jpg");
-	m1->Shine = 32.0f;
+	m1->SetTexture2D("./textures/crate.png");
+	m1->Shine = 24.0f;
 	m1->Diffuse = { 0.8f, 0.8f, 0.8f };
 	m1->Ambient = { 0.5f, 0.5f, 0.5f };
-	m1->Specular = Vector3(0.9f, 0.9f, 0.9f);	
+	m1->Specular = Vector3(0.643f, 0.643f, 0.643f);	
 	auto mr1 = cube->AttachNewComponent<MeshRenderer>(cubeMesh, m1);
-	cube->GetLocalTransform().Translate({ -5.0f, 2.5f, 0.0f });
-	cube->GetLocalTransform().Rotate({ 0.f, 1.f, 0.f }, DEG_TO_RAD(60.f));
+	cube->GetLocalTransform().Translate({ 0.0f, 1.0f, -3.0f });
+	cube->GetLocalTransform().Rotate({ 1.f, 0.f, 0.f }, DEG_TO_RAD(30.f));
 	auto bc = cube->AttachNewComponent<BoxCollider>("cube_box_collider", cubeMesh, m_physicsWorld.get());
-	bc->Mass = 100.0f;
+	bc->Mass = 1.0f;
 
 	/*auto cubechild = CreateEmptyGameObject("child_cube0", cube);
 	auto childMesh = m_meshManager.CreateInstance<Cube>(Vector3(0.5f, 0.5f, 0.5f));
@@ -105,11 +106,11 @@ void Scene::Initialize() {
 	auto mr2 = cubechild->AttachNewComponent<MeshRenderer>(childMesh, m2);
 	cubechild->GetLocalTransform().Translate({0.0f, 2.5f + 5.f, 0.0f});	*/
 
-	auto model = make_unique<Model>("Larry_Craft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());	
+	/*auto model = make_unique<Model>("Larry_Craft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());	
 	model->GetLocalTransform().Translate(Vector3(4.0f, -.25f, -8.0f));
 	model->GetLocalTransform().Scale = Vector3{ 1.75f, 1.75f, 1.75f };
 	model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));
-	m_rootNode->AttachChild(move(model));	
+	m_rootNode->AttachChild(move(model));	*/
 	
 
 	auto sphereObject = CreateEmptyGameObject("sphere0", m_rootNode.get());
@@ -121,12 +122,12 @@ void Scene::Initialize() {
 	sc->Mass = 20.f;
 	sphereObject->GetLocalTransform().Translate({ 0.f, 25.f, -3.f });
 
-	DirectionalLight dl;
-	dl.SetPosition({ 0.0f, 15.0f, 0.0f });
-	dl.Color = { 1.0f, 1.0f, 1.0f };
-	dl.Exp = 32.f;
-	dl.AmbientIntensity = 1.0f;
-	AddDirectionalLight(dl);
+	auto light0 = make_unique<DirectionalLight>("light0");	
+	light0->GetLocalTransform().Translate({ 0.0f, 100.0f, 0.0f });
+	light0->Color = { 1.0f, 1.0f, 1.0f };
+	light0->Exp = 32.f;
+	light0->AmbientIntensity = 1.0f;
+	AddGameObject(std::move(light0));
 }
 
 void Scene::AddGameObject(std::unique_ptr<GameObject> go)

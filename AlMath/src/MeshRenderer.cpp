@@ -141,14 +141,13 @@ void MeshRenderer::Render() {
 	camPos = (viewMatrix * Vector4(camPos, 1.f)).AsVector3();
 	shader->SetCameraPosition(camPos);
 
-	auto dls = GetGameObject()->GetScene()->GetDirectionslLights();
-	if (dls.size() > 0) {
-		auto& dl = dls[0];
-		auto dlmat = Matrix4::FromTransform(dl.transform);
-		Vector3 eyeSpaceLightPosition = (viewMatrix * dlmat * Vector4(dl.Position(), 1.f)).AsVector3();
-
-		dl.SetPosition(eyeSpaceLightPosition);
-		shader->SetLightUniforms(dl);
+	auto dlight = scene->GetGameObjectByName("light0");
+	if (dlight) {
+		DirectionalLight* dl = static_cast<DirectionalLight*>(dlight);
+		Transform dlt = dl->GetWorldTransform();
+		auto dlmat = Matrix4::FromTransform(dlt);
+		Vector3 eyeSpaceLightPosition = (viewMatrix * dlmat * Vector4(dlt.Position, 1.f)).AsVector3();		
+		shader->SetLightUniforms(dl, eyeSpaceLightPosition);
 	}
 
 	shader->SetMaterialUniforms(m_material);

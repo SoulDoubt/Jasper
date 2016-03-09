@@ -27,9 +27,12 @@ public:
 
 	//ALIGN_16_OPERATORS
 
+
 	GameObject();
-	GameObject(std::string name);
+	GameObject(const std::string& name);
 	virtual ~GameObject();
+
+	Transform GetWorldTransform() const;
 
 	std::string GetName() const;
 	void SetName(std::string name);
@@ -50,7 +53,7 @@ public:
 		m_transform = newTransform;
 	}
 
-	Transform GetWorldTransform() const;
+	
 
 	virtual void Initialize();
 	virtual void Destroy();
@@ -99,6 +102,10 @@ public:
 	template<typename T>
 	std::vector<T*> GetComponentsByType();
 
+	template<typename T, typename... Args>
+	T* AttachNewChild(Args... args);
+	
+
 private:
 	std::string m_name;
 	std::string m_tag;
@@ -136,7 +143,7 @@ inline GameObject::GameObject() : m_components(), m_children() {
 	Initialize();
 }
 
-inline GameObject::GameObject(std::string name) : m_components(), m_children() {
+inline GameObject::GameObject(const std::string& name) : m_components(), m_children() {
 	m_name = name;
 	m_tag = "";
 	m_parent = nullptr;
@@ -221,6 +228,17 @@ inline  std::vector<std::unique_ptr<Component>>* GameObject::FindComponentsByTyp
 		}
 	}
 	return nullptr;
+}
+
+template<typename T, typename... Args>
+T* GameObject::AttachNewChild(Args... args)
+{
+	auto child = make_unique<T>(std::forward(args));
+	child->SetParemt(this);
+	child->SetScene(this->m_scene);	
+	T* ret = child.get()
+	m_children.push_back(move(child));
+	return ret;
 }
 
 

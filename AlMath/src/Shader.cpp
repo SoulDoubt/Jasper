@@ -231,17 +231,17 @@ namespace Jasper {
 		return dlul;
 	}
 
-	void Shader::SetLightUniforms(DirectionalLight & dl)
-	{
+	void Shader::SetLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition)
+	{		
 		auto ul = GetDirectionalLightUniformLocations();
-		glUniform3fv(ul.Color, 1, dl.Color.AsFloatPtr());
-		glUniform3fv(ul.Direction, 1, dl.Direction.AsFloatPtr());
-		glUniform3fv(ul.Position, 1, dl.Position().AsFloatPtr());
-		glUniform1fv(ul.AmbientIntensity, 1, &dl.AmbientIntensity);
-		glUniform1fv(ul.DiffuseIntensity, 1, &dl.DiffuseIntensity);
-		glUniform1fv(ul.ConstAtten, 1, &dl.ConstAtten);
-		glUniform1fv(ul.LinearAtten, 1, &dl.LinearAtten);
-		glUniform1fv(ul.Exp, 1, &dl.Exp);
+		glUniform3fv(ul.Color, 1, dl->Color.AsFloatPtr());
+		glUniform3fv(ul.Direction, 1, dl->Direction.AsFloatPtr());
+		glUniform3fv(ul.Position, 1, eyeSpacePosition.AsFloatPtr());
+		glUniform1fv(ul.AmbientIntensity, 1, &dl->AmbientIntensity);
+		glUniform1fv(ul.DiffuseIntensity, 1, &dl->DiffuseIntensity);
+		glUniform1fv(ul.ConstAtten, 1, &dl->ConstAtten);
+		glUniform1fv(ul.LinearAtten, 1, &dl->LinearAtten);
+		glUniform1fv(ul.Exp, 1, &dl->Exp);
 	}
 
 	MaterialUniformLocations Shader::GetMaterialUniformLocations()

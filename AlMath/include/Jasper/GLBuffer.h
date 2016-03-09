@@ -1,6 +1,8 @@
 #ifndef _GL_BUFFER_H_
 #define _GL_BUFFER_H_
 
+#include <Jasper\Common.h>
+
 namespace Jasper {
 
 class GLBuffer
@@ -12,7 +14,7 @@ public:
 		INDEX = 0x8893 // GL_ELEMENT_ARRAY_BUFFER
 	};
 
-	enum UsagePattern
+	enum Usage
 	{
 		StreamDraw = 0x88E0, // GL_STREAM_DRAW
 		StreamRead = 0x88E1, // GL_STREAM_READ
@@ -38,11 +40,11 @@ public:
 
 	unsigned BufferID() const;
 
-	void SetUsagePattern(UsagePattern usage);
+	void SetUsage(Usage usage);
 
-	void Allocate(const void* data, int count);
+	void Allocate(const void* data, uint count);
 
-	void UpdateContents(int offset, int size, const void* data);
+	void UpdateContents(uint offset, uint size, const void* data);
 
 	int Size();
 
@@ -52,7 +54,7 @@ private:
 
 	unsigned m_bufferID;
 	BufferType m_type;
-	UsagePattern m_usage;
+	Usage m_usage;
 
 };
 

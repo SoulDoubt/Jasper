@@ -70,7 +70,7 @@ GameObject& GameObject::AttachNewChild(const std::string& name)
 	return *ret;
 }
 
-Transform GameObject::GetWorldTransform() const {
+Transform GameObject::GetWorldTransform() const{
 	Transform result = m_transform;
 	GameObject* p = this->m_parent;
 	while (p != nullptr) {

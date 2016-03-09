@@ -81,15 +81,7 @@ public:
 	}	
 
 	void AddGameObject(std::unique_ptr<GameObject> go);
-	GameObject* GetGameObjectByName(std::string name);
-
-	std::vector<DirectionalLight>& GetDirectionslLights() {
-		return m_dLights;
-	}
-
-	void AddDirectionalLight(const DirectionalLight& dl) {
-		m_dLights.push_back(dl);
-	}
+	GameObject* GetGameObjectByName(std::string name);	
 
 	void Update(float dt);
 	void Awake();
@@ -108,9 +100,7 @@ private:
 
 	Matrix4 m_projectionMatrix;
 	Matrix4 m_orthoMatrix;
-
-	std::vector<DirectionalLight> m_dLights;
-
+	
 	Camera m_camera;
 
 	std::unique_ptr<PhysicsWorld> m_physicsWorld;

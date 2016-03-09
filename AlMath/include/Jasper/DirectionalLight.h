@@ -3,41 +3,28 @@
 
 #include "Common.h"
 #include "vector.h"
-#include "Transform.h"
+#include <Jasper\GameObject.h>
 
 namespace Jasper {
 
-	ALIGN16
-	class DirectionalLight
-	{
-	public:
-
-		ALIGN_16_OPERATORS;
-
-		DirectionalLight();
-		virtual ~DirectionalLight();
-
-		Vector3 Color;
-
-		Vector3 Position() const {
-			return transform.Position;
-		}
-
-		Vector3 Direction;
-		float AmbientIntensity;
-		float DiffuseIntensity;
-
-		float ConstAtten;
-		float LinearAtten;
-		float Exp;
-
-		Transform transform;
-
-		void SetPosition(const Vector3& p) {
-			transform.Position = { p.x, p.y, p.z };
-		}
+class DirectionalLight : public GameObject
+{
+public:
 
 
-	};
+	DirectionalLight(const std::string& name);
+	virtual ~DirectionalLight();
+
+	Vector3 Color;	
+
+	Vector3 Direction;
+	float AmbientIntensity;
+	float DiffuseIntensity;
+
+	float ConstAtten;
+	float LinearAtten;
+	float Exp;	
+	
+};
 }
 #endif

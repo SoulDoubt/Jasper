@@ -5,11 +5,11 @@
 
 namespace Jasper {
 
-class PointLight :
-	public GameObject
+class PointLight : public GameObject
 {
 public:
 	PointLight();
+	PointLight(const std::string& name);
 	~PointLight();
 };
 }

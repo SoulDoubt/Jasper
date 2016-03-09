@@ -12,8 +12,7 @@ namespace Jasper {
 
 class Mesh;
 
-class PhysicsCollider :
-	public Component
+class PhysicsCollider :	public Component
 {
 public:
 	explicit PhysicsCollider(const std::string& name, Mesh* mesh, PhysicsWorld* world);
@@ -30,6 +29,8 @@ public:
 	Transform GetCurrentWorldTransform();
 
 	float Mass = 0.f;
+	float Restitution = 0.5f;
+	float Friction = 0.5f;
 
 protected:
 	PhysicsWorld* m_world;

@@ -73,7 +73,7 @@ public:
 	virtual void SetNormalMatrix(const Matrix3& normal);
 
 	virtual DirectionalLightUniformLocations GetDirectionalLightUniformLocations();
-	virtual void SetLightUniforms(DirectionalLight& dl);
+	virtual void SetLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition);
 
 	virtual MaterialUniformLocations GetMaterialUniformLocations();
 	virtual void SetMaterialUniforms(const Material* m);

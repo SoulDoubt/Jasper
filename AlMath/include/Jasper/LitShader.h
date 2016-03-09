@@ -15,7 +15,7 @@ public:
 
 	void Initialize() override;
 	virtual DirectionalLightUniformLocations GetDirectionalLightUniformLocations() override;
-	virtual void SetLightUniforms(DirectionalLight& dl) override;
+	virtual void SetLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition) override;
 
 	virtual MaterialUniformLocations GetMaterialUniformLocations()override;
 	virtual void SetMaterialUniforms(const Material* m) override;

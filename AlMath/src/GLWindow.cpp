@@ -98,17 +98,22 @@ void GLWindow::SetupGL()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	glEnable(GL_CULL_FACE);	
+	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glPolygonMode(GL_FRONT, GL_FILL);
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnableClientState(GL_VERTEX_ARRAY);	
+	glEnableClientState(GL_VERTEX_ARRAY);
 
 }
 
 
 void ProcessInput(GLFWwindow* window, Scene* scene, float deltaTime) {
+
+	glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, 1);
+
+	static double previousMouseX = 0;
+	static double previousMouseY = 0;
 
 	float speed = 7.5f;
 	float rotSpeed = 120.0f;
@@ -168,6 +173,19 @@ void ProcessInput(GLFWwindow* window, Scene* scene, float deltaTime) {
 	}
 
 	Camera& cam = scene->GetCamera();
+
+	int mb = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
+	if (mb == GLFW_PRESS) {
+		double mouseX, mouseY;
+		glfwGetCursorPos(window, &mouseX, &mouseY);
+		double xDelta = (mouseX - previousMouseX) * deltaTime * 30.0f;
+		double yDelta = (mouseY - previousMouseY) * deltaTime * 30.0f;
+		previousMouseX = mouseX;
+		previousMouseY = mouseY;
+		cam.Rotate(-yDelta, 0.f, xDelta);
+	}
+
+	
 	if (MOVING_FORWARD) {
 		cam.Translate({ 0.0f, 0.0f, -moveBy });
 	}

@@ -24,7 +24,8 @@ void PlaneCollider::Awake()
 	m_defaultMotionState = new btDefaultMotionState(btTrans);
 	btRigidBody::btRigidBodyConstructionInfo rbci(Mass, m_defaultMotionState, m_collisionShape, btVector3(0.f, -1.f, 0.f));	
 	m_rigidBody = new btRigidBody(rbci);
-	m_rigidBody->setRestitution(0.75f);
+	m_rigidBody->setRestitution(Restitution);
+	m_rigidBody->setFriction(Friction);
 	m_world->AddRigidBody(m_rigidBody);
 
 }

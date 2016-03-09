@@ -46,7 +46,7 @@ public:
 	}
 
 	Transform transform;
-	btTransform btt;
+	//btTransform btt;
 
 	Quaternion m_orientation;
 	Vector3 m_position;

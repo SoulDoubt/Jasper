@@ -58,9 +58,8 @@ Matrix4 FromBtTransform(const btTransform& t) {
 Camera::Camera(Camera::CameraType type)
 {
 	m_type = type;
-	transform.Position = { 0.0f, 1.82f, 0.0f };
-	btt.setIdentity();
-	btt.setOrigin({ 0.0f, 1.82f, 0.0f });
+	transform.SetIdentity();
+	transform.Position = { 0.0f, 1.82f, 0.0f };		
 }
 
 void Camera::Awake() {
