@@ -8,7 +8,7 @@ namespace Jasper {
 	{
 	}
 
-	GLBuffer::GLBuffer(GLBuffer::BufferType type) : m_type(type), m_usage(UsagePattern::StaticDraw)
+	GLBuffer::GLBuffer(GLBuffer::BufferType type) : m_type(type), m_usage(Usage::StaticDraw)
 	{
 	}
 
@@ -65,12 +65,12 @@ namespace Jasper {
 		return m_bufferID;
 	}
 
-	void GLBuffer::SetUsagePattern(UsagePattern usage)
+	void GLBuffer::SetUsage(Usage usage)
 	{
 		m_usage = usage;
 	}
 
-	void GLBuffer::Allocate(const void * data, int count)
+	void GLBuffer::Allocate(const void * data, uint count)
 	{
 		assert(m_bufferID != 0);
 		if (m_bufferID > 0) {
@@ -79,7 +79,7 @@ namespace Jasper {
 
 	}
 
-	void GLBuffer::UpdateContents(int offset, int size, const void* data)
+	void GLBuffer::UpdateContents(uint offset, uint size, const void* data)
 	{
 		assert(m_bufferID != 0);
 		if (m_bufferID > 0) {

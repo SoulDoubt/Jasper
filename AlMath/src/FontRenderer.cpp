@@ -21,8 +21,8 @@ namespace Jasper {
 		: m_vertexBuffer(GLBuffer::BufferType::VERTEX),
 		m_indexBuffer(GLBuffer::BufferType::INDEX)
 	{
-		m_vertexBuffer.SetUsagePattern(GLBuffer::UsagePattern::DynamicDraw);
-		m_indexBuffer.SetUsagePattern(GLBuffer::UsagePattern::DynamicDraw);
+		m_vertexBuffer.SetUsage(GLBuffer::Usage::DynamicDraw);
+		m_indexBuffer.SetUsage(GLBuffer::Usage::DynamicDraw);
 		m_shader = make_unique<FontShader>();
 	}
 
