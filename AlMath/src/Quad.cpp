@@ -4,12 +4,12 @@ namespace Jasper {
 
 	Quad::Quad()
 	{
-		m_size = { 0.5f, 0.5f, 0.0f };
+		m_size = { 0.5f, 0.5f };
 		Initialize();
 		FlipTextureCoords();
 	}
 
-	Quad::Quad(const Vector3& size, Quad::AxisAlignment align)
+	Quad::Quad(const Vector2& size, Quad::AxisAlignment align)
 	{
 		m_alignment = align;
 		m_size = size;
@@ -19,7 +19,7 @@ namespace Jasper {
 		FlipTextureCoords();
 	}
 
-	Quad::Quad(const Vector3 & size, int repeatU, int repeatV, Quad::AxisAlignment align)
+	Quad::Quad(const Vector2& size, int repeatU, int repeatV, Quad::AxisAlignment align)
 	{
 		m_alignment = align;
 		m_size = size;
@@ -43,8 +43,7 @@ namespace Jasper {
 	void Quad::Initialize() {
 
 		float x = m_size.x;
-		float y = m_size.y;
-		float z = m_size.z;
+		float y = m_size.y;		
 
 		Vertex v0, v1, v2, v3;
 

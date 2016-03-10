@@ -42,7 +42,7 @@ DirectionalLightUniformLocations LitShader::GetDirectionalLightUniformLocations(
 	return dlul;
 }
 
-void LitShader::SetLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition)
+void LitShader::SetDirectionalLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition)
 {
 	auto ul = GetDirectionalLightUniformLocations();
 	glUniform3fv(ul.Color, 1, dl->Color.AsFloatPtr());

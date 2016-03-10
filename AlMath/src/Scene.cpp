@@ -14,6 +14,8 @@
 #include <Jasper\BoxCollider.h>
 #include <Jasper\Sphere.h>
 #include <Jasper\SphereCollider.h>
+#include <Jasper\PointLight.h>
+
 
 namespace Jasper {
 
@@ -70,28 +72,35 @@ void Scene::Initialize() {
 	skyboxMaterial->SetCubemapTextures(posx, negx, posy, negy, posz, negz);	
 	auto skyboxRenderer = skybox->AttachNewComponent<SkyboxRenderer>(skyboxMesh, skyboxMaterial);
 	
-
 	// create the Basic Shader Instance to render most objects
 	auto defaultShader = m_shaderManager.CreateInstance<LitShader>();
 
 	// Floor
 	auto floor = CreateEmptyGameObject("floor", m_rootNode.get());
-	auto quadMesh = m_meshManager.CreateInstance<Quad>(Vector3(100.0f, 100.0f, 0.0f), 10, 10, Quad::AxisAlignment::XZ);	
+	auto quadMesh = m_meshManager.CreateInstance<Quad>(Vector2(100.0f, 100.0f), 10, 10, Quad::AxisAlignment::XZ);	
 	auto floorMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
-	floorMaterial->SetTexture2D("./textures/cinder.jpg");
+	floorMaterial->SetTexture2D("./textures/tile.jpg");
 	auto mr = floor->AttachNewComponent<MeshRenderer>(quadMesh, floorMaterial);	
 	auto floorP = floor->AttachNewComponent<PlaneCollider>("plane_collider", quadMesh, m_physicsWorld.get());
 	floor->GetLocalTransform().Translate(Vector3( 0.0f, -1.f, 0.0f ));
 	floorP->Friction = 0.9f;
+	floorMaterial->Ambient = { 1.0f, 1.0f, 1.0f };
 
-	auto cube = CreateEmptyGameObject("cube_0", m_rootNode.get());
+	auto wall = m_rootNode->AttachNewChild<GameObject>("wall_0");
+	auto wallMesh = m_meshManager.CreateInstance<Cube>( Vector3(10.f, 10.f, 0.2f));
+	auto wallRenderer = wall->AttachNewComponent<MeshRenderer>(wallMesh, floorMaterial);
+	auto wallCollider = wall->AttachNewComponent<BoxCollider>("wall_0_collider", wallMesh, m_physicsWorld.get());
+	wallCollider->Mass = 500.0f;
+	wall->GetLocalTransform().Translate({ 0.0f, 7.0f, -10.0f });
+
+	auto cube = m_rootNode->AttachNewChild<GameObject>("cube_0");
 	auto cubeMesh = m_meshManager.CreateInstance<Cube>(Vector3({ 1.5f, 1.5f, 1.5f }));
 	auto m1 = m_materialManager.CreateInstance<Material>(defaultShader);
 	m1->SetTexture2D("./textures/crate.png");
 	m1->Shine = 24.0f;
 	m1->Diffuse = { 0.8f, 0.8f, 0.8f };
-	m1->Ambient = { 0.5f, 0.5f, 0.5f };
-	m1->Specular = Vector3(0.643f, 0.643f, 0.643f);	
+	m1->Ambient = { 0.25f, 0.25f, 0.25f };
+	m1->Specular = Vector3(0.843f, 0.843f, 0.843f);	
 	auto mr1 = cube->AttachNewComponent<MeshRenderer>(cubeMesh, m1);
 	cube->GetLocalTransform().Translate({ 0.0f, 1.0f, -3.0f });
 	cube->GetLocalTransform().Rotate({ 1.f, 0.f, 0.f }, DEG_TO_RAD(30.f));
@@ -106,12 +115,12 @@ void Scene::Initialize() {
 	auto mr2 = cubechild->AttachNewComponent<MeshRenderer>(childMesh, m2);
 	cubechild->GetLocalTransform().Translate({0.0f, 2.5f + 5.f, 0.0f});	*/
 
-	//auto model = make_unique<Model>("The_Falcon", "./models/FALCON/FALCON.obj", defaultShader, true, m_physicsWorld.get());
-	////auto model = make_unique<Model>("The_Falcon", "./models/Stormtrooper/Stormtrooper.obj", defaultShader, true, m_physicsWorld.get());
-	//model->GetLocalTransform().Translate(Vector3(0.0f, 0.0f, 0.0f));
-	//model->GetLocalTransform().Scale = Vector3{ 0.1f, 0.1f, 0.1f };
-	////model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));
-	//m_rootNode->AttachChild(move(model));	
+	auto model = make_unique<Model>("The_Falcon", "./models/Stormtrooper/Stormtrooper.obj", defaultShader, true, m_physicsWorld.get());
+	//auto model = make_unique<Model>("The_Falcon", "./models/Stormtrooper/Stormtrooper.obj", defaultShader, true, m_physicsWorld.get());
+	model->GetLocalTransform().Translate(Vector3(0.0f, 0.0f, 0.0f));
+	model->GetLocalTransform().Scale = Vector3{ 1.0f, 1.0f, 1.0f };
+	//model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));
+	m_rootNode->AttachChild(move(model));	
 	
 
 	//auto sphereObject = CreateEmptyGameObject("sphere0", m_rootNode.get());
@@ -124,12 +133,13 @@ void Scene::Initialize() {
 	sc->Mass = 20.f;
 	sphereObject->GetLocalTransform().Translate({ 0.f, 25.f, -3.f });
 
-	auto light0 = make_unique<DirectionalLight>("light0");	
-	light0->GetLocalTransform().Translate({ 0.0f, 5.0f, 0.0f });
-	light0->Color = { 1.0f, 1.0f, 1.0f };
-	light0->Exp = 32.f;
-	light0->AmbientIntensity = 1.0f;
-	AddGameObject(std::move(light0));
+	auto light0 = m_rootNode->AttachNewChild<PointLight>("light0");	
+	light0->GetLocalTransform().Translate({ 0.0f, 10.0f, 0.0f });	
+	auto lightMesh = m_meshManager.CreateInstance<Cube>(Vector3(0.1f, 0.1f, 0.1f));
+	auto lightMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
+	lightMaterial->SetTexture2D("./textures/tile.jpg");
+	light0->AttachNewComponent<MeshRenderer>(lightMesh, lightMaterial);
+
 }
 
 void Scene::AddGameObject(std::unique_ptr<GameObject> go)
@@ -149,7 +159,7 @@ GameObject* Scene::GetGameObjectByName(string name)
 
 void Scene::Update(float dt)
 {	
-	m_physicsWorld->Update(dt);
+	m_physicsWorld->Update(dt);	
 	m_rootNode->Update(dt);	
 }
 

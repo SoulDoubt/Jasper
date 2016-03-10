@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Jasper\ResourceManager.h" />
     <ClInclude Include="SceneRenderer.h" />
     <ClInclude Include="include\Jasper\BasicShader.h" />
     <ClInclude Include="include\Jasper\BoxCollider.h" />

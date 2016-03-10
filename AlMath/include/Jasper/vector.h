@@ -234,19 +234,6 @@ inline Vector3 Cross(const Vector3& a, const Vector3& b) {
 	return Vector3(x, y, z);
 }
 
-//inline Vector3 operator+(const Vector3& a, const Vector3& b) {
-//	return Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
-//}
-//
-//inline Vector3 operator-(const Vector3& a, const Vector3& b) {
-//	return Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
-//}
-//
-//inline Vector3 operator*(const Vector3& a, const Vector3& b) {
-//	return{ a.x * b.x, a.y * b.y, a.z * b.z };
-//	
-//}
-
 inline float Vector3::Dot(const Vector3& o) const {
 	return x * o.x + y * o.y + z * o.z;
 }

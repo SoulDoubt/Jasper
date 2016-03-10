@@ -6,6 +6,7 @@
 #include <gl\glew.h>
 #include <vector>
 #include "DirectionalLight.h"
+#include "PointLight.h"
 
 /*
 
@@ -71,9 +72,12 @@ public:
 	virtual void SetModelViewMatrix(const Matrix4& mvm);
 	virtual void SetModelViewProjectionMatrix(const Matrix4& mvp);
 	virtual void SetNormalMatrix(const Matrix3& normal);
+	virtual void SetModelMatrix(const Matrix4& model);
 
 	virtual DirectionalLightUniformLocations GetDirectionalLightUniformLocations();
-	virtual void SetLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition);
+	virtual void SetDirectionalLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition);
+	
+	virtual void SetPointLightUniforms(const PointLight* dl);
 
 	virtual MaterialUniformLocations GetMaterialUniformLocations();
 	virtual void SetMaterialUniforms(const Material* m);
@@ -106,6 +110,11 @@ protected:
 
 inline const uint Shader::ProgramID() const {
 	return m_programID;
+}
+
+inline void Shader::SetModelMatrix(const Matrix4& model) {
+	int location = glGetUniformLocation(m_programID, "modelMatrix");
+	glUniformMatrix4fv(location, 1, GL_TRUE, model.AsFloatPtr());
 }
 
 }

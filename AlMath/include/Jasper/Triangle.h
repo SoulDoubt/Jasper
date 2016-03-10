@@ -5,8 +5,7 @@
 
 namespace Jasper {
 
-class Triangle :
-	public Mesh
+class Triangle : public Mesh
 {
 public:
 	Triangle();

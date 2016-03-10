@@ -17,8 +17,8 @@ public:
 	};
 
 	Quad();
-	explicit Quad(const Vector3& size, AxisAlignment align);
-	Quad(const Vector3& size, int repeatU, int repeatV, AxisAlignment align);
+	explicit Quad(const Vector2& size, AxisAlignment align);
+	Quad(const Vector2& size, int repeatU, int repeatV, AxisAlignment align);
 	Quad(const Vector3& normal, const Vector3& point);
 	~Quad();
 
@@ -27,7 +27,7 @@ public:
 
 
 private:
-	Vector3 m_size;
+	Vector2 m_size;
 	int m_repeatU;
 	int m_repeatV;
 	AxisAlignment m_alignment = AxisAlignment::XY;

@@ -2,12 +2,15 @@
 
 namespace Jasper {
 
-	PointLight::PointLight()
-	{
-	}
+PointLight::PointLight(const std::string& name) : GameObject(name)
+{
+
+}
 
 
-	PointLight::~PointLight()
-	{
-	}
+PointLight::~PointLight()
+{
+}
+
+
 }

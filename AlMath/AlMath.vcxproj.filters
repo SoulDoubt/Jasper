@@ -25,6 +25,9 @@
     <Filter Include="Source Files\Physics">
       <UniqueIdentifier>{3db90912-a969-4319-9689-65dc9e622cb4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Math">
+      <UniqueIdentifier>{7b373df5-a7ec-43f5-9eb7-52aae943d7b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Jasper\Camera.h">
@@ -162,6 +165,9 @@
     <ClInclude Include="SceneRenderer.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="include\Jasper\ResourceManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BasicShader.cpp">
@@ -224,9 +230,6 @@
     <ClCompile Include="src\Quad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\quaternion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Room.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -274,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="src\SphereCollider.cpp">
       <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\quaternion.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -134,11 +134,11 @@ namespace Jasper {
 			printf_s("Shader Program linked successfully.\n");
 		}
 
-
 		for (auto shader : m_shaders) {
 			glDetachShader(m_programID, shader);
 			glDeleteShader(shader);
 		}
+		m_shaders.clear();
 	}
 
 	void Shader::Destroy() {
@@ -231,7 +231,7 @@ namespace Jasper {
 		return dlul;
 	}
 
-	void Shader::SetLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition)
+	void Shader::SetDirectionalLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition)
 	{		
 		auto ul = GetDirectionalLightUniformLocations();
 		glUniform3fv(ul.Color, 1, dl->Color.AsFloatPtr());
@@ -242,6 +242,16 @@ namespace Jasper {
 		glUniform1fv(ul.ConstAtten, 1, &dl->ConstAtten);
 		glUniform1fv(ul.LinearAtten, 1, &dl->LinearAtten);
 		glUniform1fv(ul.Exp, 1, &dl->Exp);
+	}
+
+	void Shader::SetPointLightUniforms(const PointLight * pl)
+	{
+		const auto position = pl->GetWorldTransform().Position;
+		auto ul = GetDirectionalLightUniformLocations();
+		glUniform3fv(ul.Color, 1, pl->Color.AsFloatPtr());
+		glUniform3fv(ul.Position, 1, position.AsFloatPtr());
+		glUniform1fv(ul.AmbientIntensity, 1, &pl->AmbientIntensity);
+		glUniform1fv(ul.ConstAtten, 1, &pl->ConstAtten);
 	}
 
 	MaterialUniformLocations Shader::GetMaterialUniformLocations()

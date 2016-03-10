@@ -10,58 +10,9 @@
 #include <vector>
 #include <typeinfo>
 #include "FontRenderer.h"
+#include "ResourceManager.h"
 
 namespace Jasper {
-
-template<typename T>
-class ResourceManager {
-
-	using Cache = std::vector<std::unique_ptr<T>>;
-		
-private:
-
-	Cache m_cache;
-
-public:
-
-	ResourceManager() {
-		m_cache.reserve(20);
-	}
-
-	template<typename U, typename... Args>
-	U* CreateInstance(Args&&... args) {
-		if (!std::is_base_of<T, U>::value) {
-			return nullptr;
-		}
-		std::unique_ptr<U> instance = std::make_unique<U>(std::forward<Args>(args)...);
-		U* ret = instance.get();
-		m_cache.push_back(std::move(instance));
-		return ret;
-	}
-
-	void Clear() {
-		m_cache.clear();
-	}
-
-	Cache& GetCache() {
-		return m_cache;
-	}
-
-	T* GetLatestInstanceAdded() {
-		return m_cache[m_cache.size() - 1].get();
-	}
-
-	T* GetInstance(int index) {
-		assert(index < m_cache.size());
-		return m_cache[index].get();
-	}
-
-	size_t GetSize() {
-		return m_cache.size();
-	}
-};
-
-
 
 class Scene
 {
@@ -90,6 +41,8 @@ public:
 	};
 
 	GameObject* CreateEmptyGameObject(std::string name, GameObject* parent);
+
+
 
 
 private:

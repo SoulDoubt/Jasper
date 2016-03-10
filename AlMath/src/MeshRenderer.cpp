@@ -7,6 +7,7 @@
 #include <Jasper\GLError.h>
 #include <Jasper\Texture.h>
 #include <Jasper\PhysicsCollider.h>
+#include <Jasper\PointLight.h>
 #include <iostream>
 
 namespace Jasper {
@@ -118,24 +119,21 @@ void MeshRenderer::Render() {
 	auto modelMatrix = modelTrans.TransformMatrix();
 	auto modelViewMatrix = viewMatrix * modelMatrix;
 	auto mvp = projectionMatrix * viewMatrix * modelMatrix;
-	auto normalMatrix = modelViewMatrix.NormalMatrix();	
+	auto normalMatrix = modelMatrix.NormalMatrix();	
 
 	GLERRORCHECK;
 
 	shader->SetModelViewMatrix(modelViewMatrix);
 	shader->SetModelViewProjectionMatrix(mvp);
 	shader->SetNormalMatrix(normalMatrix);
-	// camera position needs to be in eye space
-	camPos = (viewMatrix * Vector4(camPos, 1.f)).AsVector3();
+	shader->SetModelMatrix(modelMatrix);
+	// camera position needs to be in eye space	
 	shader->SetCameraPosition(camPos);
 	
-	auto dlight = scene->GetGameObjectByName("light0");
-	if (dlight) {
-		DirectionalLight* dl = static_cast<DirectionalLight*>(dlight);
-		Transform dlt = dl->GetWorldTransform();
-		auto dlmat = Matrix4::FromTransform(dlt);
-		Vector3 eyeSpaceLightPosition = (viewMatrix * dlmat * Vector4(dlt.Position, 1.f)).AsVector3();		
-		shader->SetLightUniforms(dl, eyeSpaceLightPosition);
+	auto plight = scene->GetGameObjectByName("light0");
+	if (plight) {
+		PointLight* pl = static_cast<PointLight*>(plight);					
+		shader->SetPointLightUniforms(pl);
 	}
 
 	shader->SetMaterialUniforms(m_material);
