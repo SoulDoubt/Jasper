@@ -19,7 +19,7 @@ namespace Jasper {
 
 using namespace std;
 
-Scene::Scene() : m_camera(Camera::CameraType::FIRST_PERSON)
+Scene::Scene() : m_camera(Camera::CameraType::FLYING)
 {
 	
 
@@ -85,7 +85,7 @@ void Scene::Initialize() {
 	floorP->Friction = 0.9f;
 
 	auto cube = CreateEmptyGameObject("cube_0", m_rootNode.get());
-	auto cubeMesh = m_meshManager.CreateInstance<Cube>(Vector3({ 0.5f, 0.5f, 0.5f }));
+	auto cubeMesh = m_meshManager.CreateInstance<Cube>(Vector3({ 1.5f, 1.5f, 1.5f }));
 	auto m1 = m_materialManager.CreateInstance<Material>(defaultShader);
 	m1->SetTexture2D("./textures/crate.png");
 	m1->Shine = 24.0f;
@@ -106,14 +106,16 @@ void Scene::Initialize() {
 	auto mr2 = cubechild->AttachNewComponent<MeshRenderer>(childMesh, m2);
 	cubechild->GetLocalTransform().Translate({0.0f, 2.5f + 5.f, 0.0f});	*/
 
-	/*auto model = make_unique<Model>("Larry_Craft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());	
-	model->GetLocalTransform().Translate(Vector3(4.0f, -.25f, -8.0f));
-	model->GetLocalTransform().Scale = Vector3{ 1.75f, 1.75f, 1.75f };
-	model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));
-	m_rootNode->AttachChild(move(model));	*/
+	//auto model = make_unique<Model>("The_Falcon", "./models/FALCON/FALCON.obj", defaultShader, true, m_physicsWorld.get());
+	////auto model = make_unique<Model>("The_Falcon", "./models/Stormtrooper/Stormtrooper.obj", defaultShader, true, m_physicsWorld.get());
+	//model->GetLocalTransform().Translate(Vector3(0.0f, 0.0f, 0.0f));
+	//model->GetLocalTransform().Scale = Vector3{ 0.1f, 0.1f, 0.1f };
+	////model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));
+	//m_rootNode->AttachChild(move(model));	
 	
 
-	auto sphereObject = CreateEmptyGameObject("sphere0", m_rootNode.get());
+	//auto sphereObject = CreateEmptyGameObject("sphere0", m_rootNode.get());
+	auto sphereObject = m_rootNode->AttachNewChild<GameObject>("sphere_0");
 	auto sphereMesh = m_meshManager.CreateInstance<Sphere>(1.0f);
 	auto sphereMat = m_materialManager.CreateInstance<Material>(defaultShader);
 	sphereMat->SetTexture2D("./textures/red.png");
@@ -123,7 +125,7 @@ void Scene::Initialize() {
 	sphereObject->GetLocalTransform().Translate({ 0.f, 25.f, -3.f });
 
 	auto light0 = make_unique<DirectionalLight>("light0");	
-	light0->GetLocalTransform().Translate({ 0.0f, 100.0f, 0.0f });
+	light0->GetLocalTransform().Translate({ 0.0f, 5.0f, 0.0f });
 	light0->Color = { 1.0f, 1.0f, 1.0f };
 	light0->Exp = 32.f;
 	light0->AmbientIntensity = 1.0f;

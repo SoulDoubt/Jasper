@@ -35,22 +35,33 @@ uniform d_light light0;
 
 void main()
 {	
-	vec3 light_direction = normalize(light0.Position - eyeSpaceVertPosition);
+	
+
+	vec3 light_direction = light0.Position - eyeSpaceVertPosition;
+	float lightDistance = length(light_direction);
+	light_direction = normalize(light_direction);
+
+	vec3 view_direction = normalize(cameraPosition - eyeSpaceVertPosition);
+
 	vec3 norm = normalize(outNormal);	
 	
 	vec3 ambient_color = light0.Color * material0.ka * light0.AmbientIntensity;
 
 	float diff = max(dot(norm, light_direction), 0.0);
+	diff /= 1.0 * (lightDistance * lightDistance);
 	vec3 diffuse_color = light0.Color * light0.DiffuseIntensity * (diff * material0.kd);
 
-	vec3 view_direction = normalize(cameraPosition - eyeSpaceVertPosition);
+	
 	vec3 reflection_direction = reflect(-light_direction, norm);
 	float reflectionComponent = pow(max(dot(view_direction, reflection_direction), 0.0), material0.ns);
 	vec3 specular_color = light0.Color * (reflectionComponent * material0.ks);
-		
+	
+	vec3 gamma = vec3(1.0 / 2.2);
 	vec4 texture_color = texture(colorMap, outTexCoords);
+
 	vec3 lighting_contribution = ambient_color + diffuse_color + specular_color;
 
-	fcolor =  texture_color * vec4(lighting_contribution, 1.0);				
+	vec4 col = texture_color * vec4(lighting_contribution, 1.0);				 
+	fcolor =  vec4(1, 0, 0, 1);
 
 }

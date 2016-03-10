@@ -70,7 +70,7 @@ inline Transform operator*(const Transform& ps, const Transform& ls) {
 	Transform ws;
 	ws.Position = ps.Position + ps.Orientation * (ps.Scale * ls.Position);
 	ws.Orientation = ps.Orientation * ls.Orientation;
-	ws.Scale = ps.Scale * (ps.Orientation * ls.Scale);
+	ws.Scale = ls.Scale;// *(ps.Orientation * ls.Scale);
 	return ws;
 }
 

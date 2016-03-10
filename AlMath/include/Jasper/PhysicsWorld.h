@@ -4,14 +4,12 @@
 #include "Common.h"
 #include <bullet\btBulletDynamicsCommon.h>
 
+
 namespace Jasper {
 
-ALIGN16
 class PhysicsWorld
 {
 public:
-
-	ALIGN_16_OPERATORS;
 
 	PhysicsWorld();
 	~PhysicsWorld();

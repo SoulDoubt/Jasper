@@ -33,6 +33,7 @@ void MeshRenderer::Destroy() {
 
 void MeshRenderer::Awake() {
 
+	GLERRORCHECK;
 	// gather mesh data and create GL Buffers and such for future rendering...		
 	assert(m_material);
 	assert(m_mesh);
@@ -70,6 +71,7 @@ void MeshRenderer::Awake() {
 	shader->SetAttributeArray(texLocation, GL_FLOAT, (void*)texOffset, 2, sizeof(Vertex));
 
 	glBindVertexArray(0);
+	GLERRORCHECK;
 }
 
 void MeshRenderer::Start() {}
@@ -95,6 +97,7 @@ void MeshRenderer::Render() {
 	auto physics = gameObject->GetComponentByType<PhysicsCollider>();
 	if (physics) {
 		modelTrans = physics->GetCurrentWorldTransform();
+		modelTrans.Scale = gameObject->GetLocalTransform().Scale;
 		gameObject->SetLocalTransform(modelTrans);
 	}
 	else {
@@ -115,24 +118,9 @@ void MeshRenderer::Render() {
 	auto modelMatrix = modelTrans.TransformMatrix();
 	auto modelViewMatrix = viewMatrix * modelMatrix;
 	auto mvp = projectionMatrix * viewMatrix * modelMatrix;
-	auto normalMatrix = modelViewMatrix.NormalMatrix();
+	auto normalMatrix = modelViewMatrix.NormalMatrix();	
 
-	/* Testing!!!*/
-
-	//Vertex v = m_mesh->Vertices[3];
-	//Vector3 position = v.Position;
-	//Vector4 quat = modelTrans.GetRotationVector4();
-
-	//Vector3 t = 2.0 * Cross(quat.AsVector3(), position);
-	//Vector3 transformed = position + quat.w * t + Cross(quat.AsVector3(), t);
-
-
-	//Vector4 classic = modelMatrix * Vector4(position, 1.f);
-
-	/*-----------*/
-
-
-	//shader->SetTransformUniforms(modelTrans);
+	GLERRORCHECK;
 
 	shader->SetModelViewMatrix(modelViewMatrix);
 	shader->SetModelViewProjectionMatrix(mvp);
@@ -140,7 +128,7 @@ void MeshRenderer::Render() {
 	// camera position needs to be in eye space
 	camPos = (viewMatrix * Vector4(camPos, 1.f)).AsVector3();
 	shader->SetCameraPosition(camPos);
-
+	
 	auto dlight = scene->GetGameObjectByName("light0");
 	if (dlight) {
 		DirectionalLight* dl = static_cast<DirectionalLight*>(dlight);
@@ -154,7 +142,7 @@ void MeshRenderer::Render() {
 
 	glBindVertexArray(m_vaoID);
 	glActiveTexture(GL_TEXTURE0 + 0);
-	int texID = m_material->GetTexture2D()->TextureID();
+	uint texID = m_material->GetTexture2D()->TextureID();
 	glBindTexture(GL_TEXTURE_2D, texID);
 	
 	glDrawElements(GL_TRIANGLES, m_elementCount, GL_UNSIGNED_INT, 0);
@@ -163,4 +151,5 @@ void MeshRenderer::Render() {
 	glBindVertexArray(0);
 	GLERRORCHECK;
 }
-}
+
+} // namespace Jasper

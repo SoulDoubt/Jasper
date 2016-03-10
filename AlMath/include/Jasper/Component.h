@@ -55,14 +55,12 @@ inline Component::Component() {
 	m_name = "Unnamed Component";
 	m_isEnabled = true;
 	m_gameObject = nullptr;
-	//Awake();
 }
 
 inline Component::Component(std::string name) {
 	m_name = name;
 	m_isEnabled = true;
 	m_gameObject = nullptr;
-	//Awake();
 }
 
 inline std::string Component::GetName() const {

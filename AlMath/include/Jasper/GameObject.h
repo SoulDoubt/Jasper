@@ -12,21 +12,15 @@
 #include "Component.h"
 #include "Transform.h"
 
-
-
 namespace Jasper {
 
 class Scene;
 
-//ALIGN16
 class GameObject
 {
 public:
 
 	using GroupedComponentMap = std::map<std::type_index, std::vector<std::unique_ptr<Component>>>;
-
-	//ALIGN_16_OPERATORS
-
 
 	GameObject();
 	GameObject(const std::string& name);
@@ -94,7 +88,7 @@ public:
 	std::vector<std::unique_ptr<Component>>* FindComponentsByType();
 
 	template<typename T, typename... Args>
-	T* AttachNewComponent(Args... args);
+	T* AttachNewComponent(Args&&... args);
 
 	template<typename T>
 	T* GetComponentByType();
@@ -103,7 +97,7 @@ public:
 	std::vector<T*> GetComponentsByType();
 
 	template<typename T, typename... Args>
-	T* AttachNewChild(Args... args);
+	T* AttachNewChild(Args&&... args);
 	
 
 private:
@@ -231,12 +225,15 @@ inline  std::vector<std::unique_ptr<Component>>* GameObject::FindComponentsByTyp
 }
 
 template<typename T, typename... Args>
-T* GameObject::AttachNewChild(Args... args)
+T* GameObject::AttachNewChild(Args&&... args)
 {
-	auto child = make_unique<T>(std::forward(args));
+	if (!std::is_base_of<GameObject, T>::value) {
+		return nullptr;
+	}
+	auto child = make_unique<T>(std::forward<Args>(args)...);
 	child->SetParemt(this);
 	child->SetScene(this->m_scene);	
-	T* ret = child.get()
+	T* ret = child.get();
 	m_children.push_back(move(child));
 	return ret;
 }
@@ -251,13 +248,12 @@ inline GameObject& GameObject::AttachComponent(std::unique_ptr<Component> compon
 }
 
 template<typename T, typename... Args>
-inline T* GameObject::AttachNewComponent(Args... args)
+inline T* GameObject::AttachNewComponent(Args&&... args)
 {
-	auto upc = std::make_unique<T>(args...);
+	auto upc = std::make_unique<T>(std::forward<Args>(args)...);
 	T* p = upc.get();
 	this->AttachComponent(std::move(upc));
 	return p;
-
 }
 
 template<typename T>

@@ -45,7 +45,7 @@ inline Vector2 operator/(const Vector2& a, const float f) {
 }
 
 inline float Length(const Vector2& vec) {
-	return sqrtf(vec.x * vec.x + vec.y * vec.y);
+	return std::sqrtf(vec.x * vec.x + vec.y * vec.y);
 
 }
 
@@ -55,19 +55,15 @@ inline Vector2 Normalize(const Vector2& vec) {
 }
 
 
-//ALIGN16
 struct Vector3
 {
-	//ALIGN_16_OPERATORS
 
 	float x, y, z;
 
 	Vector3() : x(0.0f), y(0.0f), z(0.0f) {}
 	Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
 	Vector3(const btVector3& v) : x(v.x()), y(v.y()), z(v.z()) {}
-
-	
-	
+		
 	float Length() const;
 	float LengthSquared() const;
 	void Normalize();
@@ -75,24 +71,8 @@ struct Vector3
 
 	btVector3 AsBtVector3() { return btVector3(x, y, z); }
 
-	Vector3& operator=(const Vector3& o);
-
-	Vector3 operator*(const float f) const;
-	Vector3 operator/(const float f) const;
-
-	//Vector3 operator+(const Vector3& o) const;
-	//ctor3 operator-(const Vector3& o) const;
-	Vector3 operator-() const;
-
-	//Vector3& operator+=(const Vector3& o);
-	//Vector3& operator-=(const Vector3& o);
-	//Vector3& operator*=(const float f);
-	Vector3& operator/=(const Vector3& o);
-	Vector3& operator/=(const float f);
-
-	bool operator==(const Vector3& o) const;
-	bool operator!=(const Vector3& o) const;
-
+	Vector3& operator=(const Vector3& o);		
+	
 	bool Compare(const Vector3& o) const;
 	bool Compare(const Vector3& o, float epsilon) const;
 
@@ -101,7 +81,7 @@ struct Vector3
 
 	std::string ToString(int precision = 4) const;
 
-	inline float& operator[](int index) {
+	float& operator[](int index) {
 		return (&x)[index];
 	}
 
@@ -114,7 +94,6 @@ struct Vector3
 	}
 
 };
-
 
 
 inline Vector3& operator+=(Vector3& a, const Vector3& b) {
@@ -138,6 +117,72 @@ inline Vector3& operator*=(Vector3& a, float f) {
 	return a;
 }
 
+inline Vector3 operator*(const Vector3& a, const float f) {
+	return Vector3(a.x * f, a.y * f, a.z * f);
+}
+
+inline Vector3 operator*(const float f, const Vector3& v) {
+	return v * f;
+}
+
+inline Vector3 operator/(const Vector3& a, const float f) {
+	return Vector3(a.x / f, a.y / f, a.z / f);
+}
+
+inline void Vector3::Normalize() {
+	float len = this->Length();
+	x /= len;
+	y /= len;
+	z /= len;
+}
+
+inline Vector3& operator/=(Vector3& a, const Vector3& b) {
+	a.x /= b.x;
+	a.y /= b.y;
+	a.z /= b.z;
+	return a;
+}
+
+inline Vector3& operator/=(Vector3& a, const float f) {
+	float invf = 1.0f / f;
+	a.x *= invf;
+	a.y *= invf;
+	a.z *= invf;
+	return a;
+}
+
+inline Vector3& Vector3::operator=(const Vector3& o) {
+	x = o.x;
+	y = o.y;
+	z = o.z;
+	return *this;
+}
+
+inline Vector3 operator-(const Vector3& a) {
+	return Vector3(-a.x, -a.y, -a.z);
+}
+
+inline bool operator==(const Vector3& a, const Vector3& b) {
+	return a.Compare(b);
+}
+
+inline bool operator!=(const Vector3& a, const Vector3& b) {
+	return !a.Compare(b);
+}
+
+inline Vector3 operator+(const Vector3& a, const Vector3& b) {
+	return Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
+}
+
+inline Vector3 operator-(const Vector3& a, const Vector3& b) {
+	return Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
+}
+
+inline Vector3 operator*(const Vector3& a, const Vector3& b) {
+	return{ a.x * b.x, a.y * b.y, a.z * b.z };
+
+}
+
 inline float Vector3::Length() const {
 	return sqrtf(x * x + y * y + z * z);
 }
@@ -147,29 +192,7 @@ inline float Vector3::LengthSquared() const {
 }
 
 inline float Length(const Vector3& a) {
-	return sqrtf(a.x * a.x + a.y * a.y + a.z * a.z);
-}
-
-
-inline Vector3 Vector3::operator*(const float f) const {
-	return Vector3(x * f, y * f, z * f);
-}
-
-inline Vector3 operator*(const float f, const Vector3& v) {
-	return v * f;
-}
-
-inline Vector3 Vector3::operator/(const float f) const {
-	return Vector3(x / f, y / f, z / f);
-}
-
-
-
-inline void Vector3::Normalize() {
-	float len = this->Length();
-	x /= len;
-	y /= len;
-	z /= len;
+	return std::sqrtf(a.x * a.x + a.y * a.y + a.z * a.z);
 }
 
 inline Vector3 Vector3::Normalized() const {
@@ -182,55 +205,22 @@ inline Vector3 Normalize(const Vector3& v) {
 	return Vector3(v.x / len, v.y / len, v.z / len);
 }
 
-inline Vector3& Vector3::operator/=(const Vector3& o) {
-	x /= o.x;
-	y /= o.y;
-	z /= o.z;
-	return *this;
-}
-
-inline Vector3& Vector3::operator/=(const float f) {
-	float invf = 1.0f / f;
-	x *= invf;
-	y *= invf;
-	z *= invf;
-	return *this;
-}
 
 inline bool Vector3::Compare(const Vector3& o) const {
 	return ((x == o.x) && (y == o.y) && (z == o.z));
 }
 
 inline bool Vector3::Compare(const Vector3& o, float epsilon) const {
-	if (fabs(x - o.x) > epsilon) {
+	if (std::fabs(x - o.x) > epsilon) {
 		return false;
 	}
-	if (fabs(y - o.y) > epsilon) {
+	if (std::fabs(y - o.y) > epsilon) {
 		return false;
 	}
-	if (fabs(z - o.z) > epsilon) {
+	if (std::fabs(z - o.z) > epsilon) {
 		return false;
 	}
 	return true;
-}
-
-inline Vector3& Vector3::operator=(const Vector3& o) {
-	x = o.x;
-	y = o.y;
-	z = o.z;
-	return *this;
-}
-
-inline Vector3 Vector3::operator-() const {
-	return Vector3(-x, -y, -z);
-}
-
-inline bool Vector3::operator==(const Vector3& o) const {
-	return Compare(o);
-}
-
-inline bool Vector3::operator!=(const Vector3& o) const {
-	return !Compare(o);
 }
 
 inline Vector3 Vector3::Cross(const Vector3& o) const {
@@ -244,18 +234,18 @@ inline Vector3 Cross(const Vector3& a, const Vector3& b) {
 	return Vector3(x, y, z);
 }
 
-inline Vector3 operator+(const Vector3& a, const Vector3& b) {
-	return Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
-}
-
-inline Vector3 operator-(const Vector3& a, const Vector3& b) {
-	return Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
-}
-
-inline Vector3 operator*(const Vector3& a, const Vector3& b) {
-	return{ a.x * b.x, a.y * b.y, a.z * b.z };
-	
-}
+//inline Vector3 operator+(const Vector3& a, const Vector3& b) {
+//	return Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
+//}
+//
+//inline Vector3 operator-(const Vector3& a, const Vector3& b) {
+//	return Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
+//}
+//
+//inline Vector3 operator*(const Vector3& a, const Vector3& b) {
+//	return{ a.x * b.x, a.y * b.y, a.z * b.z };
+//	
+//}
 
 inline float Vector3::Dot(const Vector3& o) const {
 	return x * o.x + y * o.y + z * o.z;
@@ -285,8 +275,7 @@ private:
 public:
 	float x, y, z, w;
 
-	Vector4(const float x, const float y, const float z, const float w) : x(x), y(y), z(z), w(w) {
-	}
+	Vector4(const float x, const float y, const float z, const float w) : x(x), y(y), z(z), w(w) {}
 
 	Vector4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
 	Vector4(const Vector3& xyz, float w);

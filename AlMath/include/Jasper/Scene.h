@@ -25,7 +25,7 @@ private:
 public:
 
 	ResourceManager() {
-		m_cache.reserve(100);
+		m_cache.reserve(20);
 	}
 
 	template<typename U, typename... Args>
@@ -33,7 +33,7 @@ public:
 		if (!std::is_base_of<T, U>::value) {
 			return nullptr;
 		}
-		std::unique_ptr<U> instance = std::make_unique<U>(args...);
+		std::unique_ptr<U> instance = std::make_unique<U>(std::forward<Args>(args)...);
 		U* ret = instance.get();
 		m_cache.push_back(std::move(instance));
 		return ret;
@@ -63,14 +63,11 @@ public:
 
 
 
-ALIGN16
 class Scene
 {
 public:
 	Scene();
-	~Scene();
-
-	ALIGN_16_OPERATORS;
+	~Scene();	
 
 	Matrix4& ProjectionMatrix() {
 		return m_projectionMatrix;
