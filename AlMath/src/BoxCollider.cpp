@@ -21,9 +21,19 @@ void BoxCollider::Awake()
 	auto& trans = go->GetLocalTransform();
 	auto& btTrans = trans.GetBtTransform();
 
-	Vector3 extents = m_mesh->GetHalfExtents();
+	Vector3 halfExtents = m_mesh->GetHalfExtents();
+	Vector3 minExtents = m_mesh->GetMinExtents();
+	Vector3 maxExtents = m_mesh->GetMaxExtents();
 
-	m_collisionShape = new btBoxShape(btVector3(extents.x, extents.y, extents.z));
+	float halfX = (maxExtents.x - minExtents.x) / 2.0f;
+	float halfY = (maxExtents.y - minExtents.y) / 2.0f;
+	float halfZ = (maxExtents.z - minExtents.z) / 2.0f;
+
+	halfX *= trans.Scale.x;
+	halfY *= trans.Scale.y;
+	halfZ *= trans.Scale.z;
+
+	m_collisionShape = new btBoxShape(btVector3(halfX, halfY, halfZ));
 
 	btVector3 inertia;
 	m_collisionShape->calculateLocalInertia(Mass, inertia);

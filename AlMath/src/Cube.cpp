@@ -240,7 +240,7 @@ void Cube::LoadCubemapVerts() {
 	Indices.push_back(34);
 	Indices.push_back(35);
 
-	CalculateHalfExtents();
+	CalculateExtents();
 }
 
 void Cube::LoadStandardVerts()
@@ -437,7 +437,7 @@ void Cube::LoadStandardVerts()
 	Indices.push_back(20);
 
 	CalculateFaceNormals();
-	CalculateHalfExtents();
+	CalculateExtents();
 }
 
 

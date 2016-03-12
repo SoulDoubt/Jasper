@@ -14,7 +14,7 @@ Mesh::Mesh()
 
 Mesh::Mesh(const std::string& name) {
 	Initialize();
-	CalculateHalfExtents();
+	CalculateExtents();
 }
 
 
@@ -74,7 +74,7 @@ void Mesh::CalculateFaceNormals()
 	printf("Calculated some normals and Tangents\n");
 }
 
-void Mesh::CalculateHalfExtents()
+void Mesh::CalculateExtents()
 {
 
 	float xmin, ymin, zmin;
@@ -94,5 +94,7 @@ void Mesh::CalculateHalfExtents()
 	float y = (ymax - ymin) / 2;
 	float z = (zmax - zmin) / 2;
 	m_Extents = Vector3(x, y, z);
+	m_minExtents = Vector3(xmin, ymin, zmin);
+	m_maxExtents = Vector3(xmax, ymax, zmax);
 }
 }

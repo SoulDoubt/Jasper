@@ -17,10 +17,21 @@ void Jasper::CapsuleCollider::Awake()
 	auto& trans = go->GetLocalTransform();
 	auto& btTrans = trans.GetBtTransform();
 
-	Vector3 extents = m_mesh->GetHalfExtents();
-	float radius = std::max(extents.x, extents.z);
-	float height = extents.y * 2.0f;
+	Vector3 halfExtents = m_mesh->GetHalfExtents();
+	Vector3 minExtents = m_mesh->GetMinExtents();
+	Vector3 maxExtents = m_mesh->GetMaxExtents();
 
+	float halfX = (maxExtents.x - minExtents.x) / 2.0f;
+	float halfY = (maxExtents.y - minExtents.y) / 2.0f;
+	float halfZ = (maxExtents.z - minExtents.z) / 2.0f;
+	
+	halfX *= trans.Scale.x;
+	halfY *= trans.Scale.y;
+	halfZ *= trans.Scale.z;
+
+	float radius = std::max(halfX, halfZ);
+	float height = (maxExtents.y - minExtents.y) * trans.Scale.y;
+	
 	m_collisionShape = new btCapsuleShape(radius, height);
 
 	btVector3 inertia;

@@ -59,7 +59,7 @@ Camera::Camera(Camera::CameraType type)
 {
 	m_type = type;
 	transform.SetIdentity();
-	transform.Position = { 0.0f, 1.82f, 0.0f };		
+	transform.Position = { 0.0f, 1.82f, 10.0f };		
 }
 
 void Camera::Awake() {

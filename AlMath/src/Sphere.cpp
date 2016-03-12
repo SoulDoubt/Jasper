@@ -42,7 +42,7 @@ void Sphere::Initialize()
 	}
 
 	//CalculateFaceNormals();
-	CalculateHalfExtents();
+	CalculateExtents();
 
 }
 

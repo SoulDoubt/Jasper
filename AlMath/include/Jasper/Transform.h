@@ -24,6 +24,19 @@ public:
 		Scale = { 1.0f, 1.0f, 1.0f };
 	}
 
+	Transform(const Transform& o) {
+		Position = o.Position;
+		Orientation = o.Orientation;
+		Scale = o.Scale;
+	}
+
+	Transform& operator=(const Transform& o) {
+		Position = o.Position;
+		Orientation = o.Orientation;
+		Scale = o.Scale;
+		return *this;
+	}
+
 
 	Transform(const btTransform& btt) {
 		Position = Vector3(btt.getOrigin());
@@ -70,7 +83,7 @@ inline Transform operator*(const Transform& ps, const Transform& ls) {
 	Transform ws;
 	ws.Position = ps.Position + ps.Orientation * (ps.Scale * ls.Position);
 	ws.Orientation = ps.Orientation * ls.Orientation;
-	ws.Scale = ls.Scale;// *(ps.Orientation * ls.Scale);
+	ws.Scale = ps.Scale * ls.Scale;
 	return ws;
 }
 

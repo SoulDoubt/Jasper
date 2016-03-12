@@ -76,6 +76,14 @@ public:
 		return m_Extents;
 	}	
 
+	Vector3 GetMaxExtents() const {
+		return m_maxExtents;
+	}
+
+	Vector3 GetMinExtents() const {
+		return m_minExtents;
+	}
+
 	unsigned int VertexCount;
 
 	void SetReverseWinding(bool r) {
@@ -95,11 +103,13 @@ protected:
 	
 
 	void CalculateFaceNormals();
-	void CalculateHalfExtents();
+	void CalculateExtents();
 
 	bool m_reverseWinding = false;
 
 	Vector3 m_Extents;
+	Vector3 m_minExtents;
+	Vector3 m_maxExtents;
 
 };
 

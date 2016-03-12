@@ -3,6 +3,7 @@
 
 #include "Common.h"
 #include <bullet\btBulletDynamicsCommon.h>
+#include <Jasper\PhysicsDebugDraw.h>
 
 
 namespace Jasper {
@@ -11,11 +12,13 @@ class PhysicsWorld
 {
 public:
 
-	PhysicsWorld();
+	explicit PhysicsWorld(Scene* scene);
 	~PhysicsWorld();
 
 	PhysicsWorld(const PhysicsWorld& o) = delete;
 	PhysicsWorld& operator=(const PhysicsWorld& o) = delete;
+
+	Scene* scene;
 
 	void Initialize();
 	void Destroy();
@@ -24,8 +27,14 @@ public:
 	void AddRigidBody(btRigidBody* rb);
 	void ConvexSweepTest(btConvexShape* shape, btTransform& from, btTransform& to, btCollisionWorld::ClosestConvexResultCallback& callback);
 
-private:
+	void DrawPhysicsShape(const btTransform& worldTransform, const btCollisionShape* shape, const btVector3& color) {
+		m_world->debugDrawObject(worldTransform, shape, color);
+	}
 
+	PhysicsDebugDrawer* debugDrawer;
+
+private:
+	
 	btBroadphaseInterface* m_broadphase;
 	btDefaultCollisionConfiguration* m_collisionConfig;
 	btCollisionDispatcher* m_collisionDispatcher;
