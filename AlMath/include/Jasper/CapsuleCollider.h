@@ -9,7 +9,8 @@ class CapsuleCollider : public PhysicsCollider {
 
 public:
 
-	CapsuleCollider(const std::string& name, Mesh* mesh, PhysicsWorld* world);
+	explicit CapsuleCollider(const std::string& name, Mesh* mesh, PhysicsWorld* world);
+	explicit CapsuleCollider(const std::string& name, const Vector3& halfExtents, PhysicsWorld* world);
 	~CapsuleCollider();
 
 	void Awake() override;

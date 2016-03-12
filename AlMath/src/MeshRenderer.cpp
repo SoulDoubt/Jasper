@@ -111,9 +111,13 @@ void MeshRenderer::Render() {
 	auto viewMatrix = scene->GetCamera().GetViewMatrix().Inverted();
 	auto camPos = scene->GetCamera().GetPosition();
 
+	auto physicsDebugTrans = modelTrans;
+	physicsDebugTrans.Scale = { 1.0f, 1.0f, 1.0f };
+	auto physicsDebugModelMatrix = physicsDebugTrans.TransformMatrix();
 	auto modelMatrix = modelTrans.TransformMatrix();
 	auto modelViewMatrix = viewMatrix * modelMatrix;
 	auto mvp = projectionMatrix * viewMatrix * modelMatrix;
+	auto physicsDebugMvp = projectionMatrix * viewMatrix * physicsDebugModelMatrix;
 	auto normalMatrix = modelMatrix.NormalMatrix();	
 	auto viewProjection = projectionMatrix * viewMatrix;
 
@@ -125,24 +129,21 @@ void MeshRenderer::Render() {
 	shader->SetModelViewProjectionMatrix(mvp);
 	shader->SetNormalMatrix(normalMatrix);
 	shader->SetModelMatrix(modelMatrix);
-	// camera position needs to be in eye space	
 	shader->SetCameraPosition(camPos);
 	
-	auto plight = scene->GetGameObjectByName("light0");
+	/*auto plight = scene->GetGameObjectByName("light0");
 	if (plight) {
 		PointLight* pl = static_cast<PointLight*>(plight);					
 		shader->SetPointLightUniforms(pl);
-	}
+	}*/
 
 	shader->SetMaterialUniforms(m_material);
 
-	glBindVertexArray(m_vaoID);
+	glBindVertexArray(m_vaoID);	
 	glActiveTexture(GL_TEXTURE0 + 0);
 	uint texID = m_material->GetTexture2D()->TextureID();
-	glBindTexture(GL_TEXTURE_2D, texID);
-	
-	glDrawElements(GL_TRIANGLES, m_elementCount, GL_UNSIGNED_INT, 0);
-
+	glBindTexture(GL_TEXTURE_2D, texID);		
+	glDrawElements(GL_TRIANGLES, m_elementCount, GL_UNSIGNED_INT, 0);	
 	shader->Release();
 	glBindVertexArray(0);
 
@@ -151,7 +152,7 @@ void MeshRenderer::Render() {
 		debugTransform.setIdentity();
 		btCollisionShape* shape = physics->GetCollisionShape();
 		btVector3 color = { 1.0f, 0.0f, 0.0f };
-		physics->GetPhysicsWorld()->debugDrawer->mvpMatrix = mvp;
+		physics->GetPhysicsWorld()->debugDrawer->mvpMatrix = physicsDebugMvp;
 		physics->GetPhysicsWorld()->DrawPhysicsShape(debugTransform, shape, color);
 	}
 	GLERRORCHECK;

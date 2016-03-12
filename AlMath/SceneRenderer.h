@@ -1,0 +1,8 @@
+#ifndef _JASPER_SCENE_RENDERER_H_
+#define _JASPER_SCENE_RENDERER_H_
+
+
+
+
+
+#endif // _JASPER_SCENE_RENDERER_H_
