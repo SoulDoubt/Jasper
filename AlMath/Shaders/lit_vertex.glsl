@@ -11,10 +11,10 @@ vec3 quaternionRotate(vec4 quat, vec3 vec){
 	return (v + q.w * t + cross(q.xyz, t));
 }
 
-attribute vec3 position;
-attribute vec2 texCoords;
-attribute vec4 color;
-attribute vec3 normal;
+in vec3 position;
+in vec2 texCoords;
+in vec4 color;
+in vec3 normal;
 
 uniform mat4 mvpMatrix;
 uniform mat3 normalMatrix;

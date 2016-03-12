@@ -16,7 +16,7 @@ class PhysicsCollider :	public Component
 {
 public:
 	explicit PhysicsCollider(const std::string& name, Mesh* mesh, PhysicsWorld* world);
-	//explicit PhysicsCollider(const std::string& name, const Vector3& halfExtents, PhysicsWorld* world);
+	explicit PhysicsCollider(const std::string& name, const Vector3& halfExtents, PhysicsWorld* world);
 	virtual ~PhysicsCollider();
 
 	virtual void Initialize() override;
@@ -49,6 +49,7 @@ protected:
 	btCollisionShape* m_collisionShape;
 	btDefaultMotionState* m_defaultMotionState;
 	btRigidBody* m_rigidBody;
+	Vector3 m_halfExtents;
 };
 }
 #endif _PHYSICS_COLLIDER_H_

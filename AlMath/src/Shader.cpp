@@ -198,21 +198,24 @@ namespace Jasper {
 	void Shader::SetModelViewMatrix(const Matrix4 & mvm)
 	{
 		int loc = glGetUniformLocation(m_programID, "mvMatrix");
-		glUniformMatrix4fv(loc, 1, GL_TRUE, mvm.AsFloatPtr());
+		if (loc > -1)
+			glUniformMatrix4fv(loc, 1, GL_TRUE, mvm.AsFloatPtr());
 		GLERRORCHECK;
 	}
 
 	void Shader::SetModelViewProjectionMatrix(const Matrix4 & mvp)
 	{
 		int loc = glGetUniformLocation(m_programID, "mvpMatrix");
-		glUniformMatrix4fv(loc, 1, GL_TRUE, mvp.AsFloatPtr());
+		if (loc > -1)
+			glUniformMatrix4fv(loc, 1, GL_TRUE, mvp.AsFloatPtr());
 		GLERRORCHECK;
 	}
 
 	void Shader::SetNormalMatrix(const Matrix3 & normal)
 	{
 		int loc = glGetUniformLocation(m_programID, "normalMatrix");
-		glUniformMatrix3fv(loc, 1, GL_TRUE, normal.AsFloatPtr());
+		if (loc > -1)
+			glUniformMatrix3fv(loc, 1, GL_TRUE, normal.AsFloatPtr());
 		GLERRORCHECK;
 	}
 
@@ -232,7 +235,7 @@ namespace Jasper {
 	}
 
 	void Shader::SetDirectionalLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition)
-	{		
+	{
 		auto ul = GetDirectionalLightUniformLocations();
 		glUniform3fv(ul.Color, 1, dl->Color.AsFloatPtr());
 		glUniform3fv(ul.Direction, 1, dl->Direction.AsFloatPtr());
@@ -248,6 +251,7 @@ namespace Jasper {
 	{
 		const auto position = pl->GetWorldTransform().Position;
 		auto ul = GetDirectionalLightUniformLocations();
+
 		glUniform3fv(ul.Color, 1, pl->Color.AsFloatPtr());
 		glUniform3fv(ul.Position, 1, position.AsFloatPtr());
 		glUniform1fv(ul.AmbientIntensity, 1, &pl->AmbientIntensity);
@@ -277,7 +281,8 @@ namespace Jasper {
 	void Shader::SetCameraPosition(const Vector3& cp)
 	{
 		GLuint loc = glGetUniformLocation(ProgramID(), "cameraPosition");
-		glUniform3fv(loc, 1, cp.AsFloatPtr());
+		if (loc > -1)
+			glUniform3fv(loc, 1, cp.AsFloatPtr());
 	}
 
 	void Shader::SetTransformUniforms(const Transform & trans)

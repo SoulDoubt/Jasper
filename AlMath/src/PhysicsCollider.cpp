@@ -10,6 +10,11 @@ PhysicsCollider::PhysicsCollider(const std::string& name, Mesh* mesh, PhysicsWor
 
 }
 
+PhysicsCollider::PhysicsCollider(const std::string& name, const Vector3& halfExtents, PhysicsWorld* world)
+	: Component(name), m_world(world), m_halfExtents(halfExtents)
+{
+}
+
 
 PhysicsCollider::~PhysicsCollider()
 {

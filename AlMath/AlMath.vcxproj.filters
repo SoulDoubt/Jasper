@@ -171,6 +171,9 @@
     <ClInclude Include="include\Jasper\PhysicsDebugDraw.h">
       <Filter>Header Files\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="include\Jasper\TextureShader.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BasicShader.cpp">

@@ -10,6 +10,12 @@ BoxCollider::BoxCollider(const std::string& name, Mesh* mesh, PhysicsWorld* worl
 
 }
 
+BoxCollider::BoxCollider(const std::string& name, const Vector3& halfExtents, PhysicsWorld* world)
+	:PhysicsCollider(name, halfExtents, world)
+{
+
+}
+
 
 BoxCollider::~BoxCollider()
 {
@@ -21,14 +27,21 @@ void BoxCollider::Awake()
 	auto& trans = go->GetLocalTransform();
 	auto& btTrans = trans.GetBtTransform();
 
-	Vector3 halfExtents = m_mesh->GetHalfExtents();
-	Vector3 minExtents = m_mesh->GetMinExtents();
-	Vector3 maxExtents = m_mesh->GetMaxExtents();
+	float halfX, halfY, halfZ;
+	if (m_mesh) {
+		Vector3 halfExtents = m_mesh->GetHalfExtents();
+		Vector3 minExtents = m_mesh->GetMinExtents();
+		Vector3 maxExtents = m_mesh->GetMaxExtents();
 
-	float halfX = (maxExtents.x - minExtents.x) / 2.0f;
-	float halfY = (maxExtents.y - minExtents.y) / 2.0f;
-	float halfZ = (maxExtents.z - minExtents.z) / 2.0f;
-
+		halfX = (maxExtents.x - minExtents.x) / 2.0f;
+		halfY = (maxExtents.y - minExtents.y) / 2.0f;
+		halfZ = (maxExtents.z - minExtents.z) / 2.0f;
+	}
+	else {
+		halfX = m_halfExtents.x;
+		halfY = m_halfExtents.y;
+		halfZ = m_halfExtents.z;
+	}
 	halfX *= trans.Scale.x;
 	halfY *= trans.Scale.y;
 	halfZ *= trans.Scale.z;
@@ -47,4 +60,4 @@ void BoxCollider::Awake()
 	m_world->AddRigidBody(m_rigidBody);
 }
 
-}
+} // namespace Jasper

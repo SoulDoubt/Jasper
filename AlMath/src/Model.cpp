@@ -54,14 +54,17 @@ void Model::Initialize()
 		if (m->GetMaxExtents().y > maxExtents.y) maxExtents.y = m->GetMaxExtents().y;
 		if (m->GetMaxExtents().z > maxExtents.z) maxExtents.z = m->GetMaxExtents().z;
 																				
-		if (m->GetMinExtents().z < minExtents.z) minExtents.z = m->GetMinExtents().z;
-		if (m->GetMinExtents().z < minExtents.z) minExtents.z = m->GetMinExtents().z;
-		if (m->GetMinExtents().z < minExtents.z) minExtents.z = m->GetMinExtents().z;
-		if (m_enablePhysics) {
-
-			auto bc = AttachNewComponent<CapsuleCollider>(this->GetName() + "_Collider", m.get(), m_physicsWorld);
-			bc->Mass = 0.0f;
-		}
+		if (m->GetMinExtents().z < minExtents.z) minExtents.x = m->GetMinExtents().z;
+		if (m->GetMinExtents().z < minExtents.z) minExtents.y = m->GetMinExtents().z;
+		if (m->GetMinExtents().z < minExtents.z) minExtents.z = m->GetMinExtents().z;		
+	}
+	if (m_enablePhysics) {
+		Vector3 halfExtents;
+		halfExtents.x = (maxExtents.x - minExtents.x) / 2;
+		halfExtents.y = (maxExtents.y - minExtents.y) / 2;
+		halfExtents.z = (maxExtents.z - minExtents.z) / 2;
+		auto bc = AttachNewComponent<CapsuleCollider>(this->GetName() + "_Collider", halfExtents, m_physicsWorld);
+		bc->Mass = 5.0f;
 	}
 	
 

@@ -81,8 +81,8 @@ void Mesh::CalculateExtents()
 	xmin = ymin = zmin = 1000000.0f;
 	float xmax, ymax, zmax;
 	xmax = ymax = zmax = -1000000.0f;
-	for (auto v : Vertices) {
-		auto& vp = v.Position;
+	for (auto& v : Vertices) {
+		auto vp = v.Position;
 		if (vp.x < xmin) xmin = vp.x;
 		if (vp.y < ymin) ymin = vp.y;
 		if (vp.z < zmin) zmin = vp.z;
@@ -90,9 +90,9 @@ void Mesh::CalculateExtents()
 		if (vp.y > ymax) ymax = vp.y;
 		if (vp.z > zmax) zmax = vp.z;
 	}
-	float x = (xmax - xmin) / 2;
-	float y = (ymax - ymin) / 2;
-	float z = (zmax - zmin) / 2;
+	float x = (xmax - xmin) / 2.f;
+	float y = (ymax - ymin) / 2.f;
+	float z = (zmax - zmin) / 2.f;
 	m_Extents = Vector3(x, y, z);
 	m_minExtents = Vector3(xmin, ymin, zmin);
 	m_maxExtents = Vector3(xmax, ymax, zmax);

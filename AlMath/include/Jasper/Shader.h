@@ -114,7 +114,8 @@ inline const uint Shader::ProgramID() const {
 
 inline void Shader::SetModelMatrix(const Matrix4& model) {
 	int location = glGetUniformLocation(m_programID, "modelMatrix");
-	glUniformMatrix4fv(location, 1, GL_TRUE, model.AsFloatPtr());
+	if (location > -1)
+		glUniformMatrix4fv(location, 1, GL_TRUE, model.AsFloatPtr());
 }
 
 }

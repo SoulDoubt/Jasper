@@ -9,7 +9,8 @@ class BoxCollider :
 	public PhysicsCollider
 {
 public:
-	BoxCollider(const std::string& name, Mesh* mesh, PhysicsWorld* world);
+	explicit BoxCollider(const std::string& name, Mesh* mesh, PhysicsWorld* world);
+	explicit BoxCollider(const std::string& name, const Vector3& halfExtents, PhysicsWorld* world);
 	~BoxCollider();
 
 	void Awake() override;

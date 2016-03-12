@@ -15,8 +15,7 @@ public:
 	explicit PhysicsWorld(Scene* scene);
 	~PhysicsWorld();
 
-	PhysicsWorld(const PhysicsWorld& o) = delete;
-	PhysicsWorld& operator=(const PhysicsWorld& o) = delete;
+	NON_COPYABLE(PhysicsWorld)
 
 	Scene* scene;
 
