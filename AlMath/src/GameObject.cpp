@@ -74,7 +74,7 @@ Transform GameObject::GetWorldTransform() const{
 	Transform result = m_transform;
 	GameObject* p = this->m_parent;
 	while (p != nullptr) {
-		result = result * p->m_transform;
+		result = p->m_transform * result;
 		p = p->m_parent;
 	}
 	//result.SetScale(m_transform.Scale());

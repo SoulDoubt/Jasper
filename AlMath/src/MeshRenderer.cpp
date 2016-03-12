@@ -98,20 +98,15 @@ void MeshRenderer::Render() {
 	auto physics = gameObject->GetComponentByType<PhysicsCollider>();
 	if (physics) {
 		modelTrans = physics->GetCurrentWorldTransform();
+		
 		modelTrans.Scale = gameObject->GetLocalTransform().Scale;
 		gameObject->SetLocalTransform(modelTrans);
 	}
 	else {
 		modelTrans = gameObject->GetWorldTransform();
 	}
-
 	auto scene = gameObject->GetScene();
-
-	auto projectionMatrix = scene->ProjectionMatrix();
-
-	//auto& camera = scene->GetCamera();
-
-	
+	auto projectionMatrix = scene->ProjectionMatrix();	
 
 	auto viewMatrix = scene->GetCamera().GetViewMatrix().Inverted();
 	auto camPos = scene->GetCamera().GetPosition();
@@ -120,6 +115,9 @@ void MeshRenderer::Render() {
 	auto modelViewMatrix = viewMatrix * modelMatrix;
 	auto mvp = projectionMatrix * viewMatrix * modelMatrix;
 	auto normalMatrix = modelMatrix.NormalMatrix();	
+	auto viewProjection = projectionMatrix * viewMatrix;
+
+	
 
 	GLERRORCHECK;
 
@@ -147,6 +145,15 @@ void MeshRenderer::Render() {
 
 	shader->Release();
 	glBindVertexArray(0);
+
+	if (physics) {
+		btTransform debugTransform = btTransform();// physics->GetDebugTransform();
+		debugTransform.setIdentity();
+		btCollisionShape* shape = physics->GetCollisionShape();
+		btVector3 color = { 1.0f, 0.0f, 0.0f };
+		physics->GetPhysicsWorld()->debugDrawer->mvpMatrix = mvp;
+		physics->GetPhysicsWorld()->DrawPhysicsShape(debugTransform, shape, color);
+	}
 	GLERRORCHECK;
 }
 

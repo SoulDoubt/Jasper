@@ -2,8 +2,9 @@
 
 namespace Jasper {
 
-	PhysicsWorld::PhysicsWorld()
+	PhysicsWorld::PhysicsWorld(Scene* scene): scene(scene)
 	{
+		
 	}
 
 
@@ -20,10 +21,16 @@ namespace Jasper {
 		m_solver = new btSequentialImpulseConstraintSolver();
 		m_world = new btDiscreteDynamicsWorld(m_collisionDispatcher, m_broadphase, m_solver, m_collisionConfig);
 		m_world->setGravity({ 0.0f, -9.81f, 0.0f });
+		debugDrawer = new PhysicsDebugDrawer(scene);
+		//debugDrawer->scene = m_sc
+		debugDrawer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+		m_world->setDebugDrawer(debugDrawer);
 	}
 
 	void PhysicsWorld::Destroy()
 	{
+		if (debugDrawer)
+			delete debugDrawer;
 		if (m_world)
 			delete m_world;
 		if (m_solver)

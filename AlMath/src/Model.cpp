@@ -8,6 +8,7 @@
 #include <Jasper\MeshRenderer.h>
 #include <Jasper\Material.h>
 #include <Jasper\BoxCollider.h>
+#include <Jasper\CapsuleCollider.h>
 #include <string>
 
 namespace Jasper {
@@ -28,8 +29,7 @@ Model::~Model()
 void Model::Initialize()
 {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(m_filename, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_OptimizeMeshes);
-
+	const aiScene* scene = importer.ReadFile(m_filename, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_OptimizeMeshes);
 
 	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		printf("aiScene was corrupt in model load.");
@@ -44,11 +44,29 @@ void Model::Initialize()
 	printf("\nLoaded %d meshes in model: %s", sz, this->GetName().c_str());
 	uint numTris = 0;
 	uint numVerts = 0;
-	
+	Vector3 maxExtents = { -100000.0f, -1000000.0f, -1000000.0f };
+	Vector3 minExtents = { 1000000.0f, 1000000.0f, 1000000.0f };
+
 	for (auto& m : m_meshManager.GetCache()) {
 		numTris += m->Indices.size() / 3;
 		numVerts += m->Vertices.size();
+		if (m->GetMaxExtents().x > maxExtents.x) maxExtents.x = m->GetMaxExtents().x;
+		if (m->GetMaxExtents().y > maxExtents.y) maxExtents.y = m->GetMaxExtents().y;
+		if (m->GetMaxExtents().z > maxExtents.z) maxExtents.z = m->GetMaxExtents().z;
+																				
+		if (m->GetMinExtents().z < minExtents.z) minExtents.z = m->GetMinExtents().z;
+		if (m->GetMinExtents().z < minExtents.z) minExtents.z = m->GetMinExtents().z;
+		if (m->GetMinExtents().z < minExtents.z) minExtents.z = m->GetMinExtents().z;
+		if (m_enablePhysics) {
+
+			auto bc = AttachNewComponent<CapsuleCollider>(this->GetName() + "_Collider", m.get(), m_physicsWorld);
+			bc->Mass = 0.0f;
+		}
 	}
+	
+
+
+
 	printf("\nModel Contains %d Vertices and %d Triangles.", numTris, numVerts);
 
 }
@@ -63,6 +81,7 @@ void Model::ProcessAiSceneNode(const aiScene* scene, aiNode* node)
 	for (uint i = 0; i < node->mNumChildren; i++) {
 		ProcessAiSceneNode(scene, node->mChildren[i]);
 	}
+
 }
 
 void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
@@ -106,7 +125,17 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 		if (textureFileName.find(".") == string::npos) {
 			textureFileName += "_D.tga";
 		}
+		aiColor3D diffuse, ambient, specular;
+		float shine;
+		mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+		mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
+		mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+		mat->Get(AI_MATKEY_SHININESS, shine);
 		myMaterial->SetTexture2D(m_directory + "/" + textureFileName);
+		myMaterial->Ambient = Vector3(ambient.r, ambient.g, ambient.b);
+		myMaterial->Diffuse = Vector3(diffuse.r, diffuse.g, diffuse.b);
+		myMaterial->Specular = Vector3(specular.r, specular.g, specular.b);
+		myMaterial->Shine = shine;
 	}
 
 	if (aiMesh->HasBones()) {
@@ -118,15 +147,12 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 
 	}
 
-	m->CalculateHalfExtents();
+	m->CalculateExtents();
 	if (!aiMesh->HasNormals()) {
 		m->CalculateFaceNormals();
 	}
 
-	if (m_enablePhysics) {
-		auto bc = AttachNewComponent<BoxCollider>(this->GetName() + "Collider", m, m_physicsWorld);
-		bc->Mass = 2.0f;
-	}
+
 	Material* renderMaterial;
 	if (m_materialManager.GetSize() > 0) {
 		renderMaterial = m_materialManager.GetLatestInstanceAdded();

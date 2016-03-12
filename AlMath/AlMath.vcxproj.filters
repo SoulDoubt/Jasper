@@ -168,6 +168,9 @@
     <ClInclude Include="include\Jasper\ResourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Jasper\PhysicsDebugDraw.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BasicShader.cpp">
@@ -280,6 +283,9 @@
     </ClCompile>
     <ClCompile Include="src\quaternion.cpp">
       <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PhysicsDebugDraw.cpp">
+      <Filter>Source Files\Physics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

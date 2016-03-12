@@ -13,8 +13,7 @@ namespace Jasper {
 
 class Shader;
 
-class Model :
-	public GameObject
+class Model : public GameObject
 {
 public:
 	explicit Model(const std::string& name, const std::string& filename, Shader* shader, bool enablePhysics = false, PhysicsWorld* physicsWorld = nullptr);

@@ -1,6 +1,6 @@
 #version 130
 
-in vec3 inPosition;
+in vec3 position;
 in vec2 inTexCoords;
 in vec4 vertColor;
 in vec3 inNormal;
@@ -15,9 +15,6 @@ smooth out vec3 eyeSpaceVertPosition;
 
 void main()
 {
-	gl_Position = mvpMatrix * vec4(inPosition, 1.0);
-	outTexCoords = inTexCoords;
-	eyeSpaceVertPosition = (mvMatrix * vec4(inPosition, 1.0f)).xyz;
-	outNormal = normalMatrix * inNormal;		
+	gl_Position = mvpMatrix * vec4(position, 1.0);			
 }
 

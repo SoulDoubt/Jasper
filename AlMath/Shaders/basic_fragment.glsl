@@ -8,7 +8,5 @@ smooth in vec3 eyeSpaceVertPosition;
 uniform sampler2D colorMap;
 
 void main(){	
-
-	fcolor = vec4(1.0, 1.0, 1.0, 1.0);
-	fcolor = texture(colorMap, outTexCoords);
+	fcolor = vec4(0.0, 1.0, 0.0, 1.0);
 }

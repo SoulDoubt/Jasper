@@ -16,6 +16,7 @@ class PhysicsCollider :	public Component
 {
 public:
 	explicit PhysicsCollider(const std::string& name, Mesh* mesh, PhysicsWorld* world);
+	//explicit PhysicsCollider(const std::string& name, const Vector3& halfExtents, PhysicsWorld* world);
 	virtual ~PhysicsCollider();
 
 	virtual void Initialize() override;
@@ -27,6 +28,16 @@ public:
 	virtual void LateUpdate() override;
 
 	Transform GetCurrentWorldTransform();
+
+	PhysicsWorld* GetPhysicsWorld() { return m_world; }
+	btRigidBody* GetRigidBody() { return m_rigidBody; }
+	btCollisionShape* GetCollisionShape() { return m_collisionShape; }
+
+	btTransform GetDebugTransform() {
+		btTransform trans;
+		m_rigidBody->getMotionState()->getWorldTransform(trans);
+		return trans;
+	}
 
 	float Mass = 0.f;
 	float Restitution = 0.5f;
