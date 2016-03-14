@@ -221,8 +221,8 @@ namespace Jasper {
 
 	DirectionalLightUniformLocations Shader::GetDirectionalLightUniformLocations()
 	{
-		DirectionalLightUniformLocations dlul;
-		GLuint id = ProgramID();
+		auto dlul = DirectionalLightUniformLocations();
+		/*GLuint id = ProgramID();
 		dlul.AmbientIntensity = glGetUniformLocation(id, "light0.AmbientIntensity");
 		dlul.Color = glGetUniformLocation(id, "light0.Color");
 		dlul.ConstAtten = glGetUniformLocation(id, "light0.ConstAtten");
@@ -230,13 +230,14 @@ namespace Jasper {
 		dlul.Direction = glGetUniformLocation(id, "light0.Direction");
 		dlul.Exp = glGetUniformLocation(id, "light0.Exp");
 		dlul.LinearAtten = glGetUniformLocation(id, "light0.LinearAtten");
-		dlul.Position = glGetUniformLocation(id, "light0.Position");
+		dlul.Position = glGetUniformLocation(id, "light0.Position");*/
 		return dlul;
+		//return nullptr;
 	}
 
 	void Shader::SetDirectionalLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition)
 	{
-		auto ul = GetDirectionalLightUniformLocations();
+		/*auto ul = GetDirectionalLightUniformLocations();
 		glUniform3fv(ul.Color, 1, dl->Color.AsFloatPtr());
 		glUniform3fv(ul.Direction, 1, dl->Direction.AsFloatPtr());
 		glUniform3fv(ul.Position, 1, eyeSpacePosition.AsFloatPtr());
@@ -244,38 +245,38 @@ namespace Jasper {
 		glUniform1fv(ul.DiffuseIntensity, 1, &dl->DiffuseIntensity);
 		glUniform1fv(ul.ConstAtten, 1, &dl->ConstAtten);
 		glUniform1fv(ul.LinearAtten, 1, &dl->LinearAtten);
-		glUniform1fv(ul.Exp, 1, &dl->Exp);
+		glUniform1fv(ul.Exp, 1, &dl->Exp);*/
 	}
 
 	void Shader::SetPointLightUniforms(const PointLight * pl)
 	{
-		const auto position = pl->GetWorldTransform().Position;
+		/*const auto position = pl->GetWorldTransform().Position;
 		auto ul = GetDirectionalLightUniformLocations();
 
 		glUniform3fv(ul.Color, 1, pl->Color.AsFloatPtr());
 		glUniform3fv(ul.Position, 1, position.AsFloatPtr());
 		glUniform1fv(ul.AmbientIntensity, 1, &pl->AmbientIntensity);
-		glUniform1fv(ul.ConstAtten, 1, &pl->ConstAtten);
+		glUniform1fv(ul.ConstAtten, 1, &pl->ConstAtten);*/
 	}
 
 	MaterialUniformLocations Shader::GetMaterialUniformLocations()
 	{
-		GLuint id = ProgramID();
-		MaterialUniformLocations mul;
-		mul.Ka = glGetUniformLocation(id, "material0.ka");
-		mul.Kd = glGetUniformLocation(id, "material0.kd");
-		mul.Ks = glGetUniformLocation(id, "material0.ks");
-		mul.Ns = glGetUniformLocation(id, "material0.ns");
+		//GLuint id = ProgramID();
+		auto mul = MaterialUniformLocations();
+		//mul.Ka = glGetUniformLocation(id, "material0.ka");
+		//mul.Kd = glGetUniformLocation(id, "material0.kd");
+		//mul.Ks = glGetUniformLocation(id, "material0.ks");
+		//mul.Ns = glGetUniformLocation(id, "material0.ns");
 		return mul;
 	}
 
 	void Shader::SetMaterialUniforms(const Material* m)
 	{
-		auto ul = GetMaterialUniformLocations();
+		/*auto ul = GetMaterialUniformLocations();
 		glUniform3fv(ul.Ka, 1, m->Ambient.AsFloatPtr());
 		glUniform3fv(ul.Kd, 1, m->Diffuse.AsFloatPtr());
 		glUniform3fv(ul.Ks, 1, m->Specular.AsFloatPtr());
-		glUniform1fv(ul.Ns, 1, &(m->Shine));
+		glUniform1fv(ul.Ns, 1, &(m->Shine));*/
 	}
 
 	void Shader::SetCameraPosition(const Vector3& cp)

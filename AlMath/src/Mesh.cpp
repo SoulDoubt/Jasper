@@ -77,6 +77,23 @@ void Mesh::CalculateFaceNormals()
 void Mesh::CalculateExtents()
 {
 
+	/*auto xExtents = std::minmax_element(Vertices.begin(), Vertices.end(),
+		[](const Vertex& a, const Vertex& b) {
+		return a.Position.x < b.Position.x;
+	});
+
+	auto yExtents = std::minmax_element(Vertices.begin(), Vertices.end(),
+		[](const Vertex& a, const Vertex& b) {
+		return a.Position.y < b.Position.y;
+	});
+
+	auto zExtents = std::minmax_element(Vertices.begin(), Vertices.end(),
+		[](const Vertex& a, const Vertex& b) {
+		return a.Position.z < b.Position.z;
+	});*/
+
+	
+
 	float xmin, ymin, zmin;
 	xmin = ymin = zmin = 1000000.0f;
 	float xmax, ymax, zmax;
@@ -96,5 +113,21 @@ void Mesh::CalculateExtents()
 	m_Extents = Vector3(x, y, z);
 	m_minExtents = Vector3(xmin, ymin, zmin);
 	m_maxExtents = Vector3(xmax, ymax, zmax);
+
+	/*float ox = (m_maxExtents.x + m_minExtents.x) / 2.0f;
+	float oy = (m_maxExtents.y + m_minExtents.y) / 2.0f;
+	float oz = (m_maxExtents.z + m_minExtents.z) / 2.0f;*/
+
+	/*m_origin = Vector3(ox, oy, oz);
+	float epsilon = 0.00001f;
+	if (fabs(m_origin.x) > epsilon || fabs(m_origin.y) > epsilon || fabs(m_origin.z) > epsilon) {
+		for (auto& v : Vertices) {
+			v.Position -= m_origin;
+		}		
+		CalculateExtents();
+	}*/
+
+	
 }
-}
+
+} // namespace Jasper

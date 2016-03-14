@@ -1,15 +1,5 @@
 #version 330
 
-struct Transform {
-	vec3 position;
-	vec4 orientation;
-	vec3 scale;
-};
-
-vec3 quaternionRotate(vec4 quat, vec3 vec){
-	vec3 t = 2.0 * cross(quat.xyz, vec);
-	return (vec + quat.w * t + cross(quat.xyz, t));
-}
 
 in vec3 position;
 in vec2 texCoords;
@@ -26,16 +16,13 @@ smooth out vec3 outNormal;
 smooth out vec4 outVertColor;
 smooth out vec3 fragPosition;
 
-uniform Transform transform;
-
-
 void main()
 {
 	outVertColor = color;
 	outTexCoords = texCoords;
-	fragPosition = (modelMatrix * vec4(position, 1.0)).xyz;
+	fragPosition = (modelMatrix * vec4(position, 1.0f)).xyz;
 	outNormal = normalMatrix * normal;
-	gl_Position = mvpMatrix * vec4(position, 1.0);
+	gl_Position = mvpMatrix * vec4(position, 1.0f);
 
 }
 

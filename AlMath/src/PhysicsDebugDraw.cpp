@@ -8,7 +8,7 @@ void PhysicsDebugDrawer::Initialize()
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 	vbo.Create();
-	//vbo.SetUsage(GLBuffer::Usage::DynamicDraw);
+	vbo.SetUsage(GLBuffer::Usage::DynamicDraw);
 	vbo.Bind();
 	uint loc = debugShader->PositionAttributeLocation();
 	debugShader->SetAttributeArray(loc, GL_FLOAT, 0, 3, 0);		
@@ -24,6 +24,7 @@ void PhysicsDebugDrawer::drawLine(const btVector3& from, const btVector3& to, co
 	glBindVertexArray(vao);
 	debugShader->Bind();	
 	vbo.Bind();
+	//glBufferSubData(GL_ARRAY_BUFFER, 0, 2 * sizeof(Vector3), &vecs);
 	vbo.Allocate(&vecs, 2 * sizeof(Vector3));	
 	debugShader->SetModelViewProjectionMatrix(mvpMatrix);		
 	glPointSize(3.0f);

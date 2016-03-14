@@ -131,11 +131,11 @@ void MeshRenderer::Render() {
 	shader->SetModelMatrix(modelMatrix);
 	shader->SetCameraPosition(camPos);
 	
-	/*auto plight = scene->GetGameObjectByName("light0");
+	auto plight = scene->GetGameObjectByName("light0");
 	if (plight) {
 		PointLight* pl = static_cast<PointLight*>(plight);					
 		shader->SetPointLightUniforms(pl);
-	}*/
+	}
 
 	shader->SetMaterialUniforms(m_material);
 

@@ -11,7 +11,6 @@ class DirectionalLight : public GameObject
 {
 public:
 
-
 	DirectionalLight(const std::string& name);
 	virtual ~DirectionalLight();
 
@@ -26,5 +25,6 @@ public:
 	float Exp;	
 	
 };
+
 }
 #endif

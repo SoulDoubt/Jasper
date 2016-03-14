@@ -84,6 +84,10 @@ public:
 		return m_minExtents;
 	}
 
+	Vector3 GetOrigin() const {
+		return m_origin;
+	}
+
 	unsigned int VertexCount;
 
 	void SetReverseWinding(bool r) {
@@ -110,6 +114,7 @@ protected:
 	Vector3 m_Extents;
 	Vector3 m_minExtents;
 	Vector3 m_maxExtents;
+	Vector3 m_origin;
 
 };
 

@@ -64,6 +64,8 @@ void main()
 	vec3 finalColor = pow(linearColor, gamma);
 
 	fcolor = vec4(finalColor, surfaceColor.a);
+	
+	//fcolor = vec4(0.5f, 0.5f, 0.5f, 1.0f);
 
 	// vec3 light_direction = eyeSpaceVertPosition - light0.Position;
 	// float lightDistance = length(light_direction);

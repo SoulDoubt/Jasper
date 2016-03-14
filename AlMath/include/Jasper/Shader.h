@@ -68,7 +68,6 @@ public:
 	virtual uint TexCoordAttributeLocation();
 	virtual uint ColorsAttributeLocation();
 
-
 	virtual void SetModelViewMatrix(const Matrix4& mvm);
 	virtual void SetModelViewProjectionMatrix(const Matrix4& mvp);
 	virtual void SetNormalMatrix(const Matrix3& normal);

@@ -62,19 +62,19 @@ void Scene::Initialize() {
 	// perform actual game object initialization
 
 	// create the skybox
-	//auto skybox = CreateEmptyGameObject("skybox", m_rootNode.get());
-	//auto skyboxMesh = m_meshManager.CreateInstance<Cube>(Vector3(100.0f, 100.0f, 100.0f), true);
-	//skyboxMesh->SetCubemap(true); // we want to render the inside of the cube
-	//auto skyboxShader = m_shaderManager.CreateInstance<SkyboxShader>();
-	//auto skyboxMaterial = m_materialManager.CreateInstance<Material>(skyboxShader);
-	//string posx = "./textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDayLeft2048.png";
-	//string negx = "./textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDayright2048.png";
-	//string posy = "./textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDayUp2048.png";
-	//string negy = "./textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDayDown2048.png";
-	//string posz = "./textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDayFront2048.png";
-	//string negz = "./textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDayBack2048.png";
-	//skyboxMaterial->SetCubemapTextures(posx, negx, posy, negy, posz, negz);	
-	//auto skyboxRenderer = skybox->AttachNewComponent<SkyboxRenderer>(skyboxMesh, skyboxMaterial);
+	auto skybox = CreateEmptyGameObject("skybox", m_rootNode.get());
+	auto skyboxMesh = m_meshManager.CreateInstance<Cube>(Vector3(100.0f, 100.0f, 100.0f), true);
+	skyboxMesh->SetCubemap(true); // we want to render the inside of the cube
+	auto skyboxShader = m_shaderManager.CreateInstance<SkyboxShader>();
+	auto skyboxMaterial = m_materialManager.CreateInstance<Material>(skyboxShader);
+	string posx = "./textures/Yokohama2/posx.jpg";
+	string negx = "./textures/Yokohama2/negx.jpg";
+	string posy = "./textures/Yokohama2/posy.jpg";
+	string negy = "./textures/Yokohama2/negy.jpg";
+	string posz = "./textures/Yokohama2/posz.jpg";
+	string negz = "./textures/Yokohama2/negz.jpg";
+	skyboxMaterial->SetCubemapTextures(posx, negx, posy, negy, posz, negz);	
+	auto skyboxRenderer = skybox->AttachNewComponent<SkyboxRenderer>(skyboxMesh, skyboxMaterial);
 	
 	// create the Basic Shader Instance to render most objects
 	auto defaultShader = m_shaderManager.CreateInstance<TextureShader>();	
@@ -119,13 +119,13 @@ void Scene::Initialize() {
 	auto mr2 = cubechild->AttachNewComponent<MeshRenderer>(childMesh, m2);
 	cubechild->GetLocalTransform().Translate({0.0f, 2.5f + 5.f, 0.0f});	*/
 
-	auto model = m_rootNode->AttachNewChild<Model>("Teapot", "./models/teapot/teapot.obj", defaultShader, true, m_physicsWorld.get());	
+	auto model = m_rootNode->AttachNewChild<Model>("lara", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());	
 	model->GetLocalTransform().Translate(Vector3(0.0f, 0.0f, 0.0f));
-	model->GetLocalTransform().Scale = Vector3{ 0.02f, 0.02f, 0.02f };
-	//model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));	
+	//model->GetLocalTransform().Scale = Vector3{ 0.025f, 0.025f, 0.025f };
+	model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));	
 	
-	auto trooper = m_rootNode->AttachNewChild<Model>("Stormtrooper", "./models/Stormtrooper/Stormtrooper.obj", defaultShader, true, m_physicsWorld.get());
-	//trooper->GetLocalTransform().Translate({ 0.0f, 0.0f, 0.0f });
+	//auto trooper = m_rootNode->AttachNewChild<Model>("Stormtrooper", "./models/Stormtrooper/Stormtrooper.obj", defaultShader, true, m_physicsWorld.get());
+	//trooper->GetLocalTransform().Translate({ 0.0f, 2.0f, 0.0f });
 
 	//auto sphereObject = CreateEmptyGameObject("sphere0", m_rootNode.get());
 	auto sphereObject = m_rootNode->AttachNewChild<GameObject>("sphere_0");

@@ -14,13 +14,16 @@ public:
 	~LitShader();
 
 	void Initialize() override;
-	/*virtual DirectionalLightUniformLocations GetDirectionalLightUniformLocations() override;
+	
+	virtual DirectionalLightUniformLocations GetDirectionalLightUniformLocations() override;
 	virtual void SetDirectionalLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition) override;
 
 	virtual MaterialUniformLocations GetMaterialUniformLocations()override;
 	virtual void SetMaterialUniforms(const Material* m) override;
 
-	void SetTransformUniforms(const Transform& trans) override;*/
+	virtual void SetPointLightUniforms(const PointLight* dl) override;
+
+	void SetTransformUniforms(const Transform& trans) override;
 };
 }
 #endif //_LIT_SHADER_H_

@@ -44,28 +44,36 @@ void Model::Initialize()
 	printf("\nLoaded %d meshes in model: %s", sz, this->GetName().c_str());
 	uint numTris = 0;
 	uint numVerts = 0;
-	Vector3 maxExtents = { -100000.0f, -1000000.0f, -1000000.0f };
-	Vector3 minExtents = { 1000000.0f, 1000000.0f, 1000000.0f };
+	/*Vector3 maxExtents = { -100000.0f, -1000000.0f, -1000000.0f };
+	Vector3 minExtents = { 1000000.0f, 1000000.0f, 1000000.0f };*/
 
 	for (auto& m : m_meshManager.GetCache()) {
 		numTris += m->Indices.size() / 3;
 		numVerts += m->Vertices.size();
-		if (m->GetMaxExtents().x > maxExtents.x) maxExtents.x = m->GetMaxExtents().x;
+		/*if (m->GetMaxExtents().x > maxExtents.x) maxExtents.x = m->GetMaxExtents().x;
 		if (m->GetMaxExtents().y > maxExtents.y) maxExtents.y = m->GetMaxExtents().y;
 		if (m->GetMaxExtents().z > maxExtents.z) maxExtents.z = m->GetMaxExtents().z;
 																				
 		if (m->GetMinExtents().z < minExtents.z) minExtents.x = m->GetMinExtents().z;
 		if (m->GetMinExtents().z < minExtents.z) minExtents.y = m->GetMinExtents().z;
-		if (m->GetMinExtents().z < minExtents.z) minExtents.z = m->GetMinExtents().z;		
+		if (m->GetMinExtents().z < minExtents.z) minExtents.z = m->GetMinExtents().z;	*/
+		
 	}
 	if (m_enablePhysics) {
-		Vector3 halfExtents;
-		halfExtents.x = (maxExtents.x - minExtents.x) / 2;
-		halfExtents.y = (maxExtents.y - minExtents.y) / 2;
-		halfExtents.z = (maxExtents.z - minExtents.z) / 2;
-		auto bc = AttachNewComponent<CapsuleCollider>(this->GetName() + "_Collider", halfExtents, m_physicsWorld);
-		bc->Mass = 5.0f;
+		/*float halfx = maxExtents.x - minExtents.x;
+		float halfy = maxExtents.y - minExtents.y;
+		float halfz = maxExtents.z - minExtents.z;*/
+		//Vector3 hes = {};
+		Vector3 hes = { -1000000.0f, -1000000.0f, -1000000.0f };
+		for (auto& m : m_meshManager.GetCache()) {
+			if (m->GetHalfExtents().x > hes.x) hes.x = m->GetHalfExtents().x;
+			if (m->GetHalfExtents().y > hes.y) hes.y = m->GetHalfExtents().y;
+			if (m->GetHalfExtents().z > hes.z) hes.z = m->GetHalfExtents().z;
+		}	
+		auto bc = AttachNewComponent<BoxCollider>(this->GetName() + "_Collider", hes, m_physicsWorld);
+		bc->Mass = 20.0f;
 	}
+	
 	
 
 
@@ -89,6 +97,7 @@ void Model::ProcessAiSceneNode(const aiScene* scene, aiNode* node)
 
 void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 {
+	
 	auto m = m_meshManager.CreateInstance<Mesh>();
 	m->Vertices.reserve(aiMesh->mNumVertices);
 	m->Indices.reserve(aiMesh->mNumFaces * 3);
