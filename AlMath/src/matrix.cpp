@@ -21,14 +21,17 @@ void Matrix4::CreatePerspectiveProjection(const float fov, const float aspect, c
 	m.mat[0][1] = 0.0f;
 	m.mat[0][2] = 0.0f;
 	m.mat[0][3] = 0.0f;
+
 	m.mat[1][0] = 0.0f;
 	m.mat[1][1] = cotan;
 	m.mat[1][2] = 0.0f;
 	m.mat[1][3] = 0.0f;
+
 	m.mat[2][0] = 0.0f;
 	m.mat[2][1] = 0.0f;
 	m.mat[2][2] = -(nearPlane + farPlane) / clip;
 	m.mat[2][3] = -(2.0f * nearPlane * farPlane) / clip;
+
 	m.mat[3][0] = 0.0f;
 	m.mat[3][1] = 0.0f;
 	m.mat[3][2] = -1.0f;
@@ -58,36 +61,61 @@ void Matrix4::CreatePerspectiveProjection(const float fov, const float aspect, c
 
 void Matrix4::CreateOrthographicProjection(const float left, const float right, const float bottom, const float top, const float near, const float far)
 {
-	if (left == right || bottom == top || near == far)
-		return;
+	//if (left == right || bottom == top || near == far)
+	//	return;
 
-	float width = right - left;
-	float height = top - bottom;
-	float clip = far - near;
+	//float width = right - left;
+	//float height = top - bottom;
+	//float clip = far - near;
 
-	Matrix4 m;
-	m.mat[0].x = 2.0f / width;
-	m.mat[0].y = 0.f;
-	m.mat[0].z = 0.f;
-	m.mat[0].w = 0.f;
+	//Matrix4 m;
+	//m.mat[0].x = 2.0f / width;
+	//m.mat[0].y = 0.f;
+	//m.mat[0].z = 0.f;
+	//m.mat[0].w = 0.f;
 
-	m.mat[1].x = 0.f;
-	m.mat[1].y = 2.0f / height;
-	m.mat[1].z = 0.f;
-	m.mat[1].w = 0.f;
+	//m.mat[1].x = 0.f;
+	//m.mat[1].y = 2.0f / height;
+	//m.mat[1].z = 0.f;
+	//m.mat[1].w = 0.f;
 
-	m.mat[2].x = 0.f;
-	m.mat[2].y = 0.f;
-	m.mat[2].z = 2.f / clip;
-	m.mat[2].w = -near / (far - near);
+	//m.mat[2].x = 0.f;
+	//m.mat[2].y = 0.f;
+	//m.mat[2].z = 2.f / clip;
+	//m.mat[2].w = -near / (far - near);
 
-	m.mat[3].x = 0.f;// -(right + left) / (right - left);
-	m.mat[3].y = 0.f;//-(top + bottom) / (top - bottom);
-	m.mat[3].z = 0.f;// -(far + near) / (far - near);
-	m.mat[3].w = 1.f;
-	m.Transpose();
+	//m.mat[3].x = 0.f;// -(right + left) / (right - left);
+	//m.mat[3].y = 0.f;//-(top + bottom) / (top - bottom);
+	//m.mat[3].z = 0.f;// -(far + near) / (far - near);
+	//m.mat[3].w = 1.f;
+	//m.Transpose();
 
-	*this *= m;
+	//*this *= m;
+
+	Matrix4 m = Matrix4();
+	m.SetToIdentity();
+
+	m.mat[0][0] = 2.0f / (right - left);
+	m.mat[0][1] = 0.0f;
+	m.mat[0][2] = 0.0f;
+	m.mat[0][3] = -(right + left) / (right - left);
+
+	m.mat[1][0] = 0.0f;
+	m.mat[1][1] = 2.0f / (top - bottom);
+	m.mat[1][2] = 0.0f;
+	m.mat[1][3] = -(top + bottom) / (top - bottom);;
+
+	m.mat[2][0] = 0.0f;
+	m.mat[2][1] = 0.0f;
+	m.mat[2][2] = -2.0f / (far - near);
+	m.mat[2][3] = -(far + near) / (far - near);
+
+	m.mat[3][0] = 0.0f;// 
+	m.mat[3][1] = 0.0f;// 
+	m.mat[3][2] = 0.0f;// ;
+	m.mat[3][3] = 1.0f;
+	//m.Transpose();
+	*this =  *this * m;
 }
 
 

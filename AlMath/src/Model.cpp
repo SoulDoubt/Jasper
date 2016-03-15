@@ -60,24 +60,16 @@ void Model::Initialize()
 		
 	}
 	if (m_enablePhysics) {
-		/*float halfx = maxExtents.x - minExtents.x;
-		float halfy = maxExtents.y - minExtents.y;
-		float halfz = maxExtents.z - minExtents.z;*/
-		//Vector3 hes = {};
+		
 		Vector3 hes = { -1000000.0f, -1000000.0f, -1000000.0f };
 		for (auto& m : m_meshManager.GetCache()) {
 			if (m->GetHalfExtents().x > hes.x) hes.x = m->GetHalfExtents().x;
 			if (m->GetHalfExtents().y > hes.y) hes.y = m->GetHalfExtents().y;
-			if (m->GetHalfExtents().z > hes.z) hes.z = m->GetHalfExtents().z;
+			if (m->GetHalfExtents().z > hes.z) hes.z = m->GetHalfExtents().z;			
 		}	
 		auto bc = AttachNewComponent<BoxCollider>(this->GetName() + "_Collider", hes, m_physicsWorld);
-		bc->Mass = 20.0f;
-	}
-	
-	
-
-
-
+		bc->Mass = 20.0f;				
+	}		
 	printf("\nModel Contains %d Vertices and %d Triangles.", numTris, numVerts);
 
 }
@@ -124,8 +116,19 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 				m->Indices.push_back(face.mIndices[j]);
 			}
 		}
-
 	}
+
+	m->CalculateExtents();
+	//Vector3	max = m->GetMaxExtents();
+	//Vector3 min = m->GetMinExtents();
+	//Vector3 origin = { (min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f, (min.z + max.z) / 2.0f };
+	//float epsilon = 0.000001;
+	//if (fabs(origin.x) > epsilon || fabs(origin.y) > epsilon || fabs(origin.z) > epsilon) {
+	//	// need to move all vertices towards the origin
+	//	for (auto& v : m->Vertices) {
+	//		v.Position -= origin;
+	//	}
+	//}
 
 	if (aiMesh->mMaterialIndex >= 0) {
 		auto mat = scene->mMaterials[aiMesh->mMaterialIndex];
@@ -135,7 +138,7 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 		auto myMaterial = m_materialManager.CreateInstance<Material>(m_shader);
 		string textureFileName = string(texString.C_Str());
 		if (textureFileName.find(".") == string::npos) {
-			textureFileName += "_D.tga";
+			textureFileName += "_D.tga";						
 		}
 		aiColor3D diffuse, ambient, specular;
 		float shine;
@@ -143,27 +146,19 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 		mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
 		mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
 		mat->Get(AI_MATKEY_SHININESS, shine);
+		if (shine == 0.0f) {
+			shine = 12.0f;
+		}
 		myMaterial->SetTexture2D(m_directory + "/" + textureFileName);
 		myMaterial->Ambient = Vector3(ambient.r, ambient.g, ambient.b);
 		myMaterial->Diffuse = Vector3(diffuse.r, diffuse.g, diffuse.b);
 		myMaterial->Specular = Vector3(specular.r, specular.g, specular.b);
 		myMaterial->Shine = shine;
 	}
-
-	if (aiMesh->HasBones()) {
-		for (uint i = 0; i < aiMesh->mNumBones; ++i) {
-			auto bone = aiMesh->mBones[i];
-			string boneName = string(bone->mName.C_Str());
-			printf("Found bone named: %s\n", boneName.c_str());
-		}
-
-	}
-
-	m->CalculateExtents();
+		
 	if (!aiMesh->HasNormals()) {
 		m->CalculateFaceNormals();
 	}
-
 
 	Material* renderMaterial;
 	if (m_materialManager.GetSize() > 0) {

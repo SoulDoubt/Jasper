@@ -1,11 +1,16 @@
-#version 130
+#version 330
 
-in vec3 inPosition;
-in vec2 inTexCoords;
+in vec3 position;
+in vec2 texCoords;
+in vec4 color;
+
+uniform mat4 mvpMatrix;
 
 smooth out vec2 tex_coords;
+out vec4 vert_color;
 
 void main(){
-	gl_Position = vec4(inPosition.xy, 0.0, 1.0);
-	tex_coords = inTexCoords;
+	gl_Position = mvpMatrix * vec4(position, 1.0);
+	tex_coords = texCoords;
+	vert_color = color;
 }

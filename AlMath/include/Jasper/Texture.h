@@ -17,6 +17,8 @@ public:
 	~Texture();
 
 	bool Load(std::string filename);
+	bool Load(const unsigned char* data, int width, int height);
+	
 	virtual unsigned TextureID() const {
 		return m_textureID;
 	}

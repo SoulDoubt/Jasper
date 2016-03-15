@@ -104,10 +104,10 @@ private:
 	std::string m_name;
 	std::string m_tag;
 	GameObject* m_parent;
-	Transform m_transform;
+	
 	bool m_enabled;
 
-	Scene* m_scene;
+	
 
 	std::vector<std::unique_ptr<Component>> m_components;
 	std::vector<std::unique_ptr<GameObject>> m_children;
@@ -115,7 +115,8 @@ private:
 	GroupedComponentMap m_groupedComponents;
 
 protected:
-
+	Scene* m_scene;
+	Transform m_transform;
 	bool m_isDestroyed = false;
 	bool m_isRenderable = false;
 	virtual void AwakeCurrent();

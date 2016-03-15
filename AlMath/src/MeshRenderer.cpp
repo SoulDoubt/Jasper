@@ -147,6 +147,7 @@ void MeshRenderer::Render() {
 	shader->Release();
 	glBindVertexArray(0);
 
+#ifdef DEBUG_DRAW_PHYSICS
 	if (physics) {
 		btTransform debugTransform = btTransform();// physics->GetDebugTransform();
 		debugTransform.setIdentity();
@@ -156,6 +157,7 @@ void MeshRenderer::Render() {
 		physics->GetPhysicsWorld()->DrawPhysicsShape(debugTransform, shape, color);
 	}
 	GLERRORCHECK;
+#endif // DEBUG_DRAW_PHYSICS
 }
 
 } // namespace Jasper

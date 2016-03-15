@@ -16,16 +16,17 @@
 #include <Jasper\Sphere.h>
 #include <Jasper\SphereCollider.h>
 #include <Jasper\PointLight.h>
-
+#include <fstream>
 
 namespace Jasper {
 
 using namespace std;
 
-Scene::Scene() : m_camera(Camera::CameraType::FLYING)
+Scene::Scene(int width, int height) : m_camera(Camera::CameraType::FLYING)
 {
-	
-
+	m_windowWidth = width;
+	m_windowHeight = height;
+	m_camera.SetScene(this);
 }
 
 Scene::~Scene()
@@ -35,11 +36,10 @@ Scene::~Scene()
 	m_materialManager.Clear();
 }
 
-void DrawText(char* text, float x, float y, float r, float g, float b) {
-	
-}
-
 void Scene::Initialize() {
+
+	//m_fontRenderer = std::make_unique<FontRenderer>();
+	//m_fontRenderer->Initialize();
 	m_rootNode = make_unique<GameObject>("Root_Node");
 	m_rootNode->SetScene(this);
 
@@ -50,8 +50,11 @@ void Scene::Initialize() {
 	auto pm = Matrix4();
 	auto om = Matrix4();
 
-	pm.CreatePerspectiveProjection(60.0f, 800.0f / 600.0f, 0.1f, 1000.0f);
-	om.CreateOrthographicProjection(800.f / 600.f, 800.f / 600.f, 600.f, 0.f, -1.0f, 1.0f);
+	float aspectRatio = (float)m_windowWidth / (float)m_windowHeight;
+	float halfWidth = (float)m_windowWidth / 2.0f;
+	float halfHeight = (float)m_windowHeight / 2.0f;
+	pm.CreatePerspectiveProjection(60.0f, aspectRatio, 0.1f, 1000.0f);
+	om.CreateOrthographicProjection(.0f, m_windowWidth, 0,m_windowHeight, 1.0f, -100.0f);
 	m_projectionMatrix = pm;
 	m_orthoMatrix = om;
 
@@ -74,11 +77,17 @@ void Scene::Initialize() {
 	string posz = "./textures/Yokohama2/posz.jpg";
 	string negz = "./textures/Yokohama2/negz.jpg";
 	skyboxMaterial->SetCubemapTextures(posx, negx, posy, negy, posz, negz);	
-	auto skyboxRenderer = skybox->AttachNewComponent<SkyboxRenderer>(skyboxMesh, skyboxMaterial);
+	//auto skyboxRenderer = skybox->AttachNewComponent<SkyboxRenderer>(skyboxMesh, skyboxMaterial);
 	
 	// create the Basic Shader Instance to render most objects
-	auto defaultShader = m_shaderManager.CreateInstance<TextureShader>();	
+	auto defaultShader = m_shaderManager.CreateInstance<LitShader>();	
 
+	m_fontRenderer = make_unique<FontRenderer>();
+	m_fontRenderer->Initialize();
+	m_fontRenderer->SetOrthoMatrix(m_orthoMatrix);
+	auto fontTextureAtlas = m_fontRenderer->GetTextureAtlas();
+	auto fontMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
+	fontMaterial->SetTexture2D(std::move(fontTextureAtlas));
 	// Floor
 	auto floor = CreateEmptyGameObject("floor", m_rootNode.get());
 	auto quadMesh = m_meshManager.CreateInstance<Quad>(Vector2(100.0f, 100.0f), 10, 10, Quad::AxisAlignment::XZ);	
@@ -88,19 +97,21 @@ void Scene::Initialize() {
 	floor->GetLocalTransform().Translate(Vector3( 0.0f, -1.f, 0.0f ));
 	auto floorP = floor->AttachNewComponent<PlaneCollider>("plane_collider", quadMesh, m_physicsWorld.get());
 	floorP->Friction = 0.9f;
-	floorMaterial->Ambient = { 1.0f, 1.0f, 1.0f };
+	floorMaterial->Ambient = { 1.0f, 1.0f, 1.0f };	
 
 	auto wall = m_rootNode->AttachNewChild<GameObject>("wall_0");
 	auto wallMesh = m_meshManager.CreateInstance<Cube>( Vector3(10.f, 10.f, 0.2f));
-	auto wallRenderer = wall->AttachNewComponent<MeshRenderer>(wallMesh, floorMaterial);
+	auto wallRenderer = wall->AttachNewComponent<MeshRenderer>(wallMesh, fontMaterial);
 	auto wallCollider = wall->AttachNewComponent<BoxCollider>("wall_0_collider", wallMesh, m_physicsWorld.get());
-	wallCollider->Mass = 10.0f;
+	wallCollider->Mass = 00.0f;
+	wallMesh->FlipTextureCoords();
 	wall->GetLocalTransform().Translate({ 0.0f, 7.0f, -10.0f });
 
 	auto cube = m_rootNode->AttachNewChild<GameObject>("cube_0");
 	auto cubeMesh = m_meshManager.CreateInstance<Cube>(Vector3({ 1.5f, 1.5f, 1.5f }));
 	auto m1 = m_materialManager.CreateInstance<Material>(defaultShader);
 	m1->SetTexture2D("./textures/crate.png");
+	
 	m1->Shine = 36.0f;
 	m1->Diffuse = { 0.8f, 0.8f, 0.8f };
 	m1->Ambient = { 0.25f, 0.25f, 0.25f };
@@ -118,14 +129,19 @@ void Scene::Initialize() {
 	m2->SetTexture2D("./textures/jasper.jpg");	
 	auto mr2 = cubechild->AttachNewComponent<MeshRenderer>(childMesh, m2);
 	cubechild->GetLocalTransform().Translate({0.0f, 2.5f + 5.f, 0.0f});	*/
-
-	auto model = m_rootNode->AttachNewChild<Model>("lara", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());	
-	model->GetLocalTransform().Translate(Vector3(0.0f, 0.0f, 0.0f));
-	//model->GetLocalTransform().Scale = Vector3{ 0.025f, 0.025f, 0.025f };
-	model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));	
 	
-	//auto trooper = m_rootNode->AttachNewChild<Model>("Stormtrooper", "./models/Stormtrooper/Stormtrooper.obj", defaultShader, true, m_physicsWorld.get());
-	//trooper->GetLocalTransform().Translate({ 0.0f, 2.0f, 0.0f });
+
+	auto model = m_rootNode->AttachNewChild<Model>("teapot", "./models/teapot/teapot.obj", defaultShader, true, m_physicsWorld.get());	
+	model->GetLocalTransform().Translate(Vector3(0.0f, 0.0f, 0.0f));
+	model->GetLocalTransform().Scale = Vector3{ 0.025f, 0.025f, 0.025f };
+	//model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));	
+	
+	auto trooper = m_rootNode->AttachNewChild<Model>("stormtrooper", "./models/Stormtrooper/Stormtrooper.obj", defaultShader, true, m_physicsWorld.get());
+	trooper->GetLocalTransform().Translate({ 0.0f, 2.0f, 0.0f });
+
+	/*auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
+	lara->GetLocalTransform().Translate({ 4.0f, 1.0f, -3.0f });
+	lara->GetLocalTransform().Rotate({ 0.0f, 0.0f, 1.0f }, -DEG_TO_RAD(90.f));*/
 
 	//auto sphereObject = CreateEmptyGameObject("sphere0", m_rootNode.get());
 	auto sphereObject = m_rootNode->AttachNewChild<GameObject>("sphere_0");
@@ -137,9 +153,11 @@ void Scene::Initialize() {
 	sc->Mass = 5.f;
 	sphereObject->GetLocalTransform().Translate({ 0.f, 25.f, -3.f });
 
+
+
 	auto light0 = m_rootNode->AttachNewChild<PointLight>("light0");	
 	light0->GetLocalTransform().Translate({ 0.0f, 10.0f, 0.0f });	
-	light0->ConstAtten = 0.025f;
+	light0->ConstAtten = 0.009f;
 	auto lightMesh = m_meshManager.CreateInstance<Cube>(Vector3(0.1f, 0.1f, 0.1f));
 	auto lightMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
 	lightMaterial->SetTexture2D("./textures/white.png");
@@ -164,8 +182,12 @@ GameObject* Scene::GetGameObjectByName(string name)
 
 void Scene::Update(float dt)
 {	
+	Vector3 position = m_camera.GetPosition();
+	auto pos = position.ToString();
 	m_physicsWorld->Update(dt);			
-	m_rootNode->Update(dt);	
+	m_rootNode->Update(dt);		
+	string s = to_string(dt * 1000);
+	m_fontRenderer->RenderText(s.c_str(), 45, 75);
 }
 
 void Scene::Awake()

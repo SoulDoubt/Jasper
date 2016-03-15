@@ -17,4 +17,6 @@
 
 using uint = unsigned int;
 
+#define DEBUG_DRAW_PHYSICS
+
 #endif

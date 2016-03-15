@@ -47,6 +47,10 @@ public:
 		m_texture = std::move(tex);
 	}
 
+	void SetTexture2D(std::unique_ptr<Texture> tex) {
+		m_texture = std::move(tex);
+	}
+
 	CubemapTexture* GetCubemapTexture() {
 		return m_cubemap.get();
 	}

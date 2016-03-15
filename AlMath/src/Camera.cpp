@@ -1,5 +1,7 @@
 #include <Jasper\Camera.h>
 #include <Jasper\PhysicsWorld.h>
+#include <Jasper\Scene.h>
+
 
 namespace Jasper {
 
@@ -7,59 +9,12 @@ Vector3 Camera::WORLD_X_AXIS = Vector3(1.0f, 0.0f, 0.0f);
 Vector3 Camera::WORLD_Y_AXIS = Vector3(0.0f, 1.0f, 0.0f);
 Vector3 Camera::WORLD_Z_AXIS = Vector3(0.0f, 0.0f, 1.0f);
 
-Matrix4 FromBtTransform(const btTransform& t) {
-
-	const btQuaternion q = t.getRotation();
-	const btVector3 p = t.getOrigin();
-
-	float xx = q.x() * q.x();
-	float yy = q.y() * q.y();
-	float yz = q.y() * q.z();
-	float zz = q.z() * q.z();
-	float xy = q.x() * q.y();
-	float zw = q.z() * q.w();
-	float xz = q.x() * q.z();
-	float yw = q.y() * q.w();
-	float xw = q.x() * q.w();
-
-	Matrix4 mat;
-
-	mat.mat[0].x = 1.0f - (2.0f * yy) - (2.0f * zz);
-	mat.mat[0].y = (2.0f * xy) - (2.0f * zw);
-	mat.mat[0].z = (2.0f * xz) + (2.0f * yw);
-	mat.mat[0].w = p.x();
-
-	mat.mat[1].x = (2.0f * xy) + (2.0f * zw);
-	mat.mat[1].y = 1.0f - (2.0f * xx) - (2.0f * zz);
-	mat.mat[1].z = (2.0f * yz) - (2.0f * xw);
-	mat.mat[1].w = p.y();
-
-	mat.mat[2].x = (2.0f * xz) - (2.0f * yw);
-	mat.mat[2].y = (2.0f * yz) + (2.0f * xw);
-	mat.mat[2].z = 1.0f - (2.0f * xx) - (2.0f * yy);
-	mat.mat[2].w = p.z();
-
-	mat.mat[3].x = 0.f;
-	mat.mat[3].y = 0.f;
-	mat.mat[3].z = 0.f;
-	mat.mat[3].w = 1.0f;
-
-	/*if (scale != btVector3(1.f, 1.f, 1.f)) {
-	Matrix4 scaleMat;
-	scaleMat.mat[0].x = scale.x;
-	scaleMat.mat[1].y = scale.y;
-	scaleMat.mat[2].z = scale.z;
-	return mat * scaleMat;
-	}*/
-
-	return mat;
-}
 
 Camera::Camera(Camera::CameraType type)
 {
 	m_type = type;
-	transform.SetIdentity();
-	transform.Position = { 0.0f, 1.82f, 10.0f };		
+	m_transform.SetIdentity();
+	m_transform.Position = { 0.0f, 1.82f, 10.0f };		
 }
 
 void Camera::Awake() {
@@ -70,7 +25,7 @@ void Camera::Awake() {
 	const float height = 1.9f / 2.f;
 
 	m_collisionShape = std::make_unique<btCapsuleShape>(width / 2, height * 2.f);
-	btDefaultMotionState* ms = new btDefaultMotionState(transform.GetBtTransform());
+	btDefaultMotionState* ms = new btDefaultMotionState(m_transform.GetBtTransform());
 	btVector3 inertia;
 	m_collisionShape->calculateLocalInertia(mass, inertia);
 	btRigidBody::btRigidBodyConstructionInfo rbci(mass, ms, m_collisionShape.get(), inertia);
@@ -94,14 +49,29 @@ Matrix4 Camera::GetViewMatrix()
 
 	//Transform t = Transform(m_position, m_orientation);
 	//Matrix4 vm = Matrix4::FromTransform(t);
-	Matrix4 vm = transform.TransformMatrix();
+	Matrix4 vm = m_transform.TransformMatrix();
 	m_localXAxis = Vector3(vm.mat[0].x, vm.mat[1].x, vm.mat[2].x);
 	m_localYAxis = Vector3(vm.mat[0].y, vm.mat[1].y, vm.mat[2].y);
 	m_localZAxis = Vector3(vm.mat[0].z, vm.mat[1].z, vm.mat[2].z);
 	m_viewVector = -m_localZAxis;
 	//const auto pos = transform.Position;
 	//const auto pos = transform.Position;
-	m_rigidBody->getMotionState()->setWorldTransform(transform.GetBtTransform());
+	m_rigidBody->getMotionState()->setWorldTransform(m_transform.GetBtTransform());
+
+#ifdef DEBUG_DRAW_PHYSICS
+
+	//Matrix4 pm = m_scene->ProjectionMatrix();
+	//Matrix4 mvp = pm * vm * vm;
+	//m_physicsWorld->debugDrawer->mvpMatrix = mvp;
+	//btTransform btt;
+	//btt.setIdentity();
+//	m_physicsWorld->DrawPhysicsShape(btt, m_collisionShape.get(), btVector3(1.0f, 0.0f, 0.0f));
+
+
+#endif
+
+
+	
 	//m_rigidBody->getMotionState()->setWorldTransform(btt);
 	//printf("Camera Position: %.3f, %.3f, %.3f Direction: %.3f, %.3f, %.3f \r", pos.x(), pos.y(), pos.z(), m_viewVector.x, m_viewVector.y, m_viewVector.z);
 	return vm;
@@ -113,7 +83,7 @@ Matrix4 Camera::GetCubemapViewMatrix()
 	//Transform t = Transform(m_position, m_orientation);
 	//Matrix4 vm = Matrix4::FromTransform(t);
 	//Matrix4 vm = FromBtTransform(btt);
-	Matrix4 vm = transform.TransformMatrix();
+	Matrix4 vm = m_transform.TransformMatrix();
 	vm.mat[0].w = 0.0f;
 	vm.mat[1].w = 0.0f;
 	vm.mat[2].w = 0.0f;
@@ -124,7 +94,7 @@ void Camera::Rotate(float pitch, float roll, float yaw)
 {
 	m_accumPitch += pitch;
 	//btQuaternion orientation = btt.getRotation();
-	Quaternion orientation = transform.Orientation;
+	Quaternion orientation = m_transform.Orientation;
 	//Quaternion qo = Quaternion(orientation.x(), orientation.y(), orientation.z(), orientation.w());
 	
 
@@ -154,7 +124,7 @@ void Camera::Rotate(float pitch, float roll, float yaw)
 		//qo = yr * qo;		
 	}
 	//btt.setRotation(orientation);	
-	transform.Orientation = orientation;
+	m_transform.Orientation = orientation;
 
 	/* TEST */
 	/*Transform tr;
@@ -186,7 +156,7 @@ void Camera::Translate(const Vector3& vec)
 	else {
 		forwards = m_viewVector;
 	}
-	auto& current = transform.Position;
+	auto& current = m_transform.Position;
 	//auto& current = btt.getOrigin();
 
 	/*btVector3 after = current.AsBtVector3();
@@ -229,11 +199,11 @@ void Camera::Translate(const Vector3& vec)
 			newPos.setInterpolate3(current.AsBtVector3(), after.AsBtVector3(), min);
 			//transform.Position = Vector3(newPos);
 			//btt.setOrigin(newPos);
-			transform.Position = Vector3(newPos);
+			m_transform.Position = Vector3(newPos);
 		}
 		else {
 			//btt.setOrigin(after.AsBtVector3());// = Vector3(after);
-			transform.Position = after;
+			m_transform.Position = after;
 		}
 	}
 	else
@@ -242,12 +212,12 @@ void Camera::Translate(const Vector3& vec)
 		current += WORLD_Y_AXIS.AsBtVector3() * vec.y;
 		current += forwards.AsBtVector3() * z;
 		//btt.setOrigin(current);// = current;
-		transform.Position = current;
+		m_transform.Position = current;
 	}
 
 	btTransform btt;
-	btt.setRotation(transform.Orientation.AsBtQuaternion());
-	btt.setOrigin(transform.Position.AsBtVector3());
+	btt.setRotation(m_transform.Orientation.AsBtQuaternion());
+	btt.setOrigin(m_transform.Position.AsBtVector3());
 
 	//m_rigidBody->getMotionState()->setWorldTransform(transform.GetBtTransform());
 	m_rigidBody->getMotionState()->setWorldTransform(btt);

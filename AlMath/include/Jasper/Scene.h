@@ -9,15 +9,16 @@
 #include "PhysicsWorld.h"
 #include <vector>
 #include <typeinfo>
-#include "FontRenderer.h"
 #include "ResourceManager.h"
+#include "Mesh.h"
+#include "FontRenderer.h"
 
 namespace Jasper {
 
 class Scene
 {
-public:
-	Scene();
+public:	
+	explicit Scene(int width, int height);
 	~Scene();	
 
 	Matrix4& ProjectionMatrix() {
@@ -60,6 +61,8 @@ private:
 	ResourceManager<Material> m_materialManager;
 
 	std::unique_ptr<FontRenderer> m_fontRenderer;
+
+	int m_windowWidth, m_windowHeight;
 
 	void Initialize();
 

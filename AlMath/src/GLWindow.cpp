@@ -74,8 +74,7 @@ void GLWindow::RunLoop() {
 		// DO ALL THE THINGS HERE!!:)
 		ProcessInput(m_window, m_scene.get(), deltaTime);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		m_scene->Update(deltaTime);
-		GLERRORCHECK;
+		m_scene->Update(deltaTime);		
 		glfwSwapBuffers(m_window);
 		glfwPollEvents();
 	}
@@ -84,26 +83,28 @@ void GLWindow::RunLoop() {
 
 void GLWindow::InitializeScene()
 {
-	m_scene = make_unique<Scene>();
+	m_scene = make_unique<Scene>(Width, Height);
 	m_scene->Awake();
 	glfwSetWindowUserPointer(m_window, m_scene.get());
 }
 
 void GLWindow::SetupGL()
 {
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_TEXTURE_CUBE_MAP);
 	glEnable(GL_TEXTURE_3D);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glfwWindowHint(GLFW_SAMPLES, 4);
+
 	glEnableClientState(GL_VERTEX_ARRAY);
+	//glEnable(GL_MULTISAMPLE);
 	GLERRORCHECK;
 
 }

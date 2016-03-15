@@ -1,9 +1,11 @@
-#version 130
+#version 330
 
 smooth in vec2 tex_coords;
+in vec4 vert_color;
 uniform sampler2D colorMap;
 out vec4 fcolor;
 
 void main(){
-	fcolor = vec4(1.0f, 1.0f, 1.0f, texture(colorMap, tex_coords).r);	
+	vec4 font_color = texture(colorMap, tex_coords);	
+	fcolor = vert_color * font_color;
 }

@@ -75,25 +75,7 @@ void Mesh::CalculateFaceNormals()
 }
 
 void Mesh::CalculateExtents()
-{
-
-	/*auto xExtents = std::minmax_element(Vertices.begin(), Vertices.end(),
-		[](const Vertex& a, const Vertex& b) {
-		return a.Position.x < b.Position.x;
-	});
-
-	auto yExtents = std::minmax_element(Vertices.begin(), Vertices.end(),
-		[](const Vertex& a, const Vertex& b) {
-		return a.Position.y < b.Position.y;
-	});
-
-	auto zExtents = std::minmax_element(Vertices.begin(), Vertices.end(),
-		[](const Vertex& a, const Vertex& b) {
-		return a.Position.z < b.Position.z;
-	});*/
-
-	
-
+{		
 	float xmin, ymin, zmin;
 	xmin = ymin = zmin = 1000000.0f;
 	float xmax, ymax, zmax;
