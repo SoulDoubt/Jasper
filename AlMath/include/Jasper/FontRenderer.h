@@ -41,6 +41,7 @@ private:
 	unsigned int m_vao;
 
 	stbtt_bakedchar m_cdata[256];
+	stbtt_packedchar m_packData[256];
 };
 
 }

@@ -37,7 +37,7 @@ void SphereCollider::Awake()
 	btRigidBody::btRigidBodyConstructionInfo rbci(Mass, m_defaultMotionState, m_collisionShape, inertia);
 	m_rigidBody = new btRigidBody(rbci);
 	m_rigidBody->setRestitution(Restitution);
-	m_rigidBody->setFriction(Friction);
+	m_rigidBody->setFriction(Friction);	
 	m_world->AddRigidBody(m_rigidBody);
 }
 

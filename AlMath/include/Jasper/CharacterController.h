@@ -3,9 +3,10 @@
 
 #include "GameObject.h"
 
+
+
 namespace Jasper {
-class CharacterController :
-	public GameObject
+class CharacterController 
 {
 public:
 	CharacterController();

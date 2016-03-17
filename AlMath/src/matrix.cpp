@@ -35,28 +35,36 @@ void Matrix4::CreatePerspectiveProjection(const float fov, const float aspect, c
 	m.mat[3][0] = 0.0f;
 	m.mat[3][1] = 0.0f;
 	m.mat[3][2] = -1.0f;
-	m.mat[3][3] = 0.0f;
-
-	/*m.mat[0][0] = cotan / aspect;
-	m.mat[1][0] = 0.0f;
-	m.mat[2][0] = 0.0f;
-	m.mat[3][0] = 0.0f;
-	m.mat[0][1] = 0.0f;
-	m.mat[1][1] = cotan;
-	m.mat[2][1] = 0.0f;
-	m.mat[3][1] = 0.0f;
-	m.mat[0][2] = 0.0f;
-	m.mat[1][2] = 0.0f;
-	m.mat[2][2] = -(nearPlane + farPlane) / clip;
-	m.mat[3][2] = -(2.0f * nearPlane * farPlane) / clip;
-	m.mat[0][3] = 0.0f;
-	m.mat[1][3] = 0.0f;
-	m.mat[2][3] = -1.0f;
-	m.mat[3][3] = 0.0f;*/
+	m.mat[3][3] = 0.0f;	
 
 	// Apply the projection.
 	*this *= m;
 
+}
+
+Matrix4 CreateOrtho(const float left, const float right, const float bottom, const float top, const float near, const float far) {
+	Matrix4 m = Matrix4();
+	m.mat[0][0] = 2.0f / (right - left);
+	m.mat[0][1] = 0.0f;
+	m.mat[0][2] = 0.0f;
+	m.mat[0][3] = -(right + left) / (right - left);
+
+	m.mat[1][0] = 0.0f;
+	m.mat[1][1] = 2.0f / (top - bottom);
+	m.mat[1][2] = 0.0f;
+	m.mat[1][3] = -(top + bottom) / (top - bottom);;
+
+	m.mat[2][0] = 0.0f;
+	m.mat[2][1] = 0.0f;
+	m.mat[2][2] = -2.0f / (far - near);
+	m.mat[2][3] = -(far + near) / (far - near);
+
+	m.mat[3][0] = 0.0f;// 
+	m.mat[3][1] = 0.0f;// 
+	m.mat[3][2] = 0.0f;// ;
+	m.mat[3][3] = 1.0f;
+
+	return m;
 }
 
 void Matrix4::CreateOrthographicProjection(const float left, const float right, const float bottom, const float top, const float near, const float far)
@@ -92,9 +100,7 @@ void Matrix4::CreateOrthographicProjection(const float left, const float right, 
 
 	//*this *= m;
 
-	Matrix4 m = Matrix4();
-	m.SetToIdentity();
-
+	Matrix4 m = Matrix4();	
 	m.mat[0][0] = 2.0f / (right - left);
 	m.mat[0][1] = 0.0f;
 	m.mat[0][2] = 0.0f;

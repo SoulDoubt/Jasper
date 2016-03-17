@@ -41,7 +41,7 @@ public:
 
 	float Mass = 0.f;
 	float Restitution = 0.5f;
-	float Friction = 0.5f;
+	float Friction = 0.75f;
 
 protected:
 	PhysicsWorld* m_world;
@@ -51,5 +51,6 @@ protected:
 	btRigidBody* m_rigidBody;
 	Vector3 m_halfExtents;
 };
-}
+
+} // namespace Jasper
 #endif _PHYSICS_COLLIDER_H_

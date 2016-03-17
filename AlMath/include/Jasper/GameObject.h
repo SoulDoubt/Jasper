@@ -107,8 +107,6 @@ private:
 	
 	bool m_enabled;
 
-	
-
 	std::vector<std::unique_ptr<Component>> m_components;
 	std::vector<std::unique_ptr<GameObject>> m_children;
 

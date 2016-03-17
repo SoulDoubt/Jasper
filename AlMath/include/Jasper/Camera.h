@@ -46,6 +46,10 @@ public:
 		return m_transform.Position;
 	}
 
+	Vector3 GetViewDirection() const {
+		return m_viewVector;
+	}
+
 	//Transform transform;
 	//btTransform btt;
 

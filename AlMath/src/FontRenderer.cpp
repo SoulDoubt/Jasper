@@ -20,20 +20,22 @@ using namespace std;
 
 namespace Jasper {
 
-
-
 using uchar8 = unsigned char;
 
 int* AlphaBitmapToColors(uchar8* alphaBitmap, int width, int height) {
 	int* outBitmap = new int[width * height];
-	for (int i = (width * height) - 1; i >= 0; i--) {
+	int i = (width * height) - 1;
+	int j = 0;
+	for (; i >= 0; i--) {
 	//for (int i = 0; i < width * height; i++){
 		uchar8 tval = alphaBitmap[i];
 		int ival = (tval << 24) | (tval << 16) | (tval << 8) | (tval << 0);
 		outBitmap[i] = ival;
+		++j;
 	}
 	return outBitmap;
 }
+
 
 FontRenderer::FontRenderer()
 	: m_vertexBuffer(GLBuffer::BufferType::VERTEX),
@@ -58,33 +60,34 @@ FontRenderer::~FontRenderer()
 void FontRenderer::RenderText(const string& text, float x, float y)
 {
 	Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	std::vector<Vertex> verts;
+	std::vector<Vertex> verts;	
+	verts.reserve(text.length() * 4);
+	
 	//std::vector<unsigned> indices;
-	const char* chars = text.c_str();
-	while (*chars) {
-		if (*chars >= 32 && *chars < 128) {									
+	//const char* chars = text.c_str();
+	for (char c : text) {
+		if (c >= 32 && c < 128) {									
 			stbtt_aligned_quad q;
-			stbtt_GetBakedQuad(m_cdata, 512, 512, *chars - 32, &x, &y, &q, 1);//1=opengl & d3d10+,0=d3d9				
-			Vertex v0 = Vertex(q.x0, q.y0, 0.f, q.s0, q.t1);
+			stbtt_GetPackedQuad(m_packData, 512, 512, c, &x, &y, &q, 0);			
+			Vertex v0 = Vertex(q.x1, q.y1, 0.f, q.s1, q.t1);			
 			v0.Color = color;
-			Vertex v1 = Vertex(q.x1, q.y0, 0.f, q.s1, q.t1);
+			Vertex v1 = Vertex(q.x1, q.y0, 0.f, q.s1, q.t0);
 			v1.Color = color;
-			Vertex v2 = Vertex(q.x1, q.y1, 0.f, q.s1, q.t0);
+			Vertex v2 = Vertex(q.x0, q.y0, 0.f, q.s0, q.t0);
 			v2.Color = color;
-			Vertex v3 = Vertex(q.x0, q.y1, 0.f, q.s0, q.t0);
-			v3.Color = color;
+			Vertex v3 = Vertex(q.x0, q.y1, 0.f, q.s0, q.t1);
+			v3.Color = color;			
 			verts.push_back(v0);
 			verts.push_back(v1);
 			verts.push_back(v2);
 			verts.push_back(v3);
-		}
-		++chars;
+		}	
 	}
 
 	m_shader->Bind();
 	glBindVertexArray(m_vao);
 	glActiveTexture(GL_TEXTURE0 + 0);
-	glBindTexture(GL_TEXTURE_2D, m_texID);	
+	glBindTexture(GL_TEXTURE_2D, m_texID);		
 	m_shader->SetModelViewProjectionMatrix(m_matrix);
 	m_vertexBuffer.Bind();
 	m_vertexBuffer.Allocate(verts.data(), verts.size() * sizeof(Vertex));
@@ -96,7 +99,7 @@ void FontRenderer::RenderText(const string& text, float x, float y)
 
 std::unique_ptr<Texture> FontRenderer::GetTextureAtlas() {
 	
-	std::ifstream file("c:/windows/fonts/arial.ttf", std::ios::binary | std::ios::ate);
+	std::ifstream file("./fonts/Roboto-Regular.ttf", std::ios::binary | std::ios::ate);
 	std::streamsize size = file.tellg();
 	file.seekg(0, std::ios::beg);
 
@@ -105,14 +108,17 @@ std::unique_ptr<Texture> FontRenderer::GetTextureAtlas() {
 	{
 		int h = 512; int w = 512;
 		file.close();	
+		stbtt_fontinfo fi;
+		
 		uchar8* tempBitmap = new uchar8[w * h];
-		stbtt_BakeFontBitmap((uchar8*)buffer.data(), 0, 24, tempBitmap, w, h, 32, 256, m_cdata);
-		buffer.clear();
-		int* outBitmap = AlphaBitmapToColors(tempBitmap, w, h);
-		delete[] tempBitmap;
+		stbtt_pack_context ctx;
+		stbtt_PackBegin(&ctx, tempBitmap, w, h, 0, 1, nullptr);
+		stbtt_PackFontRange(&ctx, (uchar8*)buffer.data(), 0, 16.0f, 0, 128, m_packData);
+		stbtt_PackEnd(&ctx);		
+		buffer.clear();				
 		auto tex = make_unique<Texture>();
-		tex->Load((uchar8*)outBitmap, w, h);	
-		delete[] outBitmap;
+		tex->Load(tempBitmap, w, h, GL_ALPHA);			
+		delete[] tempBitmap;
 		return std::move(tex);		
 	}
 }

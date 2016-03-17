@@ -16,17 +16,15 @@
 #include <Jasper\Sphere.h>
 #include <Jasper\SphereCollider.h>
 #include <Jasper\PointLight.h>
-#include <fstream>
 
 namespace Jasper {
 
 using namespace std;
 
-Scene::Scene(int width, int height) : m_camera(Camera::CameraType::FLYING)
+Scene::Scene(int width, int height)// : m_camera(Camera::CameraType::FLYING)
 {
 	m_windowWidth = width;
-	m_windowHeight = height;
-	m_camera.SetScene(this);
+	m_windowHeight = height;	
 }
 
 Scene::~Scene()
@@ -34,27 +32,26 @@ Scene::~Scene()
 	m_meshManager.Clear();
 	m_shaderManager.Clear();
 	m_materialManager.Clear();
+	m_textureManager.Clear();
 }
 
 void Scene::Initialize() {
-
-	//m_fontRenderer = std::make_unique<FontRenderer>();
-	//m_fontRenderer->Initialize();
+	
 	m_rootNode = make_unique<GameObject>("Root_Node");
 	m_rootNode->SetScene(this);
 
 	m_physicsWorld = make_unique<PhysicsWorld>(this);
 	m_physicsWorld->Initialize();
-	m_camera.SetPhysicsWorld(m_physicsWorld.get());
-	m_camera.Awake();	
+	m_camera = m_rootNode->AttachNewChild<Camera>(Camera::CameraType::FLYING);
+	m_camera->SetPhysicsWorld(m_physicsWorld.get());
+	
 	auto pm = Matrix4();
 	auto om = Matrix4();
 
 	float aspectRatio = (float)m_windowWidth / (float)m_windowHeight;
-	float halfWidth = (float)m_windowWidth / 2.0f;
-	float halfHeight = (float)m_windowHeight / 2.0f;
+	
 	pm.CreatePerspectiveProjection(60.0f, aspectRatio, 0.1f, 1000.0f);
-	om.CreateOrthographicProjection(.0f, m_windowWidth, 0,m_windowHeight, 1.0f, -100.0f);
+	om.CreateOrthographicProjection(0.0f, m_windowWidth, m_windowHeight, 0.0f, 1.0f, -1.0f);
 	m_projectionMatrix = pm;
 	m_orthoMatrix = om;
 
@@ -85,14 +82,14 @@ void Scene::Initialize() {
 	m_fontRenderer = make_unique<FontRenderer>();
 	m_fontRenderer->Initialize();
 	m_fontRenderer->SetOrthoMatrix(m_orthoMatrix);
-	auto fontTextureAtlas = m_fontRenderer->GetTextureAtlas();
+	/*auto fontTextureAtlas = m_fontRenderer->GetTextureAtlas();
 	auto fontMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
-	fontMaterial->SetTexture2D(std::move(fontTextureAtlas));
+	fontMaterial->SetTexture2D(std::move(fontTextureAtlas));*/
 	// Floor
 	auto floor = CreateEmptyGameObject("floor", m_rootNode.get());
 	auto quadMesh = m_meshManager.CreateInstance<Quad>(Vector2(100.0f, 100.0f), 10, 10, Quad::AxisAlignment::XZ);	
 	auto floorMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
-	floorMaterial->SetTexture2D("./textures/tile.jpg");
+	floorMaterial->SetTextureDiffuse("./textures/tile.jpg");
 	auto mr = floor->AttachNewComponent<MeshRenderer>(quadMesh, floorMaterial);		
 	floor->GetLocalTransform().Translate(Vector3( 0.0f, -1.f, 0.0f ));
 	auto floorP = floor->AttachNewComponent<PlaneCollider>("plane_collider", quadMesh, m_physicsWorld.get());
@@ -101,21 +98,20 @@ void Scene::Initialize() {
 
 	auto wall = m_rootNode->AttachNewChild<GameObject>("wall_0");
 	auto wallMesh = m_meshManager.CreateInstance<Cube>( Vector3(10.f, 10.f, 0.2f));
-	auto wallRenderer = wall->AttachNewComponent<MeshRenderer>(wallMesh, fontMaterial);
+	auto wallRenderer = wall->AttachNewComponent<MeshRenderer>(wallMesh, floorMaterial);
 	auto wallCollider = wall->AttachNewComponent<BoxCollider>("wall_0_collider", wallMesh, m_physicsWorld.get());
-	wallCollider->Mass = 00.0f;
-	wallMesh->FlipTextureCoords();
-	wall->GetLocalTransform().Translate({ 0.0f, 7.0f, -10.0f });
+	wallCollider->Mass = 00.0f;	
+	wall->GetLocalTransform().Translate({ 0.0f, 10.0f, -10.0f });
 
 	auto cube = m_rootNode->AttachNewChild<GameObject>("cube_0");
-	auto cubeMesh = m_meshManager.CreateInstance<Cube>(Vector3({ 1.5f, 1.5f, 1.5f }));
+	auto cubeMesh = m_meshManager.CreateInstance<Cube>(Vector3({ 0.5f, 0.5f, 0.5f }));
 	auto m1 = m_materialManager.CreateInstance<Material>(defaultShader);
-	m1->SetTexture2D("./textures/crate.png");
+	m1->SetTextureDiffuse("./textures/crate.png");
 	
-	m1->Shine = 36.0f;
+	m1->Shine = 64.0f;
 	m1->Diffuse = { 0.8f, 0.8f, 0.8f };
 	m1->Ambient = { 0.25f, 0.25f, 0.25f };
-	m1->Specular = Vector3(0.843f, 0.843f, 0.843f);	
+	m1->Specular = Vector3(0.9f, 0.9f, 0.9f);	
 	auto mr1 = cube->AttachNewComponent<MeshRenderer>(cubeMesh, m1);
 	cube->GetLocalTransform().Translate({ 0.0f, 1.0f, -3.0f });
 	cube->GetLocalTransform().Rotate({ 1.f, 0.f, 0.f }, DEG_TO_RAD(30.f));
@@ -147,20 +143,18 @@ void Scene::Initialize() {
 	auto sphereObject = m_rootNode->AttachNewChild<GameObject>("sphere_0");
 	auto sphereMesh = m_meshManager.CreateInstance<Sphere>(1.0f);
 	auto sphereMat = m_materialManager.CreateInstance<Material>(defaultShader);
-	sphereMat->SetTexture2D("./textures/red.png");
+	sphereMat->SetTextureDiffuse("./textures/red.png");
 	auto sphereRenderer = sphereObject->AttachNewComponent<MeshRenderer>(sphereMesh, sphereMat);
 	auto sc = sphereObject->AttachNewComponent<SphereCollider>("sphere0_collider", sphereMesh, m_physicsWorld.get());
 	sc->Mass = 5.f;
 	sphereObject->GetLocalTransform().Translate({ 0.f, 25.f, -3.f });
-
-
 
 	auto light0 = m_rootNode->AttachNewChild<PointLight>("light0");	
 	light0->GetLocalTransform().Translate({ 0.0f, 10.0f, 0.0f });	
 	light0->ConstAtten = 0.009f;
 	auto lightMesh = m_meshManager.CreateInstance<Cube>(Vector3(0.1f, 0.1f, 0.1f));
 	auto lightMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
-	lightMaterial->SetTexture2D("./textures/white.png");
+	lightMaterial->SetTextureDiffuse("./textures/white.png");
 	light0->AttachNewComponent<MeshRenderer>(lightMesh, lightMaterial);
 
 }
@@ -180,15 +174,37 @@ GameObject* Scene::GetGameObjectByName(string name)
 	return nullptr;
 }
 
+static const int max_samples = 64;
+float fpsSamples[max_samples];
+
+float CalcFPS(float dt) {	
+	static int frameNumber = 0;
+	fpsSamples[frameNumber % max_samples] = 1.0f / dt;
+	float fps = 0;
+	for (int i = 0; i < max_samples; i++) {
+		fps += fpsSamples[i];
+	}
+	fps /= max_samples;
+	frameNumber++;
+	return fps;
+}
+
 void Scene::Update(float dt)
 {	
-	Vector3 position = m_camera.GetPosition();
-	auto pos = position.ToString();
+	Vector3 position = m_camera->GetPosition();	
+	Vector3 direction = m_camera->GetViewDirection();
 	m_physicsWorld->Update(dt);			
 	m_rootNode->Update(dt);		
-	string s = to_string(dt * 1000);
-	m_fontRenderer->RenderText(s.c_str(), 45, 75);
+	string pos = "Position: " + position.ToString();
+	string dir = "Direction: " + direction.ToString();
+	
+	m_fontRenderer->RenderText(pos, 25, 25);
+	m_fontRenderer->RenderText(dir, 25, 52);
+	float fps = CalcFPS(dt);
+	m_fontRenderer->RenderText("FPS: " + to_string(fps), 25, 75);
 }
+
+
 
 void Scene::Awake()
 {

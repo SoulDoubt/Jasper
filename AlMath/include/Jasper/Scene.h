@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "PhysicsWorld.h"
+#include "Texture.h"
 #include <vector>
 #include <typeinfo>
 #include "ResourceManager.h"
@@ -38,12 +39,22 @@ public:
 	void Destroy();
 
 	Camera& GetCamera() {
-		return m_camera;
+		if (m_camera) 
+			return *m_camera;
+		m_camera = GetGameObjectByType<Camera>();
+		return *m_camera;
 	};
 
 	GameObject* CreateEmptyGameObject(std::string name, GameObject* parent);
 
-
+	template<typename T> T* GetGameObjectByType() {
+		for (auto& go : m_rootNode->Children()) {
+			if (auto found = dynamic_cast<T*>(go.get())) {
+				return found;
+			}
+		}
+		return nullptr;
+	}
 
 
 private:
@@ -52,13 +63,14 @@ private:
 	Matrix4 m_projectionMatrix;
 	Matrix4 m_orthoMatrix;
 	
-	Camera m_camera;
+	Camera* m_camera;
 
 	std::unique_ptr<PhysicsWorld> m_physicsWorld;
 
 	ResourceManager<Shader> m_shaderManager;	
 	ResourceManager<Mesh> m_meshManager;
 	ResourceManager<Material> m_materialManager;
+	ResourceManager<Texture> m_textureManager;
 
 	std::unique_ptr<FontRenderer> m_fontRenderer;
 

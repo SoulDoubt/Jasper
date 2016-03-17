@@ -17,6 +17,9 @@
 
 using uint = unsigned int;
 
+
 #define DEBUG_DRAW_PHYSICS
+
+//#define FORCE_INLINE __forceinline
 
 #endif

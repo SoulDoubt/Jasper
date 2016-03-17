@@ -16,6 +16,7 @@ private:
 	Shader* m_shader;
 	std::unique_ptr<Texture> m_texture;
 	std::unique_ptr<CubemapTexture> m_cubemap;
+	std::unique_ptr<Texture> m_normalMap;
 
 public:
 	explicit Material(Shader* shader);
@@ -41,14 +42,24 @@ public:
 		return m_texture.get();
 	}
 
-	void SetTexture2D(std::string filename) {
+	void SetTextureDiffuse(std::string filename) {
 		auto tex = std::make_unique<Texture>();
 		tex->Load(filename);
 		m_texture = std::move(tex);
 	}
 
-	void SetTexture2D(std::unique_ptr<Texture> tex) {
+	void SetTextureDiffuse(std::unique_ptr<Texture> tex) {
 		m_texture = std::move(tex);
+	}
+
+	void SetTextureNormalMap(std::string filename) {
+		auto tex = std::make_unique<Texture>();
+		tex->Load(filename);
+		m_normalMap = std::move(tex);
+	}
+
+	void SetTextureNormalMap(std::unique_ptr<Texture> tex) {
+		m_normalMap = std::move(tex);
 	}
 
 	CubemapTexture* GetCubemapTexture() {

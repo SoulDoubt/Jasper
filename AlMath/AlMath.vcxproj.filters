@@ -28,11 +28,11 @@
     <Filter Include="Source Files\Math">
       <UniqueIdentifier>{7b373df5-a7ec-43f5-9eb7-52aae943d7b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\SceneGraph">
+      <UniqueIdentifier>{e55fe11e-b8ca-476a-8660-b97b2c664584}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Jasper\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Jasper\Common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -48,9 +48,6 @@
     <ClInclude Include="include\Jasper\FontShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Jasper\GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Jasper\GLWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -60,16 +57,10 @@
     <ClInclude Include="include\Jasper\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Jasper\Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Jasper\Quad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Jasper\Room.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Jasper\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Jasper\Sphere.h">
@@ -173,6 +164,18 @@
     </ClInclude>
     <ClInclude Include="include\Jasper\TextureShader.h">
       <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Jasper\Camera.h">
+      <Filter>Header Files\SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Jasper\Model.h">
+      <Filter>Header Files\SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Jasper\Scene.h">
+      <Filter>Header Files\SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Jasper\GameObject.h">
+      <Filter>Header Files\SceneGraph</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

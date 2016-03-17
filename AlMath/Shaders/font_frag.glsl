@@ -6,6 +6,6 @@ uniform sampler2D colorMap;
 out vec4 fcolor;
 
 void main(){
-	vec4 font_color = texture(colorMap, tex_coords);	
-	fcolor = vert_color * font_color;
+	//vec4 font_color = texture(colorMap, tex_coords);	
+	fcolor = vec4(vert_color.rgb, texture(colorMap, tex_coords).a);
 }
