@@ -53,6 +53,7 @@ void MeshRenderer::Awake() {
 	int positionLocation = shader->PositionAttributeLocation();
 	int normalLocation = shader->NormalAttributeLocation();
 	int texLocation = shader->TexCoordAttributeLocation();
+	int tangentLocation = shader->TangentAttributeLocation();
 
 	// upload the data
 	m_vertexBuffer.Bind();
@@ -66,10 +67,12 @@ void MeshRenderer::Awake() {
 	size_t positionOffset = offsetof(Vertex, Position);
 	size_t normalOffset = offsetof(Vertex, Normal);
 	size_t texOffset = offsetof(Vertex, TexCoords);
+	size_t tangentOffset = offsetof(Vertex, Tangent);
 
 	shader->SetAttributeArray(positionLocation, GL_FLOAT, (void*)positionOffset, 3, sizeof(Vertex));
 	shader->SetAttributeArray(normalLocation, GL_FLOAT, (void*)normalOffset, 3, sizeof(Vertex));
 	shader->SetAttributeArray(texLocation, GL_FLOAT, (void*)texOffset, 2, sizeof(Vertex));
+	shader->SetAttributeArray(tangentLocation, GL_FLOAT, (void*)tangentOffset, 3, sizeof(Vertex));
 
 	glBindVertexArray(0);
 	GLERRORCHECK;
@@ -120,10 +123,8 @@ void MeshRenderer::Render() {
 	auto physicsDebugMvp = projectionMatrix * viewMatrix * physicsDebugModelMatrix;
 	auto normalMatrix = modelMatrix.NormalMatrix();	
 	auto viewProjection = projectionMatrix * viewMatrix;
-
 	
-
-	GLERRORCHECK;
+	//GLERRORCHECK;
 
 	shader->SetModelViewMatrix(modelViewMatrix);
 	shader->SetModelViewProjectionMatrix(mvp);
@@ -136,14 +137,32 @@ void MeshRenderer::Render() {
 		PointLight* pl = static_cast<PointLight*>(plight);					
 		shader->SetPointLightUniforms(pl);
 	}
-
 	shader->SetMaterialUniforms(m_material);
 
-	glBindVertexArray(m_vaoID);	
+	bool hasNormalMap = m_material->GetTextureNormalMap();	
+	
+	glBindVertexArray(m_vaoID);		
+	if (hasNormalMap) {
+		int dl = glGetUniformLocation(shader->ProgramID(), "colorMap");
+		int nl = glGetUniformLocation(shader->ProgramID(), "normalMap");
+		if (dl > -1) {
+			glUniform1i(dl, 0);
+		}
+		if (nl > -1) {
+			glUniform1i(nl, 1);
+		}
+		glActiveTexture(GL_TEXTURE0 + 1);
+		glBindTexture(GL_TEXTURE_2D, m_material->GetTextureNormalMap()->TextureID());
+	}
 	glActiveTexture(GL_TEXTURE0 + 0);
 	uint texID = m_material->GetTexture2D()->TextureID();
 	glBindTexture(GL_TEXTURE_2D, texID);		
 	glDrawElements(GL_TRIANGLES, m_elementCount, GL_UNSIGNED_INT, 0);	
+	glBindTexture(GL_TEXTURE_2D, 0);
+	if (hasNormalMap) {
+		glActiveTexture(GL_TEXTURE0 + 1);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 	shader->Release();
 	glBindVertexArray(0);
 

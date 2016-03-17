@@ -42,6 +42,10 @@ public:
 		return m_texture.get();
 	}
 
+	Texture* GetTextureNormalMap() {
+		return m_normalMap.get();
+	}
+
 	void SetTextureDiffuse(std::string filename) {
 		auto tex = std::make_unique<Texture>();
 		tex->Load(filename);

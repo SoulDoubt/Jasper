@@ -106,7 +106,9 @@ void Scene::Initialize() {
 	auto cube = m_rootNode->AttachNewChild<GameObject>("cube_0");
 	auto cubeMesh = m_meshManager.CreateInstance<Cube>(Vector3({ 0.5f, 0.5f, 0.5f }));
 	auto m1 = m_materialManager.CreateInstance<Material>(defaultShader);
-	m1->SetTextureDiffuse("./textures/crate.png");
+	m1->SetTextureDiffuse("./textures/154.jpg");
+	m1->SetTextureNormalMap("./textures/154_norm.jpg");
+
 	
 	m1->Shine = 64.0f;
 	m1->Diffuse = { 0.8f, 0.8f, 0.8f };

@@ -67,6 +67,7 @@ public:
 	virtual uint NormalAttributeLocation();
 	virtual uint TexCoordAttributeLocation();
 	virtual uint ColorsAttributeLocation();
+	virtual int TangentAttributeLocation();
 
 	virtual void SetModelViewMatrix(const Matrix4& mvm);
 	virtual void SetModelViewProjectionMatrix(const Matrix4& mvp);
@@ -102,6 +103,7 @@ protected:
 	uint m_normalsAttribute = 0;
 	uint m_texCoordsAttribute = 0;
 	uint m_colorsAttribute = 0;
+	int m_tangentAttribute = -1;
 	Material* m_material;
 	std::string m_name;
 
@@ -115,6 +117,13 @@ inline void Shader::SetModelMatrix(const Matrix4& model) {
 	int location = glGetUniformLocation(m_programID, "modelMatrix");
 	if (location > -1)
 		glUniformMatrix4fv(location, 1, GL_TRUE, model.AsFloatPtr());
+}
+
+inline int Shader::TangentAttributeLocation() {
+	if (m_tangentAttribute > 0) {
+		return m_tangentAttribute;
+	}
+	m_tangentAttribute = glGetAttribLocation(m_programID, "tangent");
 }
 
 }

@@ -50,20 +50,37 @@ void Mesh::CalculateFaceNormals()
 		Vertex& v1 = Vertices[index1];
 		Vertex& v2 = Vertices[index2];
 
-		const Vector2 uv0 = v1.TexCoords - v0.TexCoords;
-		const Vector2 uv1 = v2.TexCoords - v1.TexCoords;
+		const Vector3 edge1 = v1.Position - v0.Position;
+		const Vector3 edge2 = v2.Position - v0.Position;
 
-		const float c = 1.0f / (uv0.x * uv1.y - uv0.y * uv1.x);
 
-		const Vector3 normal = (v1.Position - v0.Position).Cross(v2.Position - v0.Position);
-		const Vector3 tangent = Normalize((v0.Position * uv1.y - v1.Position * uv1.y) * c);
+		const Vector2 deltauv0 = v1.TexCoords - v0.TexCoords;
+		const Vector2 deltauv1 = v2.TexCoords - v0.TexCoords;
+
+		float c;
+		float d = (deltauv0.x * deltauv1.y - deltauv1.y * deltauv0.x);
+		if (d == 0) {
+			c = 1.0f;
+		} else{
+			c = 1.0f / d;
+		}		
+		Vector3 tangent;
+		tangent.x = c * (deltauv1.y * edge1.x - deltauv0.y * edge2.x);
+		tangent.y = c * (deltauv1.y * edge1.y - deltauv0.y * edge2.y);
+		tangent.z = c * (deltauv1.y * edge1.z - deltauv0.y * edge2.z);
+		tangent = Normalize(tangent);
+
+		Vector3 normal = (edge1).Cross(edge2);
+		normal = Normalize(normal);
+
+		//const Vector3 tangent = Normalize((v0.Position * uv1.y - v1.Position * uv1.y) * c);
 
 		v0.Normal += normal;
-		v0.Tangent = tangent;
+		v0.Tangent += tangent;
 		v1.Normal += normal;
-		v1.Tangent = tangent;
+		v1.Tangent += tangent;
 		v2.Normal += normal;
-		v2.Tangent = tangent;
+		v2.Tangent += tangent;
 	}
 
 	for (auto& v : Vertices) {

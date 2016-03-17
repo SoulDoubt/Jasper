@@ -5,6 +5,7 @@ in vec3 position;
 in vec2 texCoords;
 in vec4 color;
 in vec3 normal;
+in vec3 tangent;
 
 uniform mat4 mvpMatrix;
 uniform mat3 normalMatrix;

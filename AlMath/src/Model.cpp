@@ -149,7 +149,7 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 		if (shine == 0.0f) {
 			shine = 12.0f;
 		}
-		myMaterial->SetTexture2D(m_directory + "/" + textureFileName);
+		myMaterial->SetTextureDiffuse(m_directory + "/" + textureFileName);
 		myMaterial->Ambient = Vector3(ambient.r, ambient.g, ambient.b);
 		myMaterial->Diffuse = Vector3(diffuse.r, diffuse.g, diffuse.b);
 		myMaterial->Specular = Vector3(specular.r, specular.g, specular.b);
@@ -166,7 +166,7 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 	}
 	else {
 		renderMaterial = m_materialManager.CreateInstance<Material>(m_shader);
-		renderMaterial->SetTexture2D("./textures/default.png");
+		renderMaterial->SetTextureDiffuse("./textures/default.png");
 	}
 	auto mr = this->AttachNewComponent<MeshRenderer>(m, renderMaterial);
 	printf("Loaded Model Mesh\n");
