@@ -109,27 +109,31 @@ void MeshRenderer::Render() {
 		modelTrans = gameObject->GetWorldTransform();
 	}
 	auto scene = gameObject->GetScene();
-	auto projectionMatrix = scene->ProjectionMatrix();	
-
-	auto viewMatrix = scene->GetCamera().GetViewMatrix().Inverted();
+	
 	auto camPos = scene->GetCamera().GetPosition();
 
 	auto physicsDebugTrans = modelTrans;
 	physicsDebugTrans.Scale = { 1.0f, 1.0f, 1.0f };
 	auto physicsDebugModelMatrix = physicsDebugTrans.TransformMatrix();
+
+
+	auto projectionMatrix = scene->ProjectionMatrix();
+	auto viewMatrix = scene->GetCamera().GetViewMatrix().Inverted();
 	auto modelMatrix = modelTrans.TransformMatrix();
 	auto modelViewMatrix = viewMatrix * modelMatrix;
 	auto mvp = projectionMatrix * viewMatrix * modelMatrix;
 	auto physicsDebugMvp = projectionMatrix * viewMatrix * physicsDebugModelMatrix;
 	auto normalMatrix = modelMatrix.NormalMatrix();	
-	auto viewProjection = projectionMatrix * viewMatrix;
+	//auto viewProjection = projectionMatrix * viewMatrix;
 	
 	//GLERRORCHECK;
 
+	shader->SetViewMatrix(viewMatrix);
+	shader->SetModelMatrix(modelMatrix);
 	shader->SetModelViewMatrix(modelViewMatrix);
 	shader->SetModelViewProjectionMatrix(mvp);
 	shader->SetNormalMatrix(normalMatrix);
-	shader->SetModelMatrix(modelMatrix);
+		
 	shader->SetCameraPosition(camPos);
 	
 	auto plight = scene->GetGameObjectByName("light0");

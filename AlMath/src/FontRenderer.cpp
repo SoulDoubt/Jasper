@@ -99,7 +99,7 @@ void FontRenderer::RenderText(const string& text, float x, float y)
 
 std::unique_ptr<Texture> FontRenderer::GetTextureAtlas() {
 	
-	std::ifstream file("./fonts/Roboto-Regular.ttf", std::ios::binary | std::ios::ate);
+	std::ifstream file("c:/windows/fonts/arial.ttf", std::ios::binary | std::ios::ate);
 	std::streamsize size = file.tellg();
 	file.seekg(0, std::ios::beg);
 

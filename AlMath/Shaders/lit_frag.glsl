@@ -1,16 +1,5 @@
 #version 330
 
-out vec4 fcolor;
-smooth in vec2 outTexCoords;
-smooth in vec3 outNormal;
-smooth in vec4 outVertColor;
-smooth in vec3 fragPosition;
-
-uniform sampler2D colorMap;
-uniform sampler2D normalMap;
-uniform int isTextured;
-uniform vec3 cameraPosition;
-
 struct point_light{
 	vec3 Color;
 	vec3 Position;
@@ -30,14 +19,31 @@ struct material{
 	float ns;
 };
 
-uniform material material0;
+out vec4 fcolor;
+
+in vec2 outTexCoords;
+in vec3 outNormal;
+in vec4 outVertColor;
+in vec3 fragPosition;
+in mat3 tbnMatrix;
+in vec3 lightDirection;
+
+uniform sampler2D colorMap;
+uniform sampler2D normalMap;
+uniform int isTextured;
+uniform vec3 cameraPosition;
 
 uniform point_light light0;
+uniform material material0;
 
 void main()
 {	
 	if (textureSize(normalMap, 0).x > 0){
-		fcolor = texture(normalMap, outTexCoords);
+		vec3 fragNormal = tbnMatrix * normalize( texture( normalMap, outTexCoords ).xyz ) * 2.0 - 2.0;
+
+		float lambert = max( 0.0, dot( fragNormal, lightDirection ) );
+
+		fcolor = vec4(fragNormal, 1.0);
 	}
 	else {
 		vec3 normal = normalize(outNormal);

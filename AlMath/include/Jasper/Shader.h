@@ -73,6 +73,7 @@ public:
 	virtual void SetModelViewProjectionMatrix(const Matrix4& mvp);
 	virtual void SetNormalMatrix(const Matrix3& normal);
 	virtual void SetModelMatrix(const Matrix4& model);
+	virtual void SetViewMatrix(const Matrix4& view);
 
 	virtual DirectionalLightUniformLocations GetDirectionalLightUniformLocations();
 	virtual void SetDirectionalLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition);
@@ -117,6 +118,14 @@ inline void Shader::SetModelMatrix(const Matrix4& model) {
 	int location = glGetUniformLocation(m_programID, "modelMatrix");
 	if (location > -1)
 		glUniformMatrix4fv(location, 1, GL_TRUE, model.AsFloatPtr());
+}
+
+inline void Shader::SetViewMatrix(const Matrix4 & view)
+{
+	int loc = glGetUniformLocation(m_programID, "viewMatrix");
+	if (loc > -1) {
+		glUniformMatrix4fv(loc, 1, GL_TRUE, view.AsFloatPtr());
+	}
 }
 
 inline int Shader::TangentAttributeLocation() {
