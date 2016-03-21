@@ -78,6 +78,7 @@ void GLWindow::RunLoop() {
 		glfwSwapBuffers(m_window);
 		glfwPollEvents();
 	}
+	m_scene->Destroy();
 	glfwTerminate();
 }
 
@@ -96,7 +97,7 @@ void GLWindow::SetupGL()
 	glEnable(GL_TEXTURE_3D);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnable(GL_BLEND);
@@ -220,7 +221,8 @@ void framebuffer_resize_callback(GLFWwindow* window, int width, int height) {
 	Scene* scene = (Scene*)glfwGetWindowUserPointer(window);
 	scene->ProjectionMatrix().SetToIdentity();
 	scene->ProjectionMatrix().CreatePerspectiveProjection(80, (float)width / (float)height, 0.1f, 500.0f);
-	scene->OrthographicMatrix().CreateOrthographicProjection((float)width / (float)height, (float)width / (float)height, height, 0, -1.f, 1.f);
+	
+	scene->OrthographicMatrix().CreateOrthographicProjection(0.0f, width, height, 0.0f, 1.0f, -1.0f);
 }
 
 }

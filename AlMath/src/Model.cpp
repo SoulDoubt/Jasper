@@ -29,7 +29,7 @@ Model::~Model()
 void Model::Initialize()
 {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(m_filename, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_OptimizeMeshes);
+	const aiScene* scene = importer.ReadFile(m_filename, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_OptimizeMeshes);
 
 	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		printf("aiScene was corrupt in model load.");
@@ -106,6 +106,12 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 			auto tc = aiMesh->mTextureCoords[0][i];
 			v.TexCoords = { tc.x, tc.y };
 		}
+		if (aiMesh->HasTangentsAndBitangents()) {
+			auto tang = aiMesh->mTangents[i];
+			v.Tangent = { tang.x, tang.y, tang.z, 1.f };
+			auto bitang = aiMesh->mBitangents[i];
+			v.Bitangent = { bitang.x, bitang.y, bitang.z };
+		}
 		m->AddVertex(v);
 	}
 
@@ -154,6 +160,20 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 		myMaterial->Diffuse = Vector3(diffuse.r, diffuse.g, diffuse.b);
 		myMaterial->Specular = Vector3(specular.r, specular.g, specular.b);
 		myMaterial->Shine = shine;
+		// try to load a normal map
+		texString.Clear();
+		mat->GetTexture(aiTextureType::aiTextureType_NORMALS, 0, &texString);
+		if (texString.length > 0) {
+			myMaterial->SetTextureNormalMap(m_directory + "/" + texString.C_Str());
+		}
+		else {
+			texString.Clear();
+			mat->GetTexture(aiTextureType::aiTextureType_HEIGHT, 0, &texString);
+			if (texString.length > 0) {
+				myMaterial->SetTextureNormalMap(m_directory + "/" + texString.C_Str());
+			}
+		}
+
 	}
 		
 	if (!aiMesh->HasNormals()) {

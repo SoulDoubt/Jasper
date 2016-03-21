@@ -24,9 +24,9 @@ PhysicsCollider::~PhysicsCollider()
 	if (m_defaultMotionState) {
 		delete m_defaultMotionState;
 	}
-	if (m_rigidBody) {
+	/*if (m_rigidBody) {
 		delete m_rigidBody;
-	}
+	}*/
 }
 
 void PhysicsCollider::Initialize()

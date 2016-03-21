@@ -1,16 +1,5 @@
 #version 330
 
-out vec4 fcolor;
-smooth in vec2 outTexCoords;
-smooth in vec3 outNormal;
-smooth in vec4 outVertColor;
-smooth in vec3 fragPosition;
-
-uniform sampler2D colorMap;
-uniform sampler2D normalMap;
-uniform int isTextured;
-uniform vec3 cameraPosition;
-
 struct point_light{
 	vec3 Color;
 	vec3 Position;
@@ -30,74 +19,60 @@ struct material{
 	float ns;
 };
 
-uniform material material0;
+out vec4 fcolor;
+
+in vec2 v_texCoords;
+in vec3 v_normal;
+in vec4 v_vertColor;
+in vec3 v_fragPosition;
+in vec3 v_lightDirection;
+in mat3 v_tbnMatrix;
+in vec3 v_lightPosition;
+
+uniform sampler2D colorMap;
+uniform sampler2D normalMap;
+uniform int isTextured;
+uniform vec3 cameraPosition;
 
 uniform point_light light0;
+uniform material material0;
+
+vec4 CalculateLighting(point_light light, vec3 lightDirection, vec3 normal, material mat){
+	vec4 ambientColor = vec4(light.Color, 1.0f) * light.AmbientIntensity;
+	float diffuseFactor = max(0.0, dot(normal, -lightDirection));
+
+	vec4 diffuseColor = vec4(0,0,0,1);
+	vec4 specularColor = vec4(0,0,0,1);
+
+	if (diffuseFactor > 0){
+		diffuseColor = vec4(light.Color * light.DiffuseIntensity * diffuseFactor, 1.0f);
+		vec3 vertexToEye = normalize(cameraPosition - v_fragPosition);
+		vec3 reflection = normalize(reflect(lightDirection, normal));
+		float specularFactor = max(0.0, dot(vertexToEye, reflection));
+		if (specularFactor > 0){
+			specularFactor = pow(specularFactor, mat.ns);
+			specularColor = vec4(light.Color * mat.ks * specularFactor, 1.0f);
+		}
+	}
+	return (ambientColor + diffuseColor + specularColor);
+}
+
 
 void main()
 {	
+	vec3 normal;
 	if (textureSize(normalMap, 0).x > 0){
-		fcolor = texture(normalMap, outTexCoords);
+		vec3 fragNormal = v_tbnMatrix * normalize( texture( normalMap, v_texCoords ).xyz );// * 2.0 - 2.0;		
+		//normal = vec3(abs(fragNormal.x), abs(fragNormal.y), abs(fragNormal.z));
+		normal = fragNormal;
+		//normal = normalize(v_normal);
+		//fcolor = vec4( abs(fragNormal.x), abs(fragNormal.y), abs(fragNormal.z), 1.0 );
 	}
 	else {
-		vec3 normal = normalize(outNormal);
-		vec3 surfaceToLight = normalize(light0.Position - fragPosition);
-		vec3 surfaceToCamera = normalize(cameraPosition - fragPosition);
-		float distanceToLight = length(light0.Position - fragPosition);
-		vec3 incidenceVector = -surfaceToLight;
-		vec3 reflectionVector = reflect(incidenceVector, normal);
-		
-		vec4 surfaceColor = texture(colorMap, outTexCoords);
-		vec3 surfaceRgb = surfaceColor.rgb;
-
-		float attenuation = 1.0 / (1.0 * light0.ConstAtten * pow(distanceToLight, 2));
-
-		vec3 ambientColor = light0.AmbientIntensity * light0.Color * material0.ka * surfaceRgb;
-
-		float diffuseCoefficient = max(0.0, dot(normal, surfaceToLight));
-		vec3 diffuseColor = diffuseCoefficient * surfaceRgb * material0.kd * light0.Color;
-
-		float lambert = max(0.0, dot(surfaceToCamera, reflectionVector));
-
-		float specularCoefficient = pow(lambert, material0.ns);
-
-		vec3 specularColor = specularCoefficient * material0.ks * light0.Color;
-
-		vec3 linearColor = ambientColor + attenuation * (diffuseColor + specularColor);
-
-		vec3 gamma = vec3(1.0/2.2);
-		vec3 finalColor = pow(linearColor, gamma);
-
-		fcolor = vec4(finalColor, surfaceColor.a);
+		normal = normalize(v_normal);
 	}
+	vec4 lightContribution = CalculateLighting(light0, v_lightDirection, normal, material0);
+	fcolor = texture(colorMap, v_texCoords) * lightContribution;
 	
-	//fcolor = vec4(0.5f, 0.5f, 0.5f, 1.0f);
-
-	// vec3 light_direction = eyeSpaceVertPosition - light0.Position;
-	// float lightDistance = length(light_direction);
-	// light_direction = normalize(light_direction);
-
-	// vec3 view_direction = normalize(cameraPosition - eyeSpaceVertPosition);
-
-	// vec3 norm = normalize(outNormal);	
-	
-	// vec3 ambient_color = light0.Color * material0.ka * light0.AmbientIntensity;
-
-	// float diff = max(dot(norm, light_direction), 0.0);
-	// diff /= 1.0 * (lightDistance * lightDistance);
-	// vec3 diffuse_color = light0.Color * light0.DiffuseIntensity * (diff * material0.kd);
-
-	
-	// vec3 reflection_direction = reflect(-light_direction, norm);
-	// float reflectionComponent = pow(max(dot(view_direction, reflection_direction), 0.0), material0.ns);
-	// vec3 specular_color = light0.Color * (reflectionComponent * material0.ks);
-	
-	// vec3 gamma = vec3(1.0 / 2.2);
-	// vec4 texture_color = texture(colorMap, outTexCoords);
-
-	// vec3 lighting_contribution = ambient_color + diffuse_color + specular_color;
-
-	// vec4 col = texture_color * vec4(lighting_contribution, 1.0);				 
-	// fcolor =  col;
 
 }

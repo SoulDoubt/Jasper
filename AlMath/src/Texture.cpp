@@ -36,10 +36,6 @@ namespace Jasper {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glBindTexture(GL_TEXTURE_2D, 0);
 			GLERRORCHECK;
-			/*int err = glGetError();
-			if (err != 0) {
-				printf("GL Error in texture load");
-			}*/
 			stbi_image_free(image);
 			return true;
 		}

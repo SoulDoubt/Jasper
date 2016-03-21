@@ -46,46 +46,60 @@ void Mesh::CalculateFaceNormals()
 		unsigned index0 = Indices[i];
 		unsigned index1 = Indices[i + 1];
 		unsigned index2 = Indices[i + 2];
-		Vertex& v0 = Vertices[index0];
-		Vertex& v1 = Vertices[index1];
-		Vertex& v2 = Vertices[index2];
+		Vertex& v1 = Vertices[index0];
+		Vertex& v2 = Vertices[index1];
+		Vertex& v3 = Vertices[index2];
 
-		const Vector3 edge1 = v1.Position - v0.Position;
-		const Vector3 edge2 = v2.Position - v0.Position;
+		// Tangent Space calculations adapted from
+		// Lengyel, Eric. “Computing Tangent Space Basis Vectors for an Arbitrary Mesh”. Terathon Software 3D Graphics Library, 2001. http://www.terathon.com/code/tangent.html
 
+		float x1 = v2.Position.x - v1.Position.x;
+		float x2 = v3.Position.x - v1.Position.x;
+		float y1 = v2.Position.y - v1.Position.y;
+		float y2 = v3.Position.y - v1.Position.y;
+		float z1 = v2.Position.z - v1.Position.z;
+		float z2 = v3.Position.z - v1.Position.z;
 
-		const Vector2 deltauv0 = v1.TexCoords - v0.TexCoords;
-		const Vector2 deltauv1 = v2.TexCoords - v0.TexCoords;
+		float s1 = v2.TexCoords.x - v1.TexCoords.x;
+		float s2 = v3.TexCoords.x - v1.TexCoords.x;
+		float t1 = v2.TexCoords.y - v1.TexCoords.y;
+		float t2 = v3.TexCoords.y - v1.TexCoords.y;
 
-		float c;
-		float d = (deltauv0.x * deltauv1.y - deltauv1.y * deltauv0.x);
-		if (d == 0) {
-			c = 1.0f;
-		} else{
-			c = 1.0f / d;
-		}		
-		Vector3 tangent;
-		tangent.x = c * (deltauv1.y * edge1.x - deltauv0.y * edge2.x);
-		tangent.y = c * (deltauv1.y * edge1.y - deltauv0.y * edge2.y);
-		tangent.z = c * (deltauv1.y * edge1.z - deltauv0.y * edge2.z);
-		tangent = Normalize(tangent);
+		float r = 1.0F / (s1 * t2 - s2 * t1);
+		Vector3 sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r,
+			(t2 * z1 - t1 * z2) * r);
+		Vector3 tdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r,
+			(s1 * z2 - s2 * z1) * r);
+
+		Vector4 tangent = { sdir, 0.0f };
+		Vector3 bitangent = tdir;
+		
+
+		Vector3 edge1 = v2.Position - v1.Position;
+		Vector3 edge2 = v3.Position - v1.Position;
 
 		Vector3 normal = (edge1).Cross(edge2);
 		normal = Normalize(normal);
 
 		//const Vector3 tangent = Normalize((v0.Position * uv1.y - v1.Position * uv1.y) * c);
 
-		v0.Normal += normal;
-		v0.Tangent += tangent;
 		v1.Normal += normal;
-		v1.Tangent += tangent;
+		v1.Tangent += tangent;		
+		v1.Bitangent += bitangent;
 		v2.Normal += normal;
 		v2.Tangent += tangent;
+		v2.Bitangent += bitangent;
+		v3.Normal += normal;
+		v3.Tangent += tangent;
+		v3.Bitangent += bitangent;
 	}
 
 	for (auto& v : Vertices) {
 		v.Normal = Normalize(v.Normal);
-		v.Tangent = Normalize(v.Tangent);
+		// Gram-Schmidt orthogonalize
+		v.Tangent = { (v.Tangent.AsVector3() - v.Normal * Dot(v.Normal, v.Tangent.AsVector3())).Normalized(), 0.0f };
+		v.Tangent.w = (Dot(Cross(v.Normal, v.Tangent.AsVector3()), v.Bitangent) < 0.0f) ? -1.0f : 1.0f;
+		Vector4 Tangent = Normalize(v.Tangent);
 	}
 
 	printf("Calculated some normals and Tangents\n");

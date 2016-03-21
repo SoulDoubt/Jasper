@@ -8,6 +8,8 @@
 
 namespace Jasper {
 
+class PhysicsCollider;
+
 class PhysicsWorld
 {
 public:
@@ -24,6 +26,7 @@ public:
 	void Update(float dt);
 
 	void AddRigidBody(btRigidBody* rb);
+	void AddCollider(PhysicsCollider* collider);
 	void ConvexSweepTest(btConvexShape* shape, btTransform& from, btTransform& to, btCollisionWorld::ClosestConvexResultCallback& callback);
 
 	void DrawPhysicsShape(const btTransform& worldTransform, const btCollisionShape* shape, const btVector3& color) {
@@ -38,7 +41,6 @@ private:
 	btDefaultCollisionConfiguration* m_collisionConfig;
 	btCollisionDispatcher* m_collisionDispatcher;
 	btSequentialImpulseConstraintSolver* m_solver;
-
 	btDiscreteDynamicsWorld* m_world;
 
 };

@@ -14,10 +14,11 @@ namespace Jasper {
 
 struct Vertex {
 	Vector3 Position;
-	Vector3 Normal;
-	Vector3 Tangent;
+	Vector3 Normal;	
 	Vector2 TexCoords;
 	Vector4 Color;
+	Vector4 Tangent;
+	Vector3 Bitangent;
 
 	Vertex(float x, float y, float z, float u, float v) {
 		Position = { x, y, z };

@@ -195,6 +195,17 @@ uint Shader::ColorsAttributeLocation()
 	}
 }
 
+int Shader::TangentAttributeLocation() {
+	if (m_tangentAttribute > 0) {
+		return m_tangentAttribute;
+	}
+	else {
+		m_tangentAttribute = glGetAttribLocation(m_programID, "tangent");
+		return m_tangentAttribute;
+	}
+}
+
+
 void Shader::SetModelViewMatrix(const Matrix4 & mvm)
 {
 	int loc = glGetUniformLocation(m_programID, "mvMatrix");

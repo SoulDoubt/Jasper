@@ -31,8 +31,13 @@ namespace Jasper {
 	{
 		if (debugDrawer)
 			delete debugDrawer;
+		for (int i = 0; i < m_world->getNumCollisionObjects(); ++i) {
+			auto obj = m_world->getCollisionObjectArray()[i];
+			m_world->removeCollisionObject(obj);
+			delete obj;
+		}		
 		if (m_world)
-			delete m_world;
+			delete m_world;		
 		if (m_solver)
 			delete m_solver;
 		if (m_collisionDispatcher)
@@ -40,7 +45,7 @@ namespace Jasper {
 		if (m_collisionConfig)
 			delete m_collisionConfig;
 		if (m_broadphase)
-			delete m_broadphase;
+			delete m_broadphase;		
 
 	}
 
@@ -53,4 +58,6 @@ namespace Jasper {
 	{
 		m_world->addRigidBody(rb);
 	}
+
+	
 }

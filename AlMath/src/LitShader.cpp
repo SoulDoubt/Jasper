@@ -96,8 +96,9 @@ void LitShader::SetTransformUniforms(const Transform & trans)
 void LitShader::SetPointLightUniforms(const PointLight * pl)
 {
 	const auto position = pl->GetWorldTransform().Position;
+	int posl = glGetUniformLocation(ProgramID(), "lightPosition");
+	glUniform3fv(posl, 1, position.AsFloatPtr());
 	auto ul = GetDirectionalLightUniformLocations();
-
 	glUniform3fv(ul.Color, 1, pl->Color.AsFloatPtr());
 	glUniform3fv(ul.Position, 1, position.AsFloatPtr());
 	glUniform1fv(ul.AmbientIntensity, 1, &pl->AmbientIntensity);
