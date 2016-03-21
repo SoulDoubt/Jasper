@@ -8,6 +8,9 @@
 #include <memory>
 #include "Common.h"
 
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 
 namespace Jasper {
 
@@ -31,6 +34,8 @@ public:
 	void InitializeScene();
 
 	void SetupGL();
+
+	int GetWindowHandle() const;
 
 	void printGLInfo() {
 		printf("Vendor: %s\n", glGetString(GL_VENDOR));

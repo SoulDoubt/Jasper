@@ -29,6 +29,7 @@ in vec3 v_lightDirection;
 in mat3 v_tbnMatrix;
 in vec3 v_lightPosition;
 
+
 uniform sampler2D colorMap;
 uniform sampler2D normalMap;
 uniform int isTextured;
@@ -53,7 +54,7 @@ vec4 CalculateLighting(point_light light, vec3 lightDirection, vec3 normal, mate
 			specularFactor = pow(specularFactor, mat.ns);
 			specularColor = vec4(light.Color * mat.ks * specularFactor, 1.0f);
 		}
-	}
+	}	
 	return (ambientColor + diffuseColor + specularColor);
 }
 
@@ -64,9 +65,7 @@ void main()
 	if (textureSize(normalMap, 0).x > 0){
 		vec3 fragNormal = v_tbnMatrix * normalize( texture( normalMap, v_texCoords ).xyz );// * 2.0 - 2.0;		
 		//normal = vec3(abs(fragNormal.x), abs(fragNormal.y), abs(fragNormal.z));
-		normal = fragNormal;
-		//normal = normalize(v_normal);
-		//fcolor = vec4( abs(fragNormal.x), abs(fragNormal.y), abs(fragNormal.z), 1.0 );
+		normal = fragNormal;		
 	}
 	else {
 		normal = normalize(v_normal);

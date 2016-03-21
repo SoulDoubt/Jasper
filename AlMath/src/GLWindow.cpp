@@ -3,6 +3,10 @@
 #include <Jasper\GLError.h>
 #include <Jasper\Scene.h>
 
+#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
+#include <GLFW\glfw3native.h>
+
 namespace Jasper {
 
 using namespace std;
@@ -108,6 +112,11 @@ void GLWindow::SetupGL()
 	glEnable(GL_MULTISAMPLE);
 	GLERRORCHECK;
 
+}
+
+int GLWindow::GetWindowHandle() const
+{
+	return glfwGetWin32Window(m_window);
 }
 
 
