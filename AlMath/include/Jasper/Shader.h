@@ -5,8 +5,8 @@
 #include "matrix.h"
 #include <gl\glew.h>
 #include <vector>
-#include "DirectionalLight.h"
-#include "PointLight.h"
+#include "Lights.h"
+
 
 /*
 
@@ -16,22 +16,25 @@ namespace Jasper {
 class Material;
 
 struct DirectionalLightUniformLocations {
-	uint Color;
-	uint Position;
-	uint Direction;
-	uint AmbientIntensity;
-	uint DiffuseIntensity;
-	uint ConstAtten;
-	uint LinearAtten;
-	uint Exp;
+	bool isPopulated = false;
+	int Color;	
+	int Direction;	
 };
 
 
 struct MaterialUniformLocations {
-	uint Ka;
-	uint Kd;
-	uint Ks;
-	uint Ns;
+	bool isPopulated = false;
+	int Ka;
+	int Kd;
+	int Ks;
+	int Ns;
+};
+
+struct PointLightUniformLocations {
+	bool isPopulated = false;
+	int Color;
+	int Position;
+	int ConstAttenuation;
 };
 
 class Shader
@@ -63,24 +66,28 @@ public:
 	virtual void Initialize();
 	virtual void Destroy();
 
+	// attribute lookups
 	virtual uint PositionAttributeLocation();
 	virtual uint NormalAttributeLocation();
 	virtual uint TexCoordAttributeLocation();
 	virtual uint ColorsAttributeLocation();
 	virtual int TangentAttributeLocation();
 
+	// 
 	virtual void SetModelViewMatrix(const Matrix4& mvm);
 	virtual void SetModelViewProjectionMatrix(const Matrix4& mvp);
 	virtual void SetNormalMatrix(const Matrix3& normal);
 	virtual void SetModelMatrix(const Matrix4& model);
 	virtual void SetViewMatrix(const Matrix4& view);
+	virtual void SetProjectionMatrix() {}
 
-	virtual DirectionalLightUniformLocations GetDirectionalLightUniformLocations();
-	virtual void SetDirectionalLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition);
+	virtual void GetDirectionalLightUniformLocations();
+	virtual void SetDirectionalLightUniforms(const DirectionalLight* dl);	
 	
-	virtual void SetPointLightUniforms(const PointLight* dl);
+	virtual void GetPointLightUniformLocations();
+	virtual void SetPointLightUniforms(const PointLight* pl, const Vector3& eslp);
 
-	virtual MaterialUniformLocations GetMaterialUniformLocations();
+	virtual void GetMaterialUniformLocations();
 	virtual void SetMaterialUniforms(const Material* m);
 
 	virtual void SetTransformUniforms(const Transform & trans);
@@ -97,6 +104,9 @@ private:
 	NON_COPYABLE(Shader);
 	uint m_programID;
 	std::vector<uint> m_shaders;
+	bool m_transpose = true;
+
+	
 
 protected:
 
@@ -108,25 +118,17 @@ protected:
 	Material* m_material;
 	std::string m_name;
 
+	DirectionalLightUniformLocations m_dlus;
+	PointLightUniformLocations m_plus;
+	MaterialUniformLocations m_mus;
+
 };
 
 inline const uint Shader::ProgramID() const {
 	return m_programID;
 }
 
-inline void Shader::SetModelMatrix(const Matrix4& model) {
-	int location = glGetUniformLocation(m_programID, "modelMatrix");
-	if (location > -1)
-		glUniformMatrix4fv(location, 1, GL_TRUE, model.AsFloatPtr());
-}
 
-inline void Shader::SetViewMatrix(const Matrix4 & view)
-{
-	int loc = glGetUniformLocation(m_programID, "viewMatrix");
-	if (loc > -1) {
-		glUniformMatrix4fv(loc, 1, GL_TRUE, view.AsFloatPtr());
-	}
-}
 
 
 

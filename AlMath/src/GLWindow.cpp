@@ -95,13 +95,15 @@ void GLWindow::InitializeScene()
 
 void GLWindow::SetupGL()
 {
+	auto hwnd = this->GetWindowHandle();
+
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_TEXTURE_CUBE_MAP);
 	glEnable(GL_TEXTURE_3D);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnable(GL_BLEND);
@@ -114,7 +116,7 @@ void GLWindow::SetupGL()
 
 }
 
-int GLWindow::GetWindowHandle() const
+HWND GLWindow::GetWindowHandle() const
 {
 	return glfwGetWin32Window(m_window);
 }

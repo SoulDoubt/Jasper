@@ -1,28 +1,20 @@
-#ifndef _CAMERA_H_
-#define _CAMERA_H_
+#ifndef _JASPER_CAMERA_H_
+#define _JASPER_CAMERA_H_
 
 #include "Common.h"
 #include "Transform.h"
 #include "matrix.h"
 #include "GameObject.h"
 #include <memory>
-#include <bullet\btBulletDynamicsCommon.h>
-
-class btCollisionShape;
-class btRigidbody;
+#include <Jasper\CapsuleCollider.h>
 
 namespace Jasper {
 
 class PhysicsWorld;
 
-// Must be aligned on 16 byte boundry because we hold a bTTransform by value.
-// and we want SIMD
-//ALIGN16 
 class Camera : public GameObject
 {
 public:
-
-	//ALIGN_16_OPERATORS;
 
 	enum class CameraType {
 		FIRST_PERSON,
@@ -48,18 +40,13 @@ public:
 
 	Vector3 GetViewDirection() const {
 		return m_viewVector;
-	}
-
-	//Transform transform;
-	//btTransform btt;
+	}	
 
 	Quaternion m_orientation;
 	Vector3 m_position;
 
 private:
-
 	
-
 	CameraType m_type;
 
 	static Vector3 WORLD_X_AXIS;
@@ -77,9 +64,7 @@ private:
 	float m_accumPitch = 0.f;
 
 	PhysicsWorld* m_physicsWorld = nullptr;
-
-	std::unique_ptr<btCollisionShape> m_collisionShape;
-	std::unique_ptr<btRigidBody> m_rigidBody;
+	CapsuleCollider* m_collider = nullptr;
 
 };
 

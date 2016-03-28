@@ -55,7 +55,7 @@ void BoxCollider::Awake()
 	m_rigidBody->setRestitution(Restitution);
 	m_rigidBody->setFriction(Friction);
 
-	m_world->AddRigidBody(m_rigidBody);
+	m_world->AddCollider(this);
 }
 
 } // namespace Jasper

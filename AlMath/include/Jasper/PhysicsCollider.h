@@ -39,6 +39,10 @@ public:
 		return trans;
 	}
 
+	void SetWorldTransform(const btTransform& trans) {
+		m_rigidBody->getMotionState()->setWorldTransform(trans);
+	}
+
 	float Mass = 0.f;
 	float Restitution = 0.5f;
 	float Friction = 0.75f;
@@ -50,6 +54,8 @@ protected:
 	btDefaultMotionState* m_defaultMotionState;
 	btRigidBody* m_rigidBody;
 	Vector3 m_halfExtents;
+
+	
 };
 
 } // namespace Jasper

@@ -16,10 +16,15 @@ class PhysicsDebugDrawer : public btIDebugDraw {
 
 public:
 
+	~PhysicsDebugDrawer() {
+		Destroy();
+	}
+
 	GLBuffer vbo;
 	GLBuffer ibo;
 
 	void Initialize();
+	void Destroy();
 
 	PhysicsDebugDrawer(Scene* scene) : scene(scene), vbo(GLBuffer::BufferType::VERTEX), ibo(GLBuffer::BufferType::INDEX) {
 		

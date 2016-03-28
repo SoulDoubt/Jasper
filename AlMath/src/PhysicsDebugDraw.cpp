@@ -15,6 +15,13 @@ void PhysicsDebugDrawer::Initialize()
 	glBindVertexArray(0);
 }
 
+void PhysicsDebugDrawer::Destroy()
+{
+	if (vbo.IsCreated()) {
+		vbo.Destroy();
+	}
+}
+
 void PhysicsDebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color) {
 	float tmp[6] = { from.getX(), from.getY(), from.getZ(),
 		to.getX(), to.getY(), to.getZ() };

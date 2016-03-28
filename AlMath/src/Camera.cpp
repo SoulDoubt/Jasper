@@ -12,35 +12,34 @@ Vector3 Camera::WORLD_Z_AXIS = Vector3(0.0f, 0.0f, 1.0f);
 
 Camera::Camera(Camera::CameraType type)
 {
+	
 	m_type = type;
 	m_transform.SetIdentity();
 	m_transform.Position = { 0.0f, 1.82f, 10.0f };		
 }
 
 void Camera::Awake() {
-	float mass = 80.f;
-
-	const float width = 0.8f / 2.f;
-	const float depth = 0.4f / 2.f;
-	const float height = 1.9f / 2.f;
-
-	m_collisionShape = std::make_unique<btCapsuleShape>(width / 2, height * 2.f);
-	btDefaultMotionState* ms = new btDefaultMotionState(m_transform.GetBtTransform());
-	btVector3 inertia;
-	m_collisionShape->calculateLocalInertia(mass, inertia);
-	btRigidBody::btRigidBodyConstructionInfo rbci(mass, ms, m_collisionShape.get(), inertia);
-	m_rigidBody = std::make_unique<btRigidBody>(rbci);
-	m_rigidBody->setCollisionFlags(m_rigidBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-	m_rigidBody->setActivationState(DISABLE_DEACTIVATION);
-	m_physicsWorld->AddRigidBody(m_rigidBody.get());
+	
+	GameObject::Awake();
+	m_collider = GetComponentByType<CapsuleCollider>();
+	//btDefaultMotionState* ms = new btDefaultMotionState(m_transform.GetBtTransform());
+	//btVector3 inertia;
+	//m_collisionShape->calculateLocalInertia(mass, inertia);
+	//btRigidBody::btRigidBodyConstructionInfo rbci(mass, ms, m_collisionShape.get(), inertia);
+	//m_rigidBody = std::make_unique<btRigidBody>(rbci);
+	//m_rigidBody->setCollisionFlags(m_rigidBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+	//m_rigidBody->setActivationState(DISABLE_DEACTIVATION);
+	//m_physicsWorld->AddRigidBody(m_rigidBody.get());
+	if (m_collider) {
+		m_collider->GetRigidBody()->setCollisionFlags(m_collider->GetRigidBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+		m_collider->GetRigidBody()->setActivationState(DISABLE_DEACTIVATION);
+	}
 }
 
 
 Camera::~Camera()
 {
-	if (m_rigidBody->getMotionState() != nullptr) {
-		delete m_rigidBody->getMotionState();
-	}
+	
 }
 
 
@@ -54,9 +53,9 @@ Matrix4 Camera::GetViewMatrix()
 	m_localYAxis = Vector3(vm.mat[0].y, vm.mat[1].y, vm.mat[2].y);
 	m_localZAxis = Vector3(vm.mat[0].z, vm.mat[1].z, vm.mat[2].z);
 	m_viewVector = -m_localZAxis;
-	//const auto pos = transform.Position;
-	//const auto pos = transform.Position;
-	m_rigidBody->getMotionState()->setWorldTransform(m_transform.GetBtTransform());
+	
+	if (m_collider)
+		m_collider->SetWorldTransform(m_transform.GetBtTransform());
 
 #ifdef DEBUG_DRAW_PHYSICS
 
@@ -159,50 +158,32 @@ void Camera::Translate(const Vector3& vec)
 	auto& current = m_transform.Position;
 	//auto& current = btt.getOrigin();
 
-	/*btVector3 after = current.AsBtVector3();
-	after += m_localXAxis.AsBtVector3() * vec.x;
-	after += WORLD_Y_AXIS.AsBtVector3() * vec.y;
-	after += forwards.AsBtVector3() * z;*/
-
-	/*btTransform from, to;
-	from.setIdentity();
-	to.setIdentity();
-	from.setRotation(transform.Orientation.AsBtQuaternion());
-	to.setRotation(transform.Orientation.AsBtQuaternion());
-	from.setOrigin(current.AsBtVector3());
-	to.setOrigin(after);*/
-
-	if (m_physicsWorld) {
+	if (m_collider) {
 		//btVector3 after = current;
 		Vector3 after = current;
 		after += m_localXAxis.AsBtVector3() * vec.x;
 		after += WORLD_Y_AXIS.AsBtVector3() * vec.y;
-		after += forwards.AsBtVector3() * z;
-
+		after += forwards.AsBtVector3() * z;		
 		btTransform from, to;
 		from.setIdentity();
-		to.setIdentity();
-		/*from.setRotation(m_orientation.AsBtQuaternion());
-		to.setRotation(m_orientation.AsBtQuaternion());*/
+		to.setIdentity();		
+		
 		from.setOrigin(current.AsBtVector3());
 		to.setOrigin(after.AsBtVector3());
 
 		btCollisionWorld::ClosestConvexResultCallback cb(current.AsBtVector3(), after.AsBtVector3());
 		cb.m_collisionFilterMask = btBroadphaseProxy::DefaultFilter;
 
-		btConvexShape* cs = static_cast<btConvexShape*>(m_rigidBody->getCollisionShape());
+		btConvexShape* cs = static_cast<btConvexShape*>(m_collider->GetRigidBody()->getCollisionShape());
 		m_physicsWorld->ConvexSweepTest(cs, from, to, cb);
 		if (cb.hasHit()) {
 			float epsilon = 0.000001;
 			float min = btMax(epsilon, cb.m_closestHitFraction);
 			btVector3 newPos = current.AsBtVector3();
-			newPos.setInterpolate3(current.AsBtVector3(), after.AsBtVector3(), min);
-			//transform.Position = Vector3(newPos);
-			//btt.setOrigin(newPos);
+			newPos.setInterpolate3(current.AsBtVector3(), after.AsBtVector3(), min);			
 			m_transform.Position = Vector3(newPos);
 		}
-		else {
-			//btt.setOrigin(after.AsBtVector3());// = Vector3(after);
+		else {			
 			m_transform.Position = after;
 		}
 	}
@@ -211,16 +192,14 @@ void Camera::Translate(const Vector3& vec)
 		current += m_localXAxis.AsBtVector3() * vec.x;
 		current += WORLD_Y_AXIS.AsBtVector3() * vec.y;
 		current += forwards.AsBtVector3() * z;
-		//btt.setOrigin(current);// = current;
 		m_transform.Position = current;
 	}
-
-	btTransform btt;
-	btt.setRotation(m_transform.Orientation.AsBtQuaternion());
-	btt.setOrigin(m_transform.Position.AsBtVector3());
-
-	//m_rigidBody->getMotionState()->setWorldTransform(transform.GetBtTransform());
-	m_rigidBody->getMotionState()->setWorldTransform(btt);
+	if (m_collider) {
+		btTransform btt;
+		btt.setRotation(m_transform.Orientation.AsBtQuaternion());
+		btt.setOrigin(m_transform.Position.AsBtVector3());		
+		m_collider->SetWorldTransform(btt);
+	}
 
 }
 }

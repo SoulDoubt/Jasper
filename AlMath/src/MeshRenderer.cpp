@@ -7,7 +7,7 @@
 #include <Jasper\GLError.h>
 #include <Jasper\Texture.h>
 #include <Jasper\PhysicsCollider.h>
-#include <Jasper\PointLight.h>
+#include <Jasper\Lights.h>
 #include <iostream>
 
 namespace Jasper {
@@ -115,17 +115,16 @@ void MeshRenderer::Render() {
 	auto physicsDebugTrans = modelTrans;
 	physicsDebugTrans.Scale = { 1.0f, 1.0f, 1.0f };
 	auto physicsDebugModelMatrix = physicsDebugTrans.TransformMatrix();
-
-
+	
 	auto projectionMatrix = scene->ProjectionMatrix();
 	auto viewMatrix = scene->GetCamera().GetViewMatrix().Inverted();
 	auto modelMatrix = modelTrans.TransformMatrix();
 	auto modelViewMatrix = viewMatrix * modelMatrix;
-	auto mvp = projectionMatrix * viewMatrix * modelMatrix;
+	auto mvp = projectionMatrix * modelViewMatrix;
 	auto physicsDebugMvp = projectionMatrix * viewMatrix * physicsDebugModelMatrix;
 	auto normalMatrix = modelMatrix.NormalMatrix();	
 	//auto viewProjection = projectionMatrix * viewMatrix;
-	
+
 	//GLERRORCHECK;
 
 	shader->SetViewMatrix(viewMatrix);
@@ -133,13 +132,15 @@ void MeshRenderer::Render() {
 	shader->SetModelViewMatrix(modelViewMatrix);
 	shader->SetModelViewProjectionMatrix(mvp);
 	shader->SetNormalMatrix(normalMatrix);
-		
+	//camPos = (viewMatrix * Vector4(0.f, 0.f, 0.f, 1.0f)).AsVector3();
 	shader->SetCameraPosition(camPos);
 	
 	auto plight = scene->GetGameObjectByName("light0");
 	if (plight) {
-		PointLight* pl = static_cast<PointLight*>(plight);					
-		shader->SetPointLightUniforms(pl);
+		PointLight* pl = static_cast<PointLight*>(plight);		
+		Vector3 worldPosition = pl->GetWorldTransform().Position;
+		//Vector3 eslp = (modelViewMa trix * Vector4(worldPosition, 1.0f)).AsVector3();
+		shader->SetPointLightUniforms(pl, worldPosition);
 	}
 	shader->SetMaterialUniforms(m_material);
 

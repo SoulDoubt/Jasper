@@ -6,10 +6,12 @@ namespace Jasper {
 using namespace std;
 
 Shader::Shader() {
+	m_transpose = true;
 	Initialize();
 }
 
 Shader::Shader(std::string name) {
+	m_transpose = true;
 	m_name = name;
 	Initialize();
 }
@@ -206,33 +208,47 @@ int Shader::TangentAttributeLocation() {
 }
 
 
-void Shader::SetModelViewMatrix(const Matrix4 & mvm)
+inline void Shader::SetModelViewMatrix(const Matrix4 & mvm)
 {
 	int loc = glGetUniformLocation(m_programID, "mvMatrix");
 	if (loc > -1)
-		glUniformMatrix4fv(loc, 1, GL_TRUE, mvm.AsFloatPtr());
+		glUniformMatrix4fv(loc, 1, m_transpose, mvm.AsFloatPtr());
 	GLERRORCHECK;
 }
 
-void Shader::SetModelViewProjectionMatrix(const Matrix4 & mvp)
+inline void Shader::SetModelViewProjectionMatrix(const Matrix4 & mvp)
 {
 	int loc = glGetUniformLocation(m_programID, "mvpMatrix");
 	if (loc > -1)
-		glUniformMatrix4fv(loc, 1, GL_TRUE, mvp.AsFloatPtr());
+		glUniformMatrix4fv(loc, 1, m_transpose, mvp.AsFloatPtr());
 	GLERRORCHECK;
 }
 
-void Shader::SetNormalMatrix(const Matrix3 & normal)
+inline void Shader::SetNormalMatrix(const Matrix3 & normal)
 {
 	int loc = glGetUniformLocation(m_programID, "normalMatrix");
 	if (loc > -1)
-		glUniformMatrix3fv(loc, 1, GL_TRUE, normal.AsFloatPtr());
+		glUniformMatrix3fv(loc, 1, m_transpose, normal.AsFloatPtr());
 	GLERRORCHECK;
 }
 
-DirectionalLightUniformLocations Shader::GetDirectionalLightUniformLocations()
+inline void Shader::SetModelMatrix(const Matrix4& model) {
+	int location = glGetUniformLocation(m_programID, "modelMatrix");
+	if (location > -1)
+		glUniformMatrix4fv(location, 1, m_transpose, model.AsFloatPtr());
+}
+
+inline void Shader::SetViewMatrix(const Matrix4 & view)
 {
-	auto dlul = DirectionalLightUniformLocations();
+	int loc = glGetUniformLocation(m_programID, "viewMatrix");
+	if (loc > -1) {
+		glUniformMatrix4fv(loc, 1, m_transpose, view.AsFloatPtr());
+	}
+}
+
+void Shader::GetDirectionalLightUniformLocations()
+{
+	
 	/*GLuint id = ProgramID();
 	dlul.AmbientIntensity = glGetUniformLocation(id, "light0.AmbientIntensity");
 	dlul.Color = glGetUniformLocation(id, "light0.Color");
@@ -242,11 +258,11 @@ DirectionalLightUniformLocations Shader::GetDirectionalLightUniformLocations()
 	dlul.Exp = glGetUniformLocation(id, "light0.Exp");
 	dlul.LinearAtten = glGetUniformLocation(id, "light0.LinearAtten");
 	dlul.Position = glGetUniformLocation(id, "light0.Position");*/
-	return dlul;
+	
 	//return nullptr;
 }
 
-void Shader::SetDirectionalLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition)
+void Shader::SetDirectionalLightUniforms(const DirectionalLight* dl)
 {
 	/*auto ul = GetDirectionalLightUniformLocations();
 	glUniform3fv(ul.Color, 1, dl->Color.AsFloatPtr());
@@ -259,7 +275,11 @@ void Shader::SetDirectionalLightUniforms(const DirectionalLight* dl, const Vecto
 	glUniform1fv(ul.Exp, 1, &dl->Exp);*/
 }
 
-void Shader::SetPointLightUniforms(const PointLight * pl)
+void Shader::GetPointLightUniformLocations() {
+
+}
+
+void Shader::SetPointLightUniforms(const PointLight* pl, const Vector3& eslp)
 {
 	/*const auto position = pl->GetWorldTransform().Position;
 	auto ul = GetDirectionalLightUniformLocations();
@@ -270,15 +290,15 @@ void Shader::SetPointLightUniforms(const PointLight * pl)
 	glUniform1fv(ul.ConstAtten, 1, &pl->ConstAtten);*/
 }
 
-MaterialUniformLocations Shader::GetMaterialUniformLocations()
+void Shader::GetMaterialUniformLocations()
 {
 	//GLuint id = ProgramID();
-	auto mul = MaterialUniformLocations();
+	//auto mul = MaterialUniformLocations();
 	//mul.Ka = glGetUniformLocation(id, "material0.ka");
 	//mul.Kd = glGetUniformLocation(id, "material0.kd");
 	//mul.Ks = glGetUniformLocation(id, "material0.ks");
 	//mul.Ns = glGetUniformLocation(id, "material0.ns");
-	return mul;
+	//return mul;
 }
 
 void Shader::SetMaterialUniforms(const Material* m)
@@ -292,7 +312,7 @@ void Shader::SetMaterialUniforms(const Material* m)
 
 void Shader::SetCameraPosition(const Vector3& cp)
 {
-	GLuint loc = glGetUniformLocation(ProgramID(), "cameraPosition");
+	int loc = glGetUniformLocation(ProgramID(), "cameraPosition");
 	if (loc > -1)
 		glUniform3fv(loc, 1, cp.AsFloatPtr());
 }

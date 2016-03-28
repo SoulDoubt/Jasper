@@ -31,7 +31,6 @@
     <ClInclude Include="include\Jasper\Common.h" />
     <ClInclude Include="include\Jasper\Component.h" />
     <ClInclude Include="include\Jasper\Cube.h" />
-    <ClInclude Include="include\Jasper\DirectionalLight.h" />
     <ClInclude Include="include\Jasper\FontRenderer.h" />
     <ClInclude Include="include\Jasper\FontShader.h" />
     <ClInclude Include="include\Jasper\GameObject.h" />
@@ -49,7 +48,7 @@
     <ClInclude Include="include\Jasper\PhysicsCollider.h" />
     <ClInclude Include="include\Jasper\PhysicsWorld.h" />
     <ClInclude Include="include\Jasper\PlaneCollider.h" />
-    <ClInclude Include="include\Jasper\PointLight.h" />
+    <ClInclude Include="include\Jasper\Lights.h" />
     <ClInclude Include="include\Jasper\Quad.h" />
     <ClInclude Include="include\Jasper\quaternion.h" />
     <ClInclude Include="include\Jasper\Room.h" />
@@ -76,7 +75,6 @@
     <ClCompile Include="src\CharacterController.cpp" />
     <ClCompile Include="src\Component.cpp" />
     <ClCompile Include="src\Cube.cpp" />
-    <ClCompile Include="src\DirectionalLight.cpp" />
     <ClCompile Include="src\FontRenderer.cpp" />
     <ClCompile Include="src\FontShader.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
@@ -94,7 +92,7 @@
     <ClCompile Include="src\PhysicsDebugDraw.cpp" />
     <ClCompile Include="src\PhysicsWorld.cpp" />
     <ClCompile Include="src\PlaneCollider.cpp" />
-    <ClCompile Include="src\PointLight.cpp" />
+    <ClCompile Include="src\Lights.cpp" />
     <ClCompile Include="src\Quad.cpp" />
     <ClCompile Include="src\quaternion.cpp" />
     <ClCompile Include="src\Room.cpp" />

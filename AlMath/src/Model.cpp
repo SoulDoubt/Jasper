@@ -153,13 +153,13 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 		mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
 		mat->Get(AI_MATKEY_SHININESS, shine);
 		if (shine == 0.0f) {
-			shine = 12.0f;
+			shine = 64.0f;
 		}
 		myMaterial->SetTextureDiffuse(m_directory + "/" + textureFileName);
 		myMaterial->Ambient = Vector3(ambient.r, ambient.g, ambient.b);
 		myMaterial->Diffuse = Vector3(diffuse.r, diffuse.g, diffuse.b);
 		myMaterial->Specular = Vector3(specular.r, specular.g, specular.b);
-		myMaterial->Shine = shine;
+		myMaterial->Shine = shine / 4.0f;
 		// try to load a normal map
 		texString.Clear();
 		mat->GetTexture(aiTextureType::aiTextureType_NORMALS, 0, &texString);

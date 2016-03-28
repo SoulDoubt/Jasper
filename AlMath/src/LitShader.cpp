@@ -27,52 +27,52 @@ void LitShader::Initialize()
 	LinkShaderProgram();
 }
 
-DirectionalLightUniformLocations LitShader::GetDirectionalLightUniformLocations()
+void LitShader::GetDirectionalLightUniformLocations()
 {
-	DirectionalLightUniformLocations dlul;
-	GLuint id = ProgramID();
-	dlul.AmbientIntensity = glGetUniformLocation(id, "light0.AmbientIntensity");
-	dlul.Color = glGetUniformLocation(id, "light0.Color");
-	dlul.ConstAtten = glGetUniformLocation(id, "light0.ConstAtten");
-	dlul.DiffuseIntensity = glGetUniformLocation(id, "light0.DiffuseIntensity");
-	dlul.Direction = glGetUniformLocation(id, "light0.Direction");
-	dlul.Exp = glGetUniformLocation(id, "light0.Exp");
-	dlul.LinearAtten = glGetUniformLocation(id, "light0.LinearAtten");
-	dlul.Position = glGetUniformLocation(id, "light0.Position");
-	return dlul;
+	if (m_dlus.isPopulated) {
+		return;
+	}
+	else {
+		GLuint id = ProgramID();		
+		m_dlus.Color = glGetUniformLocation(id, "light0.Color");				
+		m_dlus.Direction = glGetUniformLocation(id, "light0.Direction");
+		m_dlus.isPopulated = true;
+	}
 }
 
-void LitShader::SetDirectionalLightUniforms(const DirectionalLight* dl, const Vector3& eyeSpacePosition)
+void LitShader::SetDirectionalLightUniforms(const DirectionalLight* dl)
 {
-	auto ul = GetDirectionalLightUniformLocations();
-	glUniform3fv(ul.Color, 1, dl->Color.AsFloatPtr());
-	glUniform3fv(ul.Direction, 1, dl->Direction.AsFloatPtr());
-	glUniform3fv(ul.Position, 1, eyeSpacePosition.AsFloatPtr());
-	glUniform1f(ul.AmbientIntensity, dl->AmbientIntensity);
-	glUniform1f(ul.DiffuseIntensity, dl->DiffuseIntensity);
-	glUniform1f(ul.ConstAtten, dl->ConstAtten);
-	glUniform1f(ul.LinearAtten, dl->LinearAtten);
-	glUniform1f(ul.Exp, dl->Exp);
+	if (!m_dlus.isPopulated) {
+		GetDirectionalLightUniformLocations();
+	}
+	glUniform3fv(m_dlus.Color, 1, dl->Color.AsFloatPtr());
+	glUniform3fv(m_dlus.Direction, 1, dl->Direction.AsFloatPtr());
 }
 
-MaterialUniformLocations LitShader::GetMaterialUniformLocations()
+void LitShader::GetMaterialUniformLocations()
 {
-	GLuint id = ProgramID();
-	MaterialUniformLocations mul;
-	mul.Ka = glGetUniformLocation(id, "material0.ka");
-	mul.Kd = glGetUniformLocation(id, "material0.kd");
-	mul.Ks = glGetUniformLocation(id, "material0.ks");
-	mul.Ns = glGetUniformLocation(id, "material0.ns");
-	return mul;
+	if (m_mus.isPopulated) {
+		return;
+	}
+	else {
+		GLuint id = ProgramID();		
+		m_mus.Ka = glGetUniformLocation(id, "material0.ka");
+		m_mus.Kd = glGetUniformLocation(id, "material0.kd");
+		m_mus.Ks = glGetUniformLocation(id, "material0.ks");
+		m_mus.Ns = glGetUniformLocation(id, "material0.ns");
+		m_mus.isPopulated = true;
+	}
 }
 
 void LitShader::SetMaterialUniforms(const Material* m)
-{
-	auto ul = GetMaterialUniformLocations();
-	glUniform3fv(ul.Ka, 1, m->Ambient.AsFloatPtr());
-	glUniform3fv(ul.Kd, 1, m->Diffuse.AsFloatPtr());
-	glUniform3fv(ul.Ks, 1, m->Specular.AsFloatPtr());
-	glUniform1fv(ul.Ns, 1, &(m->Shine));
+{	
+	if (!m_mus.isPopulated) {
+		GetMaterialUniformLocations();
+	}
+	glUniform3fv(m_mus.Ka, 1, m->Ambient.AsFloatPtr());
+	glUniform3fv(m_mus.Kd, 1, m->Diffuse.AsFloatPtr());
+	glUniform3fv(m_mus.Ks, 1, m->Specular.AsFloatPtr());
+	glUniform1fv(m_mus.Ns, 1, &(m->Shine));
 }
 
 void LitShader::SetTransformUniforms(const Transform & trans)
@@ -93,16 +93,28 @@ void LitShader::SetTransformUniforms(const Transform & trans)
 
 }
 
-void LitShader::SetPointLightUniforms(const PointLight * pl)
+void LitShader::GetPointLightUniformLocations()
 {
-	const auto position = pl->GetWorldTransform().Position;
-	int posl = glGetUniformLocation(ProgramID(), "lightPosition");
-	glUniform3fv(posl, 1, position.AsFloatPtr());
-	auto ul = GetDirectionalLightUniformLocations();
-	glUniform3fv(ul.Color, 1, pl->Color.AsFloatPtr());
-	glUniform3fv(ul.Position, 1, position.AsFloatPtr());
-	glUniform1fv(ul.AmbientIntensity, 1, &pl->AmbientIntensity);
-	glUniform1fv(ul.ConstAtten, 1, &pl->ConstAtten);
+	if (m_plus.isPopulated) {
+		return;
+	}
+	else {
+		uint id = ProgramID();
+		m_plus.Color = glGetUniformLocation(id, "light0.Color");
+		m_plus.Position = glGetUniformLocation(id, "light0.Position");
+		m_plus.ConstAttenuation = glGetUniformLocation(id, "Light0.ConstAtten");
+		m_plus.isPopulated = true;
+	}
+}
+
+void LitShader::SetPointLightUniforms(const PointLight* pl, const Vector3& eslp)
+{			
+	if (!m_plus.isPopulated) {
+		GetPointLightUniformLocations();
+	}
+	glUniform3fv(m_plus.Color, 1, pl->Color.AsFloatPtr());
+	glUniform3fv(m_plus.Position, 1, eslp.AsFloatPtr());	
+	glUniform1fv(m_plus.ConstAttenuation, 1, &pl->ConstAtten);
 }
 
 

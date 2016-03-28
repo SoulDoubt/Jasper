@@ -4,6 +4,7 @@
 #include "Common.h"
 #include <bullet\btBulletDynamicsCommon.h>
 #include <Jasper\PhysicsDebugDraw.h>
+#include <vector>
 
 
 namespace Jasper {
@@ -33,6 +34,8 @@ public:
 		m_world->debugDrawObject(worldTransform, shape, color);
 	}
 
+	void RemoveRigidBody(btRigidBody* rb);
+
 	PhysicsDebugDrawer* debugDrawer;
 
 private:
@@ -42,6 +45,8 @@ private:
 	btCollisionDispatcher* m_collisionDispatcher;
 	btSequentialImpulseConstraintSolver* m_solver;
 	btDiscreteDynamicsWorld* m_world;
+	std::vector<btCollisionShape*> m_shapes;
+	std::vector<btRigidBody*> m_bodies;
 
 };
 

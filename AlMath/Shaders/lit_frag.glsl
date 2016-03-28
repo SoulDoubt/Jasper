@@ -21,13 +21,11 @@ struct material{
 
 out vec4 fcolor;
 
-in vec2 v_texCoords;
-in vec3 v_normal;
-in vec4 v_vertColor;
-in vec3 v_fragPosition;
-in vec3 v_lightDirection;
+smooth in vec2 v_texCoords;
+smooth in vec3 v_normal;
+smooth in vec4 v_vertColor;
+smooth in vec3 v_fragPosition;
 in mat3 v_tbnMatrix;
-in vec3 v_lightPosition;
 
 
 uniform sampler2D colorMap;
@@ -38,40 +36,53 @@ uniform vec3 cameraPosition;
 uniform point_light light0;
 uniform material material0;
 
-vec4 CalculateLighting(point_light light, vec3 lightDirection, vec3 normal, material mat){
-	vec4 ambientColor = vec4(light.Color, 1.0f) * light.AmbientIntensity;
-	float diffuseFactor = max(0.0, dot(normal, -lightDirection));
-
-	vec4 diffuseColor = vec4(0,0,0,1);
-	vec4 specularColor = vec4(0,0,0,1);
-
-	if (diffuseFactor > 0){
-		diffuseColor = vec4(light.Color * light.DiffuseIntensity * diffuseFactor, 1.0f);
-		vec3 vertexToEye = normalize(cameraPosition - v_fragPosition);
-		vec3 reflection = normalize(reflect(lightDirection, normal));
-		float specularFactor = max(0.0, dot(vertexToEye, reflection));
-		if (specularFactor > 0){
-			specularFactor = pow(specularFactor, mat.ns);
-			specularColor = vec4(light.Color * mat.ks * specularFactor, 1.0f);
-		}
-	}	
-	return (ambientColor + diffuseColor + specularColor);
-}
-
 
 void main()
 {	
 	vec3 normal;
 	if (textureSize(normalMap, 0).x > 0){
-		vec3 fragNormal = v_tbnMatrix * normalize( texture( normalMap, v_texCoords ).xyz );// * 2.0 - 2.0;		
-		//normal = vec3(abs(fragNormal.x), abs(fragNormal.y), abs(fragNormal.z));
+		vec3 fragNormal = v_tbnMatrix * normalize( texture( normalMap, v_texCoords ).xyz );// * 2.0 - 2.0;			
 		normal = fragNormal;		
 	}
 	else {
-		normal = normalize(v_normal);
+		normal = normalize(v_normal); 	
 	}
-	vec4 lightContribution = CalculateLighting(light0, v_lightDirection, normal, material0);
-	fcolor = texture(colorMap, v_texCoords) * lightContribution;
+	//normal = normalize(v_normal);
+	vec4 diffuse_color = vec4(0,0,0,1);
+	vec4 specular_color = vec4(0,0,0,1);
+	vec3 light_direction = light0.Position - v_fragPosition;
+	float dist_to_light = length(light_direction);
+	light_direction = normalize(light_direction);
+
+	vec3 ambient_factor = light0.Color * material0.ka * light0.AmbientIntensity;
+	vec4 ambient_color = vec4(ambient_factor, 1.0f);
+
+	float diffuse_factor = max(dot(normal, light_direction), 0.0);
+	if (diffuse_factor > 0) {
+		vec3 diff = light0.Color * material0.kd * diffuse_factor;
+		diffuse_color = vec4(diff, 1.0f);
+	}
+
+	vec3 vert_to_eye = normalize(v_fragPosition - cameraPosition);
+	vec3 reflection = normalize(reflect(light_direction, normal));
+	float specular_factor = max(dot(reflection, vert_to_eye), 0.0);
+	if (specular_factor > 0){
+		vec3 spec = light0.Color * material0.ks * specular_factor * material0.ns;
+		specular_color = vec4(spec, 1.0f);
+	}
+
+	vec4 map_color = texture(colorMap, v_texCoords);
+	//fcolor = vec4(normal, 1.0);
+	//fcolor = ambient_color;	
+	//vec3 norm = vec3(abs(normal.x), abs(normal.y), abs(normal.z));
+	//fcolor = vec4(norm, 1.0);
+	//fcolor = diffuse_color;
+	fcolor = map_color * diffuse_color;
+	//fcolor = specular_color;
+	//fcolor = map_color * (diffuse_color + specular_color);// + vec4(ambient_color.xyz, 1.0) + vec4(specular_color.xyz, 1.0));
+
+	
+	
 	
 
 }

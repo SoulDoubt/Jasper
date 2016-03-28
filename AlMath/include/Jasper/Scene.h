@@ -3,7 +3,7 @@
 
 #include "Common.h"
 #include "GameObject.h"
-#include "DirectionalLight.h"
+#include "Lights.h"
 #include "Shader.h"
 #include "Camera.h"
 #include "PhysicsWorld.h"

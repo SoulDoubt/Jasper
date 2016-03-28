@@ -35,7 +35,7 @@ public:
 
 	void SetupGL();
 
-	int GetWindowHandle() const;
+	HWND GetWindowHandle() const;
 
 	void printGLInfo() {
 		printf("Vendor: %s\n", glGetString(GL_VENDOR));

@@ -1,5 +1,4 @@
 #include <memory>
-
 #include <Jasper\Scene.h>
 #include <Jasper\Quad.h>
 #include <Jasper\Cube.h>
@@ -15,7 +14,6 @@
 #include <Jasper\BoxCollider.h>
 #include <Jasper\Sphere.h>
 #include <Jasper\SphereCollider.h>
-#include <Jasper\PointLight.h>
 
 namespace Jasper {
 
@@ -44,6 +42,17 @@ void Scene::Initialize() {
 	m_physicsWorld->Initialize();
 	m_camera = m_rootNode->AttachNewChild<Camera>(Camera::CameraType::FLYING);
 	m_camera->SetPhysicsWorld(m_physicsWorld.get());
+	/*{
+		float mass = 80.f;
+
+		const float width = 0.8f / 2.f;
+		const float depth = 0.4f / 2.f;
+		const float height = 1.9f / 2.f;		
+		
+		auto camCollider = m_camera->AttachNewComponent<CapsuleCollider>("Camera_Collider", Vector3(width, height, depth), m_physicsWorld.get());
+		camCollider->Mass = mass;
+	}*/
+	
 	
 	auto pm = Matrix4();
 	auto om = Matrix4();
@@ -95,26 +104,27 @@ void Scene::Initialize() {
 	floorMaterial->Ambient = { 1.0f, 1.0f, 1.0f };	
 
 	auto m1 = m_materialManager.CreateInstance<Material>(defaultShader);
-	m1->SetTextureDiffuse("./textures/176.jpg");
-	m1->SetTextureNormalMap("./textures/176_norm.jpg");
-	m1->Shine = 6.0f;
+	m1->SetTextureDiffuse("./textures/154.jpg");
+	m1->SetTextureNormalMap("./textures/154_norm.jpg");
+	m1->Shine = 12.0f;
 	m1->Diffuse = { 0.85f, 0.85f, 0.85f };
 	m1->Ambient = { 0.25f, 0.25f, 0.25f };
-	m1->Specular = Vector3(0.2f, 0.2f, 0.2f);
+	m1->Specular = { 0.9f, 0.9f, 0.9f };
 
 	auto wall = m_rootNode->AttachNewChild<GameObject>("wall_0");
 	auto wallMesh = m_meshManager.CreateInstance<Cube>( Vector3(10.f, 10.f, 0.2f));
 	auto wallRenderer = wall->AttachNewComponent<MeshRenderer>(wallMesh, m1);
 	auto wallCollider = wall->AttachNewComponent<BoxCollider>("wall_0_collider", wallMesh, m_physicsWorld.get());
 	wallCollider->Mass = 00.0f;	
-	wall->GetLocalTransform().Translate({ 0.0f, 10.0f, -10.0f });
+	wall->GetLocalTransform().Translate({ 0.0f, 30.0f, -10.0f });
+	wall->GetLocalTransform().Rotate({ 1.0f, 0.f, 0.f }, DEG_TO_RAD(90.f));
 
 	auto cube = m_rootNode->AttachNewChild<GameObject>("cube_0");
 	auto cubeMesh = m_meshManager.CreateInstance<Cube>(Vector3({ 1.5f, 1.5f, 1.5f }));
 	cubeMesh->FlipTextureCoords();
 	auto mr1 = cube->AttachNewComponent<MeshRenderer>(cubeMesh, m1);
-	cube->GetLocalTransform().Translate({ 0.0f, 2.5f, 0.0f });
-	cube->GetLocalTransform().Rotate({ 1.f, 0.f, 0.f }, DEG_TO_RAD(30.f));
+	cube->GetLocalTransform().Translate({ 0.0f, 1.5f, 0.0f });
+	//cube->GetLocalTransform().Rotate({ 0.f, 0.f, 1.f }, DEG_TO_RAD(45.f));
 	auto bc = cube->AttachNewComponent<BoxCollider>("cube_box_collider", cubeMesh, m_physicsWorld.get());
 	bc->Mass = 2.0f;
 
@@ -144,14 +154,17 @@ void Scene::Initialize() {
 	auto sphereMesh = m_meshManager.CreateInstance<Sphere>(1.0f);
 	auto sphereMat = m_materialManager.CreateInstance<Material>(defaultShader);
 	sphereMat->SetTextureDiffuse("./textures/red.png");
-	//auto sphereRenderer = sphereObject->AttachNewComponent<MeshRenderer>(sphereMesh, sphereMat);
+	auto sphereRenderer = sphereObject->AttachNewComponent<MeshRenderer>(sphereMesh, sphereMat);
 	auto sc = sphereObject->AttachNewComponent<SphereCollider>("sphere0_collider", sphereMesh, m_physicsWorld.get());
 	sc->Mass = 5.f;
 	sphereObject->GetLocalTransform().Translate({ 0.f, 25.f, -3.f });
 
 	auto light0 = m_rootNode->AttachNewChild<PointLight>("light0");	
-	light0->GetLocalTransform().Translate({ 0.0f, 20.f, 0.0f });	
+	light0->GetLocalTransform().Translate({ 0.0f, 5.f, 5.0f });	
 	light0->ConstAtten = 0.002f;
+	light0->Color = { 1.f, 1.f, 1.f };	
+	light0->AmbientIntensity = 0.75f;
+
 	auto lightMesh = m_meshManager.CreateInstance<Cube>(Vector3(0.1f, 0.1f, 0.1f));
 	auto lightMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
 	lightMaterial->SetTextureDiffuse("./textures/white.png");

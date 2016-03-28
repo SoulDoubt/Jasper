@@ -18,15 +18,7 @@ PhysicsCollider::PhysicsCollider(const std::string& name, const Vector3& halfExt
 
 PhysicsCollider::~PhysicsCollider()
 {
-	if (m_collisionShape) {
-		delete m_collisionShape;
-	}
-	if (m_defaultMotionState) {
-		delete m_defaultMotionState;
-	}
-	/*if (m_rigidBody) {
-		delete m_rigidBody;
-	}*/
+	Destroy();
 }
 
 void PhysicsCollider::Initialize()
@@ -35,19 +27,18 @@ void PhysicsCollider::Initialize()
 }
 
 void PhysicsCollider::Destroy()
-{
-	Component::Destroy();
+{	
+			
 }
 
 void PhysicsCollider::Awake()
 {
 	
-	Component::Awake();
 }
 
 void PhysicsCollider::Start()
 {
-	Component::Start();
+	//Component::Start();
 }
 
 void PhysicsCollider::FixedUpdate()
@@ -57,7 +48,7 @@ void PhysicsCollider::FixedUpdate()
 
 void PhysicsCollider::Update()
 {
-	Component::Update();
+	//Component::Update();
 }
 
 void PhysicsCollider::LateUpdate()

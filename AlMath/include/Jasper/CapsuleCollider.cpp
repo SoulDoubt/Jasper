@@ -53,5 +53,5 @@ void Jasper::CapsuleCollider::Awake()
 	btRigidBody::btRigidBodyConstructionInfo rbci(Mass, m_defaultMotionState, m_collisionShape, inertia);
 	m_rigidBody = new btRigidBody(rbci);
 
-	m_world->AddRigidBody(m_rigidBody);
+	m_world->AddCollider(this);
 }

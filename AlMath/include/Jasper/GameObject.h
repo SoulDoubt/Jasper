@@ -229,7 +229,7 @@ T* GameObject::AttachNewChild(Args&&... args)
 	if (!std::is_base_of<GameObject, T>::value) {
 		return nullptr;
 	}
-	auto child = make_unique<T>(std::forward<Args>(args)...);
+	auto child = std::make_unique<T>(std::forward<Args>(args)...);
 	child->SetParemt(this);
 	child->SetScene(this->m_scene);	
 	T* ret = child.get();
