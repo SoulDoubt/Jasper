@@ -42,7 +42,7 @@ public:
 		Position = Vector3(btt.getOrigin());
 		Orientation = Quaternion(btt.getRotation());
 		Scale = { 1.0f, 1.0f, 1.0f };
-	}
+	}	
 
 	btTransform GetBtTransform() {
 		btTransform btt;
@@ -53,30 +53,24 @@ public:
 		return btt;
 	}
 
-	Transform() {
-
-	}
+	Transform() {}
 
 	Matrix4 TransformMatrix() const;
 
 	Matrix3 NormalMatrix(Matrix4 mat) const;
 
-	Transform& Translate(const Vector3& tv) {
-		Position += tv;
-		return *this;
-	}
+	Transform& Translate(const Vector3& tv);
+	Transform& Translate(const float x, const float y, const float z);
 
 	Transform& Rotate(const Vector3& axis, float angle);
+
+	Transform& RotateAround(const Vector3& point, const Vector3& axis, const float degrees);
 
 
 	friend Transform operator*(const Transform& ps, const Transform& ls);
 	friend Transform& operator*=(Transform& ps, const Transform& ls);
 
-	void SetIdentity() {
-		Position = { 0.f, 0.f, 0.f };
-		Orientation = { 0.f, 0.f, 0.f, 1.f };
-		Scale = { 1.f, 1.f, 1.f };
-	}
+	void SetIdentity();
 };
 
 inline Transform operator*(const Transform& ps, const Transform& ls) {
@@ -99,6 +93,22 @@ inline Matrix4 Transform::TransformMatrix() const {
 inline Matrix3 Transform::NormalMatrix(Matrix4 mat) const
 {
 	return mat.NormalMatrix();
+}
+
+inline Transform& Transform::Translate(const Vector3& tv) {
+	Position += tv;
+	return *this;
+}
+
+inline Transform& Transform::Translate(const float x, const float y, const float z) {
+	return Translate(Vector3(x, y, z));
+}
+
+
+inline void Transform::SetIdentity() {
+	Position = { 0.f, 0.f, 0.f };
+	Orientation = { 0.f, 0.f, 0.f, 1.f };
+	Scale = { 1.f, 1.f, 1.f };
 }
 
 }

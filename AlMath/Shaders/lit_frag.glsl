@@ -40,14 +40,14 @@ uniform material material0;
 void main()
 {	
 	vec3 normal;
-	if (textureSize(normalMap, 0).x > 0){
-		vec3 fragNormal = v_tbnMatrix * normalize( texture( normalMap, v_texCoords ).xyz );// * 2.0 - 2.0;			
-		normal = fragNormal;		
-	}
-	else {
-		normal = normalize(v_normal); 	
-	}
-	//normal = normalize(v_normal);
+	// if (textureSize(normalMap, 0).x > 0){
+	// 	vec3 fragNormal = v_tbnMatrix * normalize( texture( normalMap, v_texCoords ).xyz );// * 2.0 - 2.0;			
+	// 	normal = fragNormal;		
+	// }
+	// else {
+	// 	normal = normalize(v_normal); 	
+	// }
+	normal = normalize(v_normal);
 	vec4 diffuse_color = vec4(0,0,0,1);
 	vec4 specular_color = vec4(0,0,0,1);
 	vec3 light_direction = light0.Position - v_fragPosition;
@@ -63,11 +63,11 @@ void main()
 		diffuse_color = vec4(diff, 1.0f);
 	}
 
-	vec3 vert_to_eye = normalize(v_fragPosition - cameraPosition);
+	vec3 vert_to_eye = normalize(cameraPosition - v_fragPosition);
 	vec3 reflection = normalize(reflect(light_direction, normal));
-	float specular_factor = max(dot(reflection, vert_to_eye), 0.0);
+	float specular_factor = max(dot(reflection, -vert_to_eye), 0.0);
 	if (specular_factor > 0){
-		vec3 spec = light0.Color * material0.ks * specular_factor * material0.ns;
+		vec3 spec = light0.Color * material0.ks * pow(specular_factor, material0.ns);
 		specular_color = vec4(spec, 1.0f);
 	}
 
@@ -77,9 +77,9 @@ void main()
 	//vec3 norm = vec3(abs(normal.x), abs(normal.y), abs(normal.z));
 	//fcolor = vec4(norm, 1.0);
 	//fcolor = diffuse_color;
-	fcolor = map_color * diffuse_color;
+	//fcolor = map_color * diffuse_color;
 	//fcolor = specular_color;
-	//fcolor = map_color * (diffuse_color + specular_color);// + vec4(ambient_color.xyz, 1.0) + vec4(specular_color.xyz, 1.0));
+	fcolor = map_color * (ambient_color + diffuse_color + specular_color);// + vec4(ambient_color.xyz, 1.0) + vec4(specular_color.xyz, 1.0));
 
 	
 	

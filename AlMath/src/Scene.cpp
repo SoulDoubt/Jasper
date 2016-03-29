@@ -119,14 +119,14 @@ void Scene::Initialize() {
 	wall->GetLocalTransform().Translate({ 0.0f, 30.0f, -10.0f });
 	wall->GetLocalTransform().Rotate({ 1.0f, 0.f, 0.f }, DEG_TO_RAD(90.f));
 
-	auto cube = m_rootNode->AttachNewChild<GameObject>("cube_0");
-	auto cubeMesh = m_meshManager.CreateInstance<Cube>(Vector3({ 1.5f, 1.5f, 1.5f }));
-	cubeMesh->FlipTextureCoords();
-	auto mr1 = cube->AttachNewComponent<MeshRenderer>(cubeMesh, m1);
-	cube->GetLocalTransform().Translate({ 0.0f, 1.5f, 0.0f });
-	//cube->GetLocalTransform().Rotate({ 0.f, 0.f, 1.f }, DEG_TO_RAD(45.f));
-	auto bc = cube->AttachNewComponent<BoxCollider>("cube_box_collider", cubeMesh, m_physicsWorld.get());
-	bc->Mass = 2.0f;
+	//auto cube = m_rootNode->AttachNewChild<GameObject>("cube_0");
+	//auto cubeMesh = m_meshManager.CreateInstance<Cube>(Vector3({ 1.5f, 1.5f, 1.5f }));
+	//cubeMesh->FlipTextureCoords();
+	//auto mr1 = cube->AttachNewComponent<MeshRenderer>(cubeMesh, m1);
+	//cube->GetLocalTransform().Translate({ 0.0f, 1.5f, 0.0f });
+	////cube->GetLocalTransform().Rotate({ 0.f, 0.f, 1.f }, DEG_TO_RAD(45.f));
+	//auto bc = cube->AttachNewComponent<BoxCollider>("cube_box_collider", cubeMesh, m_physicsWorld.get());
+	//bc->Mass = 2.0f;
 
 	/*auto cubechild = CreateEmptyGameObject("child_cube0", cube);
 	auto childMesh = m_meshManager.CreateInstance<Cube>(Vector3(0.5f, 0.5f, 0.5f));
@@ -142,8 +142,13 @@ void Scene::Initialize() {
 	//model->GetLocalTransform().Scale = Vector3{ 0.025f, 0.025f, 0.025f };
 	////model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));	
 	//
-	auto trooper = m_rootNode->AttachNewChild<Model>("barrel", "./models/oildrum/oildrum.obj", defaultShader, true, m_physicsWorld.get());
-	trooper->GetLocalTransform().Translate({ 0.0f, 2.0f, 0.0f });
+	auto teapot = m_rootNode->AttachNewChild<Model>("teapot", "./models/teapot/teapot.obj", defaultShader, true, m_physicsWorld.get());
+	teapot->GetLocalTransform().Translate({ 0.0f, 20.0f, 0.0f });
+	teapot->GetLocalTransform().Scale = { 0.075f, 0.075f, 0.075f };
+
+	auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
+	lara->GetLocalTransform().Rotate({ 1.f, 0.f, 0.f }, DEG_TO_RAD(-90.f));
+	
 
 	/*auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
 	lara->GetLocalTransform().Translate({ 4.0f, 1.0f, -3.0f });
@@ -160,7 +165,7 @@ void Scene::Initialize() {
 	sphereObject->GetLocalTransform().Translate({ 0.f, 25.f, -3.f });
 
 	auto light0 = m_rootNode->AttachNewChild<PointLight>("light0");	
-	light0->GetLocalTransform().Translate({ 0.0f, 5.f, 5.0f });	
+	light0->GetLocalTransform().Translate({ 0.0f, 10.f, 10.0f });	
 	light0->ConstAtten = 0.002f;
 	light0->Color = { 1.f, 1.f, 1.f };	
 	light0->AmbientIntensity = 0.75f;
@@ -208,11 +213,9 @@ void Scene::Update(float dt)
 	Vector3 direction = m_camera->GetViewDirection();
 	m_physicsWorld->Update(dt);			
 
-	auto light = GetGameObjectByName("light0");
-	float theta = DEG_TO_RAD(1.0f);
-	float x = 5.0 * cosf(theta);
-	float y = 5.0 * sinf(theta);
-	//light->GetLocalTransform().Translate({ x, .0f, y });
+	
+	auto light = GetGameObjectByName("light0");	
+	light->GetLocalTransform().RotateAround(Vector3(0.f, 10.f, 0.f), Vector3(0.f, 1.f, 0.f), 1.f);
 
 	m_rootNode->Update(dt);		
 	string pos = "Position: " + position.ToString();

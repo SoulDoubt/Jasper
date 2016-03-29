@@ -64,8 +64,6 @@ void FontRenderer::RenderText(const string& text, float x, float y)
 	std::vector<Vertex> verts;	
 	verts.reserve(text.length() * 4);
 	
-	//std::vector<unsigned> indices;
-	//const char* chars = text.c_str();
 	for (char c : text) {
 		if (c >= 32 && c < 128) {									
 			stbtt_aligned_quad q;
@@ -108,8 +106,7 @@ std::unique_ptr<Texture> FontRenderer::GetTextureAtlas() {
 	if (file.read(buffer.data(), size))
 	{
 		int h = 512; int w = 512;
-		file.close();	
-		stbtt_fontinfo fi;
+		file.close();		
 		
 		uchar8* tempBitmap = new uchar8[w * h];
 		stbtt_pack_context ctx;

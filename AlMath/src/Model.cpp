@@ -44,23 +44,30 @@ void Model::Initialize()
 	printf("\nLoaded %d meshes in model: %s", sz, this->GetName().c_str());
 	uint numTris = 0;
 	uint numVerts = 0;
-	/*Vector3 maxExtents = { -100000.0f, -1000000.0f, -1000000.0f };
-	Vector3 minExtents = { 1000000.0f, 1000000.0f, 1000000.0f };*/
+	Vector3 maxExtents = { -100000.0f, -1000000.0f, -1000000.0f };
+	Vector3 minExtents = { 1000000.0f, 1000000.0f, 1000000.0f };
 
 	for (auto& m : m_meshManager.GetCache()) {
 		numTris += m->Indices.size() / 3;
 		numVerts += m->Vertices.size();
-		/*if (m->GetMaxExtents().x > maxExtents.x) maxExtents.x = m->GetMaxExtents().x;
+		if (m->GetMaxExtents().x > maxExtents.x) maxExtents.x = m->GetMaxExtents().x;
 		if (m->GetMaxExtents().y > maxExtents.y) maxExtents.y = m->GetMaxExtents().y;
 		if (m->GetMaxExtents().z > maxExtents.z) maxExtents.z = m->GetMaxExtents().z;
 																				
-		if (m->GetMinExtents().z < minExtents.z) minExtents.x = m->GetMinExtents().z;
-		if (m->GetMinExtents().z < minExtents.z) minExtents.y = m->GetMinExtents().z;
-		if (m->GetMinExtents().z < minExtents.z) minExtents.z = m->GetMinExtents().z;	*/
-		
+		if (m->GetMinExtents().x < minExtents.x) minExtents.x = m->GetMinExtents().x;
+		if (m->GetMinExtents().y < minExtents.y) minExtents.y = m->GetMinExtents().y;
+		if (m->GetMinExtents().z < minExtents.z) minExtents.z = m->GetMinExtents().z;		
 	}
-	if (m_enablePhysics) {
-		
+	Vector3 localOrigin = { (minExtents.x + maxExtents.x) / 2.f, (minExtents.y + maxExtents.y) / 2.f , (minExtents.z + maxExtents.z) / 2.f };
+	float epsilon = 0.000001f;
+	if (fabs(localOrigin.x) > epsilon || fabs(localOrigin.y) > epsilon || fabs(localOrigin.z) > epsilon) {
+		for (auto& m : m_meshManager.GetCache()) {
+			for (auto& v : m->Vertices) {
+				v.Position -= localOrigin;
+			}
+		}
+	}
+	if (m_enablePhysics) {		
 		Vector3 hes = { -1000000.0f, -1000000.0f, -1000000.0f };
 		for (auto& m : m_meshManager.GetCache()) {
 			if (m->GetHalfExtents().x > hes.x) hes.x = m->GetHalfExtents().x;

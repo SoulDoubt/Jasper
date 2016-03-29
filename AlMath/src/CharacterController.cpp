@@ -2,10 +2,12 @@
 
 namespace Jasper {
 
-CharacterController::CharacterController()
+
+
+CharacterController::CharacterController(PhysicsWorld * world)
+	:btKinematicCharacterController(m_ghost, m_shape, m_stepHeight)
 {
 }
-
 
 CharacterController::~CharacterController()
 {

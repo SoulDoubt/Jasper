@@ -16,12 +16,9 @@ struct Angles {
 };
 
 
-//ALIGN16
 class Quaternion
 {
-public:
-
-	//ALIGN_16_OPERATORS;
+public:	
 
 	Quaternion(float x, float y, float z, float w);
 	Quaternion(const Vector3& vector, float scalar);
@@ -45,6 +42,7 @@ public:
 	Quaternion operator/(const float f) const;
 	Quaternion& operator*=(const float f);
 	Quaternion operator*(const float f) const;
+	Quaternion& operator*=(const Quaternion& o);
 	
 		
 	float Scalar()const { return w; }
@@ -130,6 +128,11 @@ inline Quaternion operator*(const Quaternion& a, const Quaternion& b) {
 	return q;
 }
 
+inline Quaternion& Quaternion::operator*=(const Quaternion& o) {
+	*this = *this * o;
+	return *this;
+}
+
 inline Quaternion Normalize(const Quaternion& q) {
 	return q * (1.0f / q.Length());
 }
@@ -148,7 +151,7 @@ inline Quaternion Quaternion::operator/(const float f) const
 	return Quaternion(x / f, y / f, z / f, w / f);
 }
 
-inline Quaternion & Quaternion::operator*=(const float f)
+inline Quaternion& Quaternion::operator*=(const float f)
 {
 	x *= f;
 	y *= f;
@@ -185,7 +188,6 @@ inline Quaternion Conjugate(const Quaternion& q)
 inline Quaternion Inverse(const Quaternion& q)
 {
 	return Conjugate(q) / (Dot(q, q));	
-	//return Quaternion();
 }
 
 inline float Quaternion::Pitch() const
