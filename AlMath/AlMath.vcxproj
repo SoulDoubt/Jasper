@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Jasper\GBuffer.h" />
     <ClInclude Include="include\Jasper\PhysicsDebugDraw.h" />
     <ClInclude Include="include\Jasper\ResourceManager.h" />
     <ClInclude Include="include\Jasper\TextureShader.h" />
@@ -78,6 +79,7 @@
     <ClCompile Include="src\FontRenderer.cpp" />
     <ClCompile Include="src\FontShader.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
+    <ClCompile Include="src\GBuffer.cpp" />
     <ClCompile Include="src\GLWindow.cpp" />
     <ClCompile Include="src\LitShader.cpp" />
     <ClCompile Include="src\main.cpp" />

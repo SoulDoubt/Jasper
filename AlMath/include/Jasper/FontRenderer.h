@@ -23,15 +23,20 @@ public:
 		m_matrix = ortho;
 	}
 
+	void SetColor(const Vector3& c) {
+		m_color = c;
+	}
+
+	void SetColor(float r, float g, float b) {
+		SetColor(Vector3(r, g, b));
+	}
+
 private:	
 
 	unsigned m_texID;
 
-
-
 	Matrix4 m_matrix;
 	
-
 	GLBuffer m_vertexBuffer;
 	GLBuffer m_indexBuffer;
 
@@ -40,8 +45,9 @@ private:
 
 	unsigned int m_vao;
 
-	stbtt_bakedchar m_cdata[256];
 	stbtt_packedchar m_packData[256];
+
+	Vector3 m_color;
 };
 
 }

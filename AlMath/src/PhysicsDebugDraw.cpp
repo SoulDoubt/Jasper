@@ -23,15 +23,12 @@ void PhysicsDebugDrawer::Destroy()
 }
 
 void PhysicsDebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color) {
-	float tmp[6] = { from.getX(), from.getY(), from.getZ(),
-		to.getX(), to.getY(), to.getZ() };
-
+	
 	Vector3 vecs[2] = { Vector3(from), Vector3(to) };
 
 	glBindVertexArray(vao);
 	debugShader->Bind();	
-	vbo.Bind();
-	//glBufferSubData(GL_ARRAY_BUFFER, 0, 2 * sizeof(Vector3), &vecs);
+	vbo.Bind();	
 	vbo.Allocate(&vecs, 2 * sizeof(Vector3));	
 	debugShader->SetModelViewProjectionMatrix(mvpMatrix);		
 	glPointSize(3.0f);

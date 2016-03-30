@@ -148,6 +148,9 @@ void Scene::Initialize() {
 
 	auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
 	lara->GetLocalTransform().Rotate({ 1.f, 0.f, 0.f }, DEG_TO_RAD(-90.f));
+	lara->GetLocalTransform().Translate(4.2f, 1.0f, 10.0f);
+	lara->GetLocalTransform().Scale = { 3.25f, 3.25f, 3.25f };
+	int tris = lara->TriCount;
 	
 
 	/*auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
@@ -165,7 +168,7 @@ void Scene::Initialize() {
 	sphereObject->GetLocalTransform().Translate({ 0.f, 25.f, -3.f });
 
 	auto light0 = m_rootNode->AttachNewChild<PointLight>("light0");	
-	light0->GetLocalTransform().Translate({ 0.0f, 10.f, 10.0f });	
+	light0->GetLocalTransform().Translate({ 0.0f, 10.f, 20.0f });	
 	light0->ConstAtten = 0.002f;
 	light0->Color = { 1.f, 1.f, 1.f };	
 	light0->AmbientIntensity = 0.75f;
@@ -221,7 +224,9 @@ void Scene::Update(float dt)
 	string pos = "Position: " + position.ToString();
 	string dir = "Direction: " + direction.ToString();
 	
+	m_fontRenderer->SetColor(1.0f, 0.0f, 0.0f);
 	m_fontRenderer->RenderText(pos, 25, 25);
+	m_fontRenderer->SetColor(0.0f, 0.0f, 1.0f);
 	m_fontRenderer->RenderText(dir, 25, 52);
 	float fps = CalcFPS(dt);
 	m_fontRenderer->RenderText("FPS: " + to_string(fps), 25, 75);

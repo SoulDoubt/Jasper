@@ -1,6 +1,8 @@
 #ifndef _JASPER_COMMON_H_
 #define _JASPER_COMMON_H_
 
+#include <cstdio>
+
 // Some Macros
 
 #define ALIGN16 __declspec(align(16))
@@ -17,8 +19,9 @@
 
 using uint = unsigned int;
 
-
 #define DEBUG_DRAW_PHYSICS
+
+
 
 //#define FORCE_INLINE __forceinline
 

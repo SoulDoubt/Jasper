@@ -47,9 +47,9 @@ void Model::Initialize()
 	Vector3 maxExtents = { -100000.0f, -1000000.0f, -1000000.0f };
 	Vector3 minExtents = { 1000000.0f, 1000000.0f, 1000000.0f };
 
-	for (auto& m : m_meshManager.GetCache()) {
-		numTris += m->Indices.size() / 3;
-		numVerts += m->Vertices.size();
+	for (auto& m : m_meshManager.GetCache()) {		
+		this->TriCount += m->Indices.size() / 3;
+		this->VertCount += m->Vertices.size();
 		if (m->GetMaxExtents().x > maxExtents.x) maxExtents.x = m->GetMaxExtents().x;
 		if (m->GetMaxExtents().y > maxExtents.y) maxExtents.y = m->GetMaxExtents().y;
 		if (m->GetMaxExtents().z > maxExtents.z) maxExtents.z = m->GetMaxExtents().z;
@@ -69,15 +69,13 @@ void Model::Initialize()
 	}
 	if (m_enablePhysics) {		
 		Vector3 hes = { -1000000.0f, -1000000.0f, -1000000.0f };
-		for (auto& m : m_meshManager.GetCache()) {
-			if (m->GetHalfExtents().x > hes.x) hes.x = m->GetHalfExtents().x;
-			if (m->GetHalfExtents().y > hes.y) hes.y = m->GetHalfExtents().y;
-			if (m->GetHalfExtents().z > hes.z) hes.z = m->GetHalfExtents().z;			
-		}	
+		hes.x = (maxExtents.x - minExtents.x) / 2.f;
+		hes.y = (maxExtents.y - minExtents.y) / 2.f;
+		hes.z = (maxExtents.z - minExtents.z) / 2.f;
 		auto bc = AttachNewComponent<BoxCollider>(this->GetName() + "_Collider", hes, m_physicsWorld);
 		bc->Mass = 20.0f;				
 	}		
-	printf("\nModel Contains %d Vertices and %d Triangles.", numTris, numVerts);
+	printf("\nModel Contains %d Vertices and %d Triangles.", VertCount, TriCount);
 
 }
 

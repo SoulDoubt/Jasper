@@ -60,7 +60,7 @@ FontRenderer::~FontRenderer()
 
 void FontRenderer::RenderText(const string& text, float x, float y)
 {
-	Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Vector4 color = { m_color.x, m_color.y, m_color.z, 1.0f };
 	std::vector<Vertex> verts;	
 	verts.reserve(text.length() * 4);
 	
