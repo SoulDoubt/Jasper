@@ -25,6 +25,8 @@ public:
 	virtual void Update(float dt) override;
 
 	Vector3 HalfExtents;
+	Vector3 MinExtents;
+	Vector3 MaxExtents;
 
 	uint TriCount = 0;
 	uint VertCount = 0;

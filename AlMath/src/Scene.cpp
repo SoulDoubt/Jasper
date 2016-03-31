@@ -83,7 +83,7 @@ void Scene::Initialize() {
 	string posz = "./textures/Yokohama2/posz.jpg";
 	string negz = "./textures/Yokohama2/negz.jpg";
 	skyboxMaterial->SetCubemapTextures(posx, negx, posy, negy, posz, negz);	
-	//auto skyboxRenderer = skybox->AttachNewComponent<SkyboxRenderer>(skyboxMesh, skyboxMaterial);
+	auto skyboxRenderer = skybox->AttachNewComponent<SkyboxRenderer>(skyboxMesh, skyboxMaterial);
 	
 	// create the Basic Shader Instance to render most objects
 	auto defaultShader = m_shaderManager.CreateInstance<LitShader>();	
@@ -92,17 +92,6 @@ void Scene::Initialize() {
 	m_fontRenderer->Initialize();
 	m_fontRenderer->SetOrthoMatrix(m_orthoMatrix);
 
-	// Floor
-	auto floor = CreateEmptyGameObject("floor", m_rootNode.get());
-	auto quadMesh = m_meshManager.CreateInstance<Quad>(Vector2(100.0f, 100.0f), 10, 10, Quad::AxisAlignment::XZ);	
-	auto floorMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
-	floorMaterial->SetTextureDiffuse("./textures/tile.jpg");
-	auto mr = floor->AttachNewComponent<MeshRenderer>(quadMesh, floorMaterial);		
-	floor->GetLocalTransform().Translate(Vector3( 0.0f, -1.f, 0.0f ));
-	auto floorP = floor->AttachNewComponent<PlaneCollider>("plane_collider", quadMesh, m_physicsWorld.get());
-	floorP->Friction = 0.9f;
-	floorMaterial->Ambient = { 1.0f, 1.0f, 1.0f };	
-
 	auto m1 = m_materialManager.CreateInstance<Material>(defaultShader);
 	m1->SetTextureDiffuse("./textures/154.jpg");
 	m1->SetTextureNormalMap("./textures/154_norm.jpg");
@@ -110,6 +99,18 @@ void Scene::Initialize() {
 	m1->Diffuse = { 0.85f, 0.85f, 0.85f };
 	m1->Ambient = { 0.25f, 0.25f, 0.25f };
 	m1->Specular = { 0.9f, 0.9f, 0.9f };
+
+	// Floor
+	auto floor = CreateEmptyGameObject("floor", m_rootNode.get());
+	auto quadMesh = m_meshManager.CreateInstance<Quad>(Vector2(100.0f, 100.0f), 10, 10, Quad::AxisAlignment::XZ);	
+	auto floorMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
+	floorMaterial->SetTextureDiffuse("./textures/tile.jpg");
+	auto mr = floor->AttachNewComponent<MeshRenderer>(quadMesh, m1);		
+	floor->GetLocalTransform().Translate(Vector3( 0.0f, -1.f, 0.0f ));
+	auto floorP = floor->AttachNewComponent<PlaneCollider>("plane_collider", quadMesh, m_physicsWorld.get());
+	floorP->Friction = 0.9f;
+	floorMaterial->Ambient = { 1.0f, 1.0f, 1.0f };	
+	
 
 	auto wall = m_rootNode->AttachNewChild<GameObject>("wall_0");
 	auto wallMesh = m_meshManager.CreateInstance<Cube>( Vector3(10.f, 10.f, 0.2f));
@@ -144,13 +145,19 @@ void Scene::Initialize() {
 	//
 	auto teapot = m_rootNode->AttachNewChild<Model>("teapot", "./models/teapot/teapot.obj", defaultShader, true, m_physicsWorld.get());
 	teapot->GetLocalTransform().Translate({ 0.0f, 20.0f, 0.0f });
-	teapot->GetLocalTransform().Scale = { 0.075f, 0.075f, 0.075f };
+	teapot->GetLocalTransform().Scale = { 0.015f, 0.015f, 0.015f };
 
-	auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
+	auto batman = m_rootNode->AttachNewChild<Model>("oildrum", "./models/BB8/BB 8 rig 1.max", defaultShader, true, m_physicsWorld.get());
+	//batman->GetLocalTransform().Scale = { 0.02f, 0.02f, 0.02f };
+	/*auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
 	lara->GetLocalTransform().Rotate({ 1.f, 0.f, 0.f }, DEG_TO_RAD(-90.f));
 	lara->GetLocalTransform().Translate(4.2f, 1.0f, 10.0f);
-	lara->GetLocalTransform().Scale = { 3.25f, 3.25f, 3.25f };
-	int tris = lara->TriCount;
+	lara->GetLocalTransform().Scale = { 1.25f, 1.25f, 1.25f };*/
+
+	//auto sponza = m_rootNode->AttachNewChild<Model>("sponza", "./models/dabrovic-sponza/sponza.obj", defaultShader, false, nullptr);
+	//sponza->GetLocalTransform().Translate(0.f, 6.6f, 0.f);
+	
+	
 	
 
 	/*auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
@@ -168,15 +175,21 @@ void Scene::Initialize() {
 	sphereObject->GetLocalTransform().Translate({ 0.f, 25.f, -3.f });
 
 	auto light0 = m_rootNode->AttachNewChild<PointLight>("light0");	
-	light0->GetLocalTransform().Translate({ 0.0f, 10.f, 20.0f });	
+	light0->GetLocalTransform().Translate({ 0.0f, 10.f, 5.0f });	
 	light0->ConstAtten = 0.002f;
 	light0->Color = { 1.f, 1.f, 1.f };	
-	light0->AmbientIntensity = 0.75f;
+	light0->AmbientIntensity = 0.15f;
 
 	auto lightMesh = m_meshManager.CreateInstance<Cube>(Vector3(0.1f, 0.1f, 0.1f));
 	auto lightMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
 	lightMaterial->SetTextureDiffuse("./textures/white.png");
 	light0->AttachNewComponent<MeshRenderer>(lightMesh, lightMaterial);
+
+	auto dlight = m_rootNode->AttachNewChild<DirectionalLight>("d_light");
+	dlight->Direction = { 0.f, -1.f, 0.f };
+	dlight->AmbientIntensity = 0.25f;
+	dlight->Diffuseintensity = 0.75f;
+
 
 }
 
@@ -215,7 +228,6 @@ void Scene::Update(float dt)
 	Vector3 position = m_camera->GetPosition();	
 	Vector3 direction = m_camera->GetViewDirection();
 	m_physicsWorld->Update(dt);			
-
 	
 	auto light = GetGameObjectByName("light0");	
 	light->GetLocalTransform().RotateAround(Vector3(0.f, 10.f, 0.f), Vector3(0.f, 1.f, 0.f), 1.f);
@@ -226,7 +238,7 @@ void Scene::Update(float dt)
 	
 	m_fontRenderer->SetColor(1.0f, 0.0f, 0.0f);
 	m_fontRenderer->RenderText(pos, 25, 25);
-	m_fontRenderer->SetColor(0.0f, 0.0f, 1.0f);
+	//fontRenderer->SetColor(0.0f, 0.0f, 1.0f);
 	m_fontRenderer->RenderText(dir, 25, 52);
 	float fps = CalcFPS(dt);
 	m_fontRenderer->RenderText("FPS: " + to_string(fps), 25, 75);

@@ -142,6 +142,11 @@ void MeshRenderer::Render() {
 		//Vector3 eslp = (modelViewMa trix * Vector4(worldPosition, 1.0f)).AsVector3();
 		shader->SetPointLightUniforms(pl, worldPosition);
 	}
+	auto dlight = scene->GetGameObjectByName("d_light");
+	if (dlight) {
+		DirectionalLight* dl = static_cast<DirectionalLight*>(dlight);
+		shader->SetDirectionalLightUniforms(dl);
+	}
 	shader->SetMaterialUniforms(m_material);
 
 	bool hasNormalMap = m_material->GetTextureNormalMap();	

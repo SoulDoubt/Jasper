@@ -19,6 +19,8 @@ struct DirectionalLightUniformLocations {
 	bool isPopulated = false;
 	int Color;	
 	int Direction;	
+	int AmbientIntensity;
+	int DiffuseIntensity;
 };
 
 
@@ -34,7 +36,11 @@ struct PointLightUniformLocations {
 	bool isPopulated = false;
 	int Color;
 	int Position;
+	int AmbientIntensity;
+	int DiffuseIntensity;
 	int ConstAttenuation;
+	int LinearAtten;
+	int ExpAtten;
 };
 
 class Shader

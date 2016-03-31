@@ -11,6 +11,8 @@ int main(int argc, char** argv) {
 	window->Init();
 	window->InitializeScene();
 	window->RunLoop();	
+
+	return 0;
 }
 
 void printGLInfo() {

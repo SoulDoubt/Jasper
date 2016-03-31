@@ -33,9 +33,11 @@ void LitShader::GetDirectionalLightUniformLocations()
 		return;
 	}
 	else {
-		GLuint id = ProgramID();		
-		m_dlus.Color = glGetUniformLocation(id, "light0.Color");				
-		m_dlus.Direction = glGetUniformLocation(id, "light0.Direction");
+		GLuint id = ProgramID();
+		m_dlus.Color = glGetUniformLocation(id, "dlight0.Color");
+		m_dlus.Direction = glGetUniformLocation(id, "dlight0.Direction");
+		m_dlus.AmbientIntensity = glGetUniformLocation(id, "dlight0.AmbientIntensity");
+		m_dlus.DiffuseIntensity = glGetUniformLocation(id, "dlight0.DiffuseIntensity");
 		m_dlus.isPopulated = true;
 	}
 }
@@ -47,6 +49,8 @@ void LitShader::SetDirectionalLightUniforms(const DirectionalLight* dl)
 	}
 	glUniform3fv(m_dlus.Color, 1, dl->Color.AsFloatPtr());
 	glUniform3fv(m_dlus.Direction, 1, dl->Direction.AsFloatPtr());
+	glUniform1fv(m_dlus.DiffuseIntensity, 1, &dl->Diffuseintensity);
+	glUniform1fv(m_dlus.AmbientIntensity, 1, &dl->AmbientIntensity);
 }
 
 void LitShader::GetMaterialUniformLocations()
@@ -55,7 +59,7 @@ void LitShader::GetMaterialUniformLocations()
 		return;
 	}
 	else {
-		GLuint id = ProgramID();		
+		GLuint id = ProgramID();
 		m_mus.Ka = glGetUniformLocation(id, "material0.ka");
 		m_mus.Kd = glGetUniformLocation(id, "material0.kd");
 		m_mus.Ks = glGetUniformLocation(id, "material0.ks");
@@ -65,7 +69,7 @@ void LitShader::GetMaterialUniformLocations()
 }
 
 void LitShader::SetMaterialUniforms(const Material* m)
-{	
+{
 	if (!m_mus.isPopulated) {
 		GetMaterialUniformLocations();
 	}
@@ -100,21 +104,29 @@ void LitShader::GetPointLightUniformLocations()
 	}
 	else {
 		uint id = ProgramID();
-		m_plus.Color = glGetUniformLocation(id, "light0.Color");
-		m_plus.Position = glGetUniformLocation(id, "light0.Position");
-		m_plus.ConstAttenuation = glGetUniformLocation(id, "Light0.ConstAtten");
+		m_plus.Color = glGetUniformLocation(id, "plight0.Color");
+		m_plus.Position = glGetUniformLocation(id, "plight0.Position");
+		m_plus.ConstAttenuation = glGetUniformLocation(id, "plight0.ConstAtten");
+		m_plus.AmbientIntensity = glGetUniformLocation(id, "plight0.AmbientIntensity");
+		m_plus.DiffuseIntensity = glGetUniformLocation(id, "plight0.DiffuseIntensity");
+		m_plus.LinearAtten = glGetUniformLocation(id, "plight0.LinearAtten");
+		m_plus.ExpAtten = glGetUniformLocation(id, "plight0.ExpAtten");
 		m_plus.isPopulated = true;
 	}
 }
 
 void LitShader::SetPointLightUniforms(const PointLight* pl, const Vector3& eslp)
-{			
+{
 	if (!m_plus.isPopulated) {
 		GetPointLightUniformLocations();
 	}
 	glUniform3fv(m_plus.Color, 1, pl->Color.AsFloatPtr());
-	glUniform3fv(m_plus.Position, 1, eslp.AsFloatPtr());	
+	glUniform3fv(m_plus.Position, 1, eslp.AsFloatPtr());
 	glUniform1fv(m_plus.ConstAttenuation, 1, &pl->ConstAtten);
+	glUniform1fv(m_plus.AmbientIntensity, 1, &pl->AmbientIntensity);
+	glUniform1fv(m_plus.DiffuseIntensity, 1, &pl->DiffuseIntensity);
+	glUniform1fv(m_plus.LinearAtten, 1, &pl->LinearAtten);
+	glUniform1fv(m_plus.ExpAtten, 1, &pl->ExpAtten);
 }
 
 

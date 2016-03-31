@@ -4,6 +4,7 @@
 #include <assimp\Importer.hpp>
 #include <assimp\postprocess.h>
 
+#include <Jasper\Common.h>
 #include <Jasper\Mesh.h>
 #include <Jasper\MeshRenderer.h>
 #include <Jasper\Material.h>
@@ -29,7 +30,7 @@ Model::~Model()
 void Model::Initialize()
 {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(m_filename, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_OptimizeMeshes);
+	const aiScene* scene = importer.ReadFile(m_filename, aiProcessPreset_TargetRealtime_Quality);
 
 	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		printf("aiScene was corrupt in model load.");
@@ -44,21 +45,21 @@ void Model::Initialize()
 	printf("\nLoaded %d meshes in model: %s", sz, this->GetName().c_str());
 	uint numTris = 0;
 	uint numVerts = 0;
-	Vector3 maxExtents = { -100000.0f, -1000000.0f, -1000000.0f };
-	Vector3 minExtents = { 1000000.0f, 1000000.0f, 1000000.0f };
+	MaxExtents = { -100000.0f, -1000000.0f, -1000000.0f };
+	MinExtents = { 1000000.0f, 1000000.0f, 1000000.0f };
 
-	for (auto& m : m_meshManager.GetCache()) {		
+	for (auto& m : m_meshManager.GetCache()) {
 		this->TriCount += m->Indices.size() / 3;
 		this->VertCount += m->Vertices.size();
-		if (m->GetMaxExtents().x > maxExtents.x) maxExtents.x = m->GetMaxExtents().x;
-		if (m->GetMaxExtents().y > maxExtents.y) maxExtents.y = m->GetMaxExtents().y;
-		if (m->GetMaxExtents().z > maxExtents.z) maxExtents.z = m->GetMaxExtents().z;
-																				
-		if (m->GetMinExtents().x < minExtents.x) minExtents.x = m->GetMinExtents().x;
-		if (m->GetMinExtents().y < minExtents.y) minExtents.y = m->GetMinExtents().y;
-		if (m->GetMinExtents().z < minExtents.z) minExtents.z = m->GetMinExtents().z;		
+		if (m->GetMaxExtents().x > MaxExtents.x) MaxExtents.x = m->GetMaxExtents().x;
+		if (m->GetMaxExtents().y > MaxExtents.y) MaxExtents.y = m->GetMaxExtents().y;
+		if (m->GetMaxExtents().z > MaxExtents.z) MaxExtents.z = m->GetMaxExtents().z;
+
+		if (m->GetMinExtents().x < MinExtents.x) MinExtents.x = m->GetMinExtents().x;
+		if (m->GetMinExtents().y < MinExtents.y) MinExtents.y = m->GetMinExtents().y;
+		if (m->GetMinExtents().z < MinExtents.z) MinExtents.z = m->GetMinExtents().z;
 	}
-	Vector3 localOrigin = { (minExtents.x + maxExtents.x) / 2.f, (minExtents.y + maxExtents.y) / 2.f , (minExtents.z + maxExtents.z) / 2.f };
+	Vector3 localOrigin = { (MinExtents.x + MaxExtents.x) / 2.f, (MinExtents.y + MaxExtents.y) / 2.f , (MinExtents.z + MaxExtents.z) / 2.f };
 	float epsilon = 0.000001f;
 	if (fabs(localOrigin.x) > epsilon || fabs(localOrigin.y) > epsilon || fabs(localOrigin.z) > epsilon) {
 		for (auto& m : m_meshManager.GetCache()) {
@@ -67,14 +68,15 @@ void Model::Initialize()
 			}
 		}
 	}
-	if (m_enablePhysics) {		
+	if (m_enablePhysics) {
 		Vector3 hes = { -1000000.0f, -1000000.0f, -1000000.0f };
-		hes.x = (maxExtents.x - minExtents.x) / 2.f;
-		hes.y = (maxExtents.y - minExtents.y) / 2.f;
-		hes.z = (maxExtents.z - minExtents.z) / 2.f;
+		hes.x = (MaxExtents.x - MinExtents.x) / 2.f;
+		hes.y = (MaxExtents.y - MinExtents.y) / 2.f;
+		hes.z = (MaxExtents.z - MinExtents.z) / 2.f;
+		HalfExtents = hes;
 		auto bc = AttachNewComponent<BoxCollider>(this->GetName() + "_Collider", hes, m_physicsWorld);
-		bc->Mass = 20.0f;				
-	}		
+		bc->Mass = 20.0f;
+	}
 	printf("\nModel Contains %d Vertices and %d Triangles.", VertCount, TriCount);
 
 }
@@ -94,7 +96,7 @@ void Model::ProcessAiSceneNode(const aiScene* scene, aiNode* node)
 
 void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 {
-	
+
 	auto m = m_meshManager.CreateInstance<Mesh>();
 	m->Vertices.reserve(aiMesh->mNumVertices);
 	m->Indices.reserve(aiMesh->mNumFaces * 3);
@@ -130,57 +132,62 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 	}
 
 	m->CalculateExtents();
-	//Vector3	max = m->GetMaxExtents();
-	//Vector3 min = m->GetMinExtents();
-	//Vector3 origin = { (min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f, (min.z + max.z) / 2.0f };
-	//float epsilon = 0.000001;
-	//if (fabs(origin.x) > epsilon || fabs(origin.y) > epsilon || fabs(origin.z) > epsilon) {
-	//	// need to move all vertices towards the origin
-	//	for (auto& v : m->Vertices) {
-	//		v.Position -= origin;
-	//	}
-	//}
 
 	if (aiMesh->mMaterialIndex >= 0) {
 		auto mat = scene->mMaterials[aiMesh->mMaterialIndex];
 		printf("Found Material...\n");
 		aiString texString;
 		mat->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &texString);
-		auto myMaterial = m_materialManager.CreateInstance<Material>(m_shader);
+		Material* myMaterial = nullptr;
 		string textureFileName = string(texString.C_Str());
-		if (textureFileName.find(".") == string::npos) {
-			textureFileName += "_D.tga";						
-		}
-		aiColor3D diffuse, ambient, specular;
-		float shine;
-		mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
-		mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
-		mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
-		mat->Get(AI_MATKEY_SHININESS, shine);
-		if (shine == 0.0f) {
-			shine = 64.0f;
-		}
-		myMaterial->SetTextureDiffuse(m_directory + "/" + textureFileName);
-		myMaterial->Ambient = Vector3(ambient.r, ambient.g, ambient.b);
-		myMaterial->Diffuse = Vector3(diffuse.r, diffuse.g, diffuse.b);
-		myMaterial->Specular = Vector3(specular.r, specular.g, specular.b);
-		myMaterial->Shine = shine / 4.0f;
-		// try to load a normal map
-		texString.Clear();
-		mat->GetTexture(aiTextureType::aiTextureType_NORMALS, 0, &texString);
+		string texturePath = m_directory + "/" + textureFileName;
 		if (texString.length > 0) {
-			myMaterial->SetTextureNormalMap(m_directory + "/" + texString.C_Str());
-		}
-		else {
-			texString.Clear();
-			mat->GetTexture(aiTextureType::aiTextureType_HEIGHT, 0, &texString);
-			if (texString.length > 0) {
-				myMaterial->SetTextureNormalMap(m_directory + "/" + texString.C_Str());
+
+			auto existingMat = std::find_if(std::begin(m_materialManager.GetCache()), std::end(m_materialManager.GetCache()), [&](const std::unique_ptr<Material>& mm) {
+				return mm->DiffuseTextureFilename() == texturePath;
+			});
+			if (existingMat != std::end(m_materialManager.GetCache())) {
+				myMaterial = existingMat->get();
+			}
+			else {
+
+				myMaterial = m_materialManager.CreateInstance<Material>(m_shader);
+
+				/*if (textureFileName.find(".") == string::npos) {
+					textureFileName += "_D.tga";
+				}*/
+				aiColor3D diffuse, ambient, specular;
+				float shine;
+				mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+				mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
+				mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+				mat->Get(AI_MATKEY_SHININESS, shine);
+				if (shine == 0.0f) {
+					shine = 64.0f;
+				}
+				myMaterial->SetTextureDiffuse(texturePath);
+				myMaterial->Ambient = Vector3(ambient.r, ambient.g, ambient.b);
+				myMaterial->Diffuse = Vector3(diffuse.r, diffuse.g, diffuse.b);
+				myMaterial->Specular = Vector3(specular.r, specular.g, specular.b);
+				myMaterial->Shine = shine / 4.0f;
+				// try to load a normal map
+				texString.Clear();
+				mat->GetTexture(aiTextureType::aiTextureType_NORMALS, 0, &texString);
+				if (texString.length > 0) {
+					myMaterial->SetTextureNormalMap(m_directory + "/" + texString.C_Str());
+				}
+				else {
+					texString.Clear();
+					mat->GetTexture(aiTextureType::aiTextureType_HEIGHT, 0, &texString);
+					if (texString.length > 0) {
+						myMaterial->SetTextureNormalMap(m_directory + "/" + texString.C_Str());
+					}
+				}
 			}
 		}
 
 	}
-		
+
 	if (!aiMesh->HasNormals()) {
 		m->CalculateFaceNormals();
 	}

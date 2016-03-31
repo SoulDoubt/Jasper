@@ -18,6 +18,8 @@ private:
 	std::unique_ptr<CubemapTexture> m_cubemap;
 	std::unique_ptr<Texture> m_normalMap;
 
+	std::string m_diffuseTextureFileName;
+
 public:
 	explicit Material(Shader* shader);
 	~Material();
@@ -50,6 +52,7 @@ public:
 		auto tex = std::make_unique<Texture>();
 		tex->Load(filename);
 		m_texture = std::move(tex);
+		m_diffuseTextureFileName = filename;
 	}
 
 	void SetTextureDiffuse(std::unique_ptr<Texture> tex) {
@@ -81,6 +84,10 @@ public:
 
 	Shader* GetShader() {
 		return m_shader;
+	}
+
+	std::string DiffuseTextureFilename() const {
+		return m_diffuseTextureFileName;
 	}
 
 	/*void SetShader(Shader* shader) {
