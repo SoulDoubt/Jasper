@@ -19,7 +19,7 @@ uniform vec3 cameraPosition;
 smooth out vec2 v_texCoords;
 smooth out vec3 v_normal;
 smooth out vec4 v_vertColor;
-smooth out vec3 v_fragPosition;
+smooth out vec4 v_fragPosition;
 //out vec3 v_lightDirection;
 out mat3 v_tbnMatrix;
 //out vec3 v_lightPosition;
@@ -29,7 +29,7 @@ void main()
 {
 	v_vertColor = color;
 	v_texCoords = texCoords;
-	v_fragPosition = ( modelMatrix * vec4( position, 1.0f ) ).xyz;
+	v_fragPosition = modelMatrix * vec4( position, 1.0f );
 	v_normal = normalMatrix * normal;
 
 	vec3 n = normalize( ( modelMatrix * vec4(normal, 0.0 )).xyz );

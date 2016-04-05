@@ -34,7 +34,7 @@ public:
 	std::string GetTag() const;
 	void SetTag(std::string tag);
 
-	std::vector<std::unique_ptr<GameObject>>& Children();
+	const std::vector<std::unique_ptr<GameObject>>& Children() const;
 	std::vector<std::unique_ptr<Component>>& Components();
 
 	Transform GetLocalTransform() const;
@@ -159,7 +159,7 @@ inline void GameObject::SetTag(std::string tag) {
 	m_tag = tag;
 }
 
-inline std::vector<std::unique_ptr<GameObject>>& GameObject::Children() {
+inline const std::vector<std::unique_ptr<GameObject>>& GameObject::Children() const {
 	return m_children;
 }
 

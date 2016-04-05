@@ -31,6 +31,10 @@ protected:
 
 public:
 
+	Material* GetMaterial() const {
+		return m_material;
+	}
+
 	NON_COPYABLE(MeshRenderer);	
 
 	explicit MeshRenderer(Mesh* mesh, Material* material);

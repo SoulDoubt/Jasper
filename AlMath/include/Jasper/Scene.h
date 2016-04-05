@@ -30,6 +30,10 @@ public:
 		return m_orthoMatrix;
 	}	
 
+	GameObject* GetRootNode() const {
+		return m_rootNode.get();
+	}
+
 	void AddGameObject(std::unique_ptr<GameObject> go);
 	GameObject* GetGameObjectByName(std::string name);	
 

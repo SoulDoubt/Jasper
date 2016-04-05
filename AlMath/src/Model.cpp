@@ -30,7 +30,7 @@ Model::~Model()
 void Model::Initialize()
 {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(m_filename, aiProcessPreset_TargetRealtime_Quality);
+	const aiScene* scene = importer.ReadFile(m_filename, aiProcessPreset_TargetRealtime_Quality | aiProcess_FlipUVs);
 
 	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		printf("aiScene was corrupt in model load.");
@@ -132,13 +132,12 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 	}
 
 	m->CalculateExtents();
-
+	Material* myMaterial = nullptr;
 	if (aiMesh->mMaterialIndex >= 0) {
 		auto mat = scene->mMaterials[aiMesh->mMaterialIndex];
 		printf("Found Material...\n");
 		aiString texString;
 		mat->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &texString);
-		Material* myMaterial = nullptr;
 		string textureFileName = string(texString.C_Str());
 		string texturePath = m_directory + "/" + textureFileName;
 		if (texString.length > 0) {
@@ -150,12 +149,8 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 				myMaterial = existingMat->get();
 			}
 			else {
-
 				myMaterial = m_materialManager.CreateInstance<Material>(m_shader);
-
-				/*if (textureFileName.find(".") == string::npos) {
-					textureFileName += "_D.tga";
-				}*/
+			
 				aiColor3D diffuse, ambient, specular;
 				float shine;
 				mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
@@ -185,7 +180,6 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 				}
 			}
 		}
-
 	}
 
 	if (!aiMesh->HasNormals()) {
@@ -193,8 +187,8 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 	}
 
 	Material* renderMaterial;
-	if (m_materialManager.GetSize() > 0) {
-		renderMaterial = m_materialManager.GetLatestInstanceAdded();
+	if (myMaterial) {
+		renderMaterial = myMaterial;
 	}
 	else {
 		renderMaterial = m_materialManager.CreateInstance<Material>(m_shader);

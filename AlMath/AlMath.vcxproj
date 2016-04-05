@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="include\Jasper\GBuffer.h" />
     <ClInclude Include="include\Jasper\PhysicsDebugDraw.h" />
+    <ClInclude Include="include\Jasper\Renderer.h" />
     <ClInclude Include="include\Jasper\ResourceManager.h" />
     <ClInclude Include="include\Jasper\TextureShader.h" />
     <ClInclude Include="SceneRenderer.h" />
@@ -97,6 +98,7 @@
     <ClCompile Include="src\Lights.cpp" />
     <ClCompile Include="src\Quad.cpp" />
     <ClCompile Include="src\quaternion.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Room.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Shader.cpp" />

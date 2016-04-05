@@ -145,26 +145,26 @@ void Scene::Initialize() {
 	//
 	auto teapot = m_rootNode->AttachNewChild<Model>("teapot", "./models/teapot/teapot.obj", defaultShader, true, m_physicsWorld.get());
 	teapot->GetLocalTransform().Translate({ 0.0f, 20.0f, 0.0f });
-	teapot->GetLocalTransform().Scale = { 0.015f, 0.015f, 0.015f };
+	teapot->GetLocalTransform().Scale = { 0.1f, 0.1f, 0.10f };
 
-	auto batman = m_rootNode->AttachNewChild<Model>("oildrum", "./models/BB8/BB 8 rig 1.max", defaultShader, true, m_physicsWorld.get());
+	//auto batman = m_rootNode->AttachNewChild<Model>("oildrum", "./models/BB8/BB 8 rig 1.max", defaultShader, true, m_physicsWorld.get());
 	//batman->GetLocalTransform().Scale = { 0.02f, 0.02f, 0.02f };
 	/*auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
 	lara->GetLocalTransform().Rotate({ 1.f, 0.f, 0.f }, DEG_TO_RAD(-90.f));
 	lara->GetLocalTransform().Translate(4.2f, 1.0f, 10.0f);
 	lara->GetLocalTransform().Scale = { 1.25f, 1.25f, 1.25f };*/
 
-	//auto sponza = m_rootNode->AttachNewChild<Model>("sponza", "./models/dabrovic-sponza/sponza.obj", defaultShader, false, nullptr);
+	//auto sponza = m_rootNode->AttachNewChild<Model>("sponza", "./models/stormtrooper/stormtrooper.obj", defaultShader, false, nullptr);
 	//sponza->GetLocalTransform().Translate(0.f, 6.6f, 0.f);
+	//sponza->GetLocalTransform().Scale = Vector3(0.07f, 0.07f, 0.07f);
 	
 	
 	
 
 	/*auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
 	lara->GetLocalTransform().Translate({ 4.0f, 1.0f, -3.0f });
-	lara->GetLocalTransform().Rotate({ 0.0f, 0.0f, 1.0f }, -DEG_TO_RAD(90.f));*/
+	lara->GetLocalTransform().Rotate({ 0.0f, 0.0f, 1.0f }, -DEG_TO_RAD(90.f));
 
-	//auto sphereObject = CreateEmptyGameObject("sphere0", m_rootNode.get());
 	auto sphereObject = m_rootNode->AttachNewChild<GameObject>("sphere_0");
 	auto sphereMesh = m_meshManager.CreateInstance<Sphere>(1.0f);
 	auto sphereMat = m_materialManager.CreateInstance<Material>(defaultShader);
@@ -172,23 +172,24 @@ void Scene::Initialize() {
 	auto sphereRenderer = sphereObject->AttachNewComponent<MeshRenderer>(sphereMesh, sphereMat);
 	auto sc = sphereObject->AttachNewComponent<SphereCollider>("sphere0_collider", sphereMesh, m_physicsWorld.get());
 	sc->Mass = 5.f;
-	sphereObject->GetLocalTransform().Translate({ 0.f, 25.f, -3.f });
+	sphereObject->GetLocalTransform().Translate({ 0.f, 25.f, -3.f });*/
 
-	auto light0 = m_rootNode->AttachNewChild<PointLight>("light0");	
-	light0->GetLocalTransform().Translate({ 0.0f, 10.f, 5.0f });	
+	/*auto light0 = m_rootNode->AttachNewChild<PointLight>("light0");	
+	light0->GetLocalTransform().Translate({ 0.0f, 10.f, 15.0f });	
 	light0->ConstAtten = 0.002f;
 	light0->Color = { 1.f, 1.f, 1.f };	
 	light0->AmbientIntensity = 0.15f;
+	light0->DiffuseIntensity = 0.7;*/
 
-	auto lightMesh = m_meshManager.CreateInstance<Cube>(Vector3(0.1f, 0.1f, 0.1f));
+	/*auto lightMesh = m_meshManager.CreateInstance<Cube>(Vector3(0.1f, 0.1f, 0.1f));
 	auto lightMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
 	lightMaterial->SetTextureDiffuse("./textures/white.png");
-	light0->AttachNewComponent<MeshRenderer>(lightMesh, lightMaterial);
+	light0->AttachNewComponent<MeshRenderer>(lightMesh, lightMaterial);*/
 
 	auto dlight = m_rootNode->AttachNewChild<DirectionalLight>("d_light");
-	dlight->Direction = { 0.f, -1.f, 0.f };
-	dlight->AmbientIntensity = 0.25f;
-	dlight->Diffuseintensity = 0.75f;
+	dlight->Direction = Normalize({ 0.f, -1.f, 0.f });
+	dlight->AmbientIntensity = 0.0f;
+	dlight->Diffuseintensity = 0.85f;
 
 
 }
@@ -230,8 +231,9 @@ void Scene::Update(float dt)
 	m_physicsWorld->Update(dt);			
 	
 	auto light = GetGameObjectByName("light0");	
-	light->GetLocalTransform().RotateAround(Vector3(0.f, 10.f, 0.f), Vector3(0.f, 1.f, 0.f), 1.f);
-
+	if (light) {
+		light->GetLocalTransform().RotateAround(Vector3(0.f, 10.f, 0.f), Vector3(0.f, 1.f, 0.f), 1.f);
+	}
 	m_rootNode->Update(dt);		
 	string pos = "Position: " + position.ToString();
 	string dir = "Direction: " + direction.ToString();
