@@ -13,6 +13,7 @@
 #include "ResourceManager.h"
 #include "Mesh.h"
 #include "FontRenderer.h"
+#include <Jasper\Renderer.h>
 
 namespace Jasper {
 
@@ -79,6 +80,8 @@ private:
 	std::unique_ptr<FontRenderer> m_fontRenderer;
 
 	int m_windowWidth, m_windowHeight;
+
+	std::unique_ptr<Renderer> m_renderer;
 
 	void Initialize();
 

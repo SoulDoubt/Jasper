@@ -9,6 +9,7 @@ namespace Jasper {
 
 class Shader;
 class Material;
+class MeshRenderer;
 
 class Renderer {
 
@@ -21,7 +22,7 @@ public:
 	void Initialize();
 	void Destroy();
 
-	void SetFrameInvariants(Shader* shader);
+	void SetFrameInvariants(Material* material);
 	void SetMaterialUniforms(Material* material);
 
 	void RenderScene();
@@ -30,6 +31,8 @@ public:
 	void UnregisterGameObject(GameObject* obj);
 
 	void SortByMaterial();
+
+	void ReleaseTextures();
 private:
 
 	void ProcessGameObject(const GameObject* go);
@@ -37,6 +40,10 @@ private:
 	Scene* m_scene;
 
 	std::vector<GameObject*> m_renderObjects;
+	std::vector<MeshRenderer*> m_renderers;
+
+	Shader* m_currentShader = nullptr;
+	Material* m_currentMaterial = nullptr;
 
 
 

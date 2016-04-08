@@ -41,6 +41,7 @@ struct PointLightUniformLocations {
 	int ConstAttenuation;
 	int LinearAtten;
 	int ExpAtten;
+	int Radius;
 };
 
 class Shader

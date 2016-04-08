@@ -111,6 +111,7 @@ void LitShader::GetPointLightUniformLocations()
 		m_plus.DiffuseIntensity = glGetUniformLocation(id, "plight0.DiffuseIntensity");
 		m_plus.LinearAtten = glGetUniformLocation(id, "plight0.LinearAtten");
 		m_plus.ExpAtten = glGetUniformLocation(id, "plight0.ExpAtten");
+		m_plus.Radius = glGetUniformLocation(id, "plight0.Radius");
 		m_plus.isPopulated = true;
 	}
 }
@@ -127,6 +128,7 @@ void LitShader::SetPointLightUniforms(const PointLight* pl, const Vector3& eslp)
 	glUniform1fv(m_plus.DiffuseIntensity, 1, &pl->DiffuseIntensity);
 	glUniform1fv(m_plus.LinearAtten, 1, &pl->LinearAtten);
 	glUniform1fv(m_plus.ExpAtten, 1, &pl->ExpAtten);
+	glUniform1fv(m_plus.Radius, 1, &pl->Radius);
 }
 
 

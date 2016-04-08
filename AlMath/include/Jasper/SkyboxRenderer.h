@@ -14,8 +14,9 @@ public:
 	SkyboxRenderer(const SkyboxRenderer& o) = delete;
 	SkyboxRenderer& operator=(const SkyboxRenderer& o) = delete;
 	~SkyboxRenderer();
-
-	virtual void Render()override;
+	virtual void Update() override;
+	virtual void Render() override;
+	
 
 };
 

@@ -1,4 +1,5 @@
 #include <Jasper\GameObject.h>
+#include <Jasper\PhysicsCollider.h>
 
 namespace Jasper {
 
@@ -167,6 +168,13 @@ void GameObject::StartChildren() {
 }
 
 void GameObject::UpdateCurrent(float dt) {
+	Transform modelTrans;	
+	auto physics = GetComponentByType<PhysicsCollider>();
+	if (physics) {
+		modelTrans = physics->GetCurrentWorldTransform();
+		modelTrans.Scale = GetLocalTransform().Scale;
+		SetLocalTransform(modelTrans);
+	}
 	for (auto& comp : m_components) {
 		comp->Update();
 	}

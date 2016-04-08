@@ -236,6 +236,7 @@ inline void Shader::SetModelMatrix(const Matrix4& model) {
 	int location = glGetUniformLocation(m_programID, "modelMatrix");
 	if (location > -1)
 		glUniformMatrix4fv(location, 1, m_transpose, model.AsFloatPtr());
+	GLERRORCHECK;
 }
 
 inline void Shader::SetViewMatrix(const Matrix4 & view)
@@ -244,6 +245,7 @@ inline void Shader::SetViewMatrix(const Matrix4 & view)
 	if (loc > -1) {
 		glUniformMatrix4fv(loc, 1, m_transpose, view.AsFloatPtr());
 	}
+	GLERRORCHECK;
 }
 
 void Shader::GetDirectionalLightUniformLocations()

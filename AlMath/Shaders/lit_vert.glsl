@@ -38,5 +38,4 @@ void main()
 	v_tbnMatrix = mat3( t, b, n );
 	
 	gl_Position = mvpMatrix * vec4( position, 1.0f );
-
 }

@@ -42,6 +42,8 @@ void Scene::Initialize() {
 	m_physicsWorld->Initialize();
 	m_camera = m_rootNode->AttachNewChild<Camera>(Camera::CameraType::FLYING);
 	m_camera->SetPhysicsWorld(m_physicsWorld.get());
+
+	m_renderer = make_unique<Renderer>(this);
 	/*{
 		float mass = 80.f;
 
@@ -98,7 +100,7 @@ void Scene::Initialize() {
 	m1->Shine = 12.0f;
 	m1->Diffuse = { 0.85f, 0.85f, 0.85f };
 	m1->Ambient = { 0.25f, 0.25f, 0.25f };
-	m1->Specular = { 0.9f, 0.9f, 0.9f };
+	m1->Specular = { 0.1f, 0.1f, 0.1f };
 
 	// Floor
 	auto floor = CreateEmptyGameObject("floor", m_rootNode.get());
@@ -161,10 +163,13 @@ void Scene::Initialize() {
 	
 	
 
-	/*auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
-	lara->GetLocalTransform().Translate({ 4.0f, 1.0f, -3.0f });
-	lara->GetLocalTransform().Rotate({ 0.0f, 0.0f, 1.0f }, -DEG_TO_RAD(90.f));
+	auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/Joslin_Reyes_Bikini/Joslin_Reyes_Bikini.dae", defaultShader, true, m_physicsWorld.get());
+	lara->GetLocalTransform().Translate({ 10.0f, 1.0f, -3.0f });
+	lara->GetLocalTransform().Scale = { 1.1f, 1.1f, 1.1f };
+	lara->GetLocalTransform().Rotate({ 1.0f, 0.0f, 0.0f }, -DEG_TO_RAD(90.f));
+	//lara->GetLocalTransform().Rotate({ 0.f, 1.f, 0.f }, DEG_TO_RAD(180.f));
 
+	/*
 	auto sphereObject = m_rootNode->AttachNewChild<GameObject>("sphere_0");
 	auto sphereMesh = m_meshManager.CreateInstance<Sphere>(1.0f);
 	auto sphereMat = m_materialManager.CreateInstance<Material>(defaultShader);
@@ -174,22 +179,22 @@ void Scene::Initialize() {
 	sc->Mass = 5.f;
 	sphereObject->GetLocalTransform().Translate({ 0.f, 25.f, -3.f });*/
 
-	/*auto light0 = m_rootNode->AttachNewChild<PointLight>("light0");	
+	auto light0 = m_rootNode->AttachNewChild<PointLight>("p_light");	
 	light0->GetLocalTransform().Translate({ 0.0f, 10.f, 15.0f });	
 	light0->ConstAtten = 0.002f;
 	light0->Color = { 1.f, 1.f, 1.f };	
 	light0->AmbientIntensity = 0.15f;
-	light0->DiffuseIntensity = 0.7;*/
+	light0->DiffuseIntensity = 0.7;
 
-	/*auto lightMesh = m_meshManager.CreateInstance<Cube>(Vector3(0.1f, 0.1f, 0.1f));
+	auto lightMesh = m_meshManager.CreateInstance<Cube>(Vector3(0.1f, 0.1f, 0.1f));
 	auto lightMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
 	lightMaterial->SetTextureDiffuse("./textures/white.png");
-	light0->AttachNewComponent<MeshRenderer>(lightMesh, lightMaterial);*/
+	light0->AttachNewComponent<MeshRenderer>(lightMesh, lightMaterial);
 
 	auto dlight = m_rootNode->AttachNewChild<DirectionalLight>("d_light");
-	dlight->Direction = Normalize({ 0.f, -1.f, 0.f });
-	dlight->AmbientIntensity = 0.0f;
-	dlight->Diffuseintensity = 0.85f;
+	dlight->Direction = Normalize({ 0.f, -1.f, -1.f });
+	dlight->AmbientIntensity = 0.9f;
+	dlight->Diffuseintensity = 1.2f;
 
 
 }
@@ -230,11 +235,26 @@ void Scene::Update(float dt)
 	Vector3 direction = m_camera->GetViewDirection();
 	m_physicsWorld->Update(dt);			
 	
-	auto light = GetGameObjectByName("light0");	
+	auto light = GetGameObjectByName("p_light");	
 	if (light) {
 		light->GetLocalTransform().RotateAround(Vector3(0.f, 10.f, 0.f), Vector3(0.f, 1.f, 0.f), 1.f);
 	}
 	m_rootNode->Update(dt);		
+	m_renderer->RenderScene();
+#ifdef DEBUG_DRAW_PHYSICS
+	for (auto& go : m_rootNode->Children()) {
+		auto phys = go->GetComponentByType<PhysicsCollider>();
+		if (phys) {
+			auto trans = go->GetWorldTransform();
+			trans.Scale = { 1.f, 1.f, 1.f };
+			auto mvp = m_projectionMatrix * m_camera->GetViewMatrix().Inverted() * trans.TransformMatrix();
+			m_physicsWorld->debugDrawer->mvpMatrix = mvp;
+			btTransform dt;
+			dt.setIdentity();
+			m_physicsWorld->DrawPhysicsShape(dt, phys->GetCollisionShape(), { 1.f, 1.f, 1.f });
+		}
+	}
+#endif
 	string pos = "Position: " + position.ToString();
 	string dir = "Direction: " + direction.ToString();
 	
@@ -252,6 +272,8 @@ void Scene::Awake()
 {
 	Initialize();
 	m_rootNode->Awake();
+	m_renderer->Initialize();
+
 }
 
 void Scene::Start()

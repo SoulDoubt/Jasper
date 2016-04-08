@@ -77,7 +77,8 @@ void Model::Initialize()
 		auto bc = AttachNewComponent<BoxCollider>(this->GetName() + "_Collider", hes, m_physicsWorld);
 		bc->Mass = 20.0f;
 	}
-	printf("\nModel Contains %d Vertices and %d Triangles.", VertCount, TriCount);
+	printf("\nModel Contains %d Vertices and %d Triangles and %d Materials.", VertCount, TriCount, m_materialManager.GetCache().size());
+
 
 }
 
@@ -139,6 +140,9 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 		aiString texString;
 		mat->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &texString);
 		string textureFileName = string(texString.C_Str());
+		if (textureFileName.find(".") == string::npos) {
+			textureFileName += "_D.tga";
+		}
 		string texturePath = m_directory + "/" + textureFileName;
 		if (texString.length > 0) {
 
@@ -177,6 +181,11 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 					if (texString.length > 0) {
 						myMaterial->SetTextureNormalMap(m_directory + "/" + texString.C_Str());
 					}
+				}
+				texString.Clear();
+				mat->GetTexture(aiTextureType::aiTextureType_SPECULAR, 0, &texString);
+				if (texString.length > 0) {
+					printf("Specular Texture Map Found: ");
 				}
 			}
 		}

@@ -9,6 +9,7 @@ struct point_light{
 	float ConstAtten;
 	float LinearAtten;
 	float ExpAtten;
+	float Radius;
 };
 
 struct material{
@@ -66,7 +67,14 @@ vec4 CalculatePointLight(point_light plight, vec3 normal){
 			specular_color = vec4(spec, 1.0f);
 		}
 	}
-	return ambient_color + diffuse_color + specular_color;	
+
+	float d = max(dist_to_light - plight.Radius, 0.0f);
+	float dnom = d/plight.Radius + 1;
+	float attenuation = 1 / (dnom * dnom);
+	attenuation = max(attenuation, 0.0f);
+
+
+	return (ambient_color + diffuse_color + specular_color) * attenuation;	
 }
 
 vec4 CalculateDirectionalLight(directional_light dlight, vec3 normal){
@@ -110,8 +118,11 @@ void main()
 	//normal = normalize(v_normal);
 	
 	vec4 map_color = texture(colorMap, v_texCoords);
+	// if (map_color == vec4(0,0,0,0)){
+	// 	map_color = vec4(material0.kd, 1.0);
+	// }
 	vec4 lighting = vec4(0,0,0,1);
-//	lighting += CalculatePointLight(plight0, normal);
+	lighting += CalculatePointLight(plight0, normal);
 	lighting += CalculateDirectionalLight(dlight0, normal);
 	
 

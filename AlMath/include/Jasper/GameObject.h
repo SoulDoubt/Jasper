@@ -273,11 +273,11 @@ template<typename T>
 inline std::vector<T*> GameObject::GetComponentsByType()
 {
 	if (!std::is_base_of<Component, T>::value) {
-		return nullptr;
+		return std::vector<T*>();
 	}
 	std::vector<T*> ret;
-	for (auto c : m_components) {
-		if (T* found = dynamic_cast<T*>(c)) {
+	for (auto& c : m_components) {
+		if (T* found = dynamic_cast<T*>(c.get())) {
 			ret.push_back(found);
 		}
 	}
