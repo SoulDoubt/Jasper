@@ -17,6 +17,7 @@ private:
 	std::unique_ptr<Texture> m_texture;
 	std::unique_ptr<CubemapTexture> m_cubemap;
 	std::unique_ptr<Texture> m_normalMap;
+	std::unique_ptr<Texture> m_specularMap;
 
 	std::string m_diffuseTextureFileName;
 
@@ -48,6 +49,10 @@ public:
 		return m_normalMap.get();
 	}
 
+	Texture* GetTextureSpecularMap() {
+		return m_specularMap.get();
+	}
+
 	void SetTextureDiffuse(std::string filename) {
 		auto tex = std::make_unique<Texture>();
 		tex->Load(filename);
@@ -67,6 +72,16 @@ public:
 
 	void SetTextureNormalMap(std::unique_ptr<Texture> tex) {
 		m_normalMap = std::move(tex);
+	}
+
+	void SetTextureSpecularMap(std::string filename) {
+		auto tex = std::make_unique<Texture>();
+		tex->Load(filename);
+		m_specularMap = std::move(tex);
+	}
+
+	void SetTextureSpecularMap(std::unique_ptr<Texture> tex) {
+		m_specularMap = std::move(tex);
 	}
 
 	CubemapTexture* GetCubemapTexture() {

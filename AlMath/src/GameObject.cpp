@@ -175,6 +175,9 @@ void GameObject::UpdateCurrent(float dt) {
 		modelTrans.Scale = GetLocalTransform().Scale;
 		SetLocalTransform(modelTrans);
 	}
+	if (m_updateEvent != nullptr) {
+		m_updateEvent(dt);
+	}
 	for (auto& comp : m_components) {
 		comp->Update();
 	}

@@ -55,7 +55,7 @@ struct Vertex {
 };
 
 
-class Mesh
+class Mesh : public Component
 {
 	friend class Model;
 private:

@@ -62,10 +62,30 @@ void Jasper::Renderer::SetMaterialUniforms(Material * material)
 		glActiveTexture(GL_TEXTURE0 + 1);
 		glBindTexture(GL_TEXTURE_2D, material->GetTextureNormalMap()->TextureID());
 	}
+
+	if (material->GetTextureSpecularMap()) {
+		int sl = glGetUniformLocation(shader->ProgramID(), "specularMap");
+		if (sl > -1) {
+			glUniform1i(sl, 2);
+		}
+		glActiveTexture(GL_TEXTURE0 + 2);
+		glBindTexture(GL_TEXTURE_2D, material->GetTextureSpecularMap()->TextureID());
+	}
 	glActiveTexture(GL_TEXTURE0 + 0);
 	uint texID = material->GetTexture2D()->TextureID();
 	glBindTexture(GL_TEXTURE_2D, texID);
 	
+}
+
+void Jasper::Renderer::CullGameObjects()
+{
+	for (const auto x : m_renderObjects) {
+		auto transform = x->GetWorldTransform();
+		auto meshes = x->GetComponentsByType<Mesh>();
+		for (const auto m : meshes) {
+			
+		}
+	}
 }
 
 
@@ -95,24 +115,6 @@ void Jasper::Renderer::RenderScene()
 		material->GetShader()->SetModelViewProjectionMatrix(mvpMatrix);
 		material->GetShader()->SetNormalMatrix(normMatrix);
 		mr->Render();
-
-#ifdef DEBUG_DRAW_PHYSICS
-#if 0
-		auto physics = mr->GetGameObject()->GetComponentByType<PhysicsCollider>();
-		if (physics) {
-			transform.Scale = { 1.f, 1.f, 1.f };
-			auto physMM = transform.TransformMatrix();
-			auto physicsDebugMvp = projMatrix * viewMatrix * physMM;
-			btTransform debugTransform = btTransform();// physics->GetDebugTransform();
-			debugTransform.setIdentity();
-			btCollisionShape* shape = physics->GetCollisionShape();
-			btVector3 color = { 1.0f, 0.0f, 0.0f };
-			physics->GetPhysicsWorld()->debugDrawer->mvpMatrix = physicsDebugMvp;
-			physics->GetPhysicsWorld()->DrawPhysicsShape(debugTransform, shape, color);
-		}
-		GLERRORCHECK;
-#endif
-#endif // DEBUG_DRAW_PHYSICS
 	}
 }
 
@@ -152,6 +154,8 @@ void Jasper::Renderer::ReleaseTextures()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);	
 	glActiveTexture(GL_TEXTURE0 + 1);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(GL_TEXTURE0 + 2);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 

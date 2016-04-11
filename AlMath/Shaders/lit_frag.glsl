@@ -37,6 +37,8 @@ in mat3 v_tbnMatrix;
 
 uniform sampler2D colorMap;
 uniform sampler2D normalMap;
+uniform sampler2D specularMap;
+
 uniform int isTextured;
 uniform vec3 cameraPosition;
 
@@ -44,7 +46,7 @@ uniform point_light plight0;
 uniform directional_light dlight0;
 uniform material material0;
 
-vec4 CalculatePointLight(point_light plight, vec3 normal){
+vec4 CalculatePointLight(point_light plight, vec3 normal, vec3 specular){
 
 	vec4 diffuse_color = vec4(0,0,0,1);
 	vec4 specular_color = vec4(0,0,0,1);
@@ -63,7 +65,7 @@ vec4 CalculatePointLight(point_light plight, vec3 normal){
 		vec3 reflection = normalize(reflect(light_direction, normal));
 		float specular_factor = max(dot(reflection, -vert_to_eye), 0.0);
 		if (specular_factor > 0){
-			vec3 spec = plight.Color * material0.ks * pow(specular_factor, material0.ns);
+			vec3 spec = plight.Color * specular * pow(specular_factor, material0.ns);
 			specular_color = vec4(spec, 1.0f);
 		}
 	}
@@ -77,7 +79,7 @@ vec4 CalculatePointLight(point_light plight, vec3 normal){
 	return (ambient_color + diffuse_color + specular_color) * attenuation;	
 }
 
-vec4 CalculateDirectionalLight(directional_light dlight, vec3 normal){
+vec4 CalculateDirectionalLight(directional_light dlight, vec3 normal, vec3 specular){
 	vec4 diffuse_color = vec4(0,0,0,1);
 	vec4 specular_color = vec4(0,0,0,1);
 	vec3 light_direction = dlight.Direction;
@@ -94,7 +96,7 @@ vec4 CalculateDirectionalLight(directional_light dlight, vec3 normal){
 		vec3 reflection = normalize(reflect(-light_direction, normal));
 		float specular_factor = max(dot(reflection, vert_to_eye), 0.0);
 		if (specular_factor > 0){
-			vec3 spec = dlight.Color * material0.ks * pow(specular_factor, material0.ns);
+			vec3 spec = dlight.Color * specular * pow(specular_factor, material0.ns);
 			specular_color = vec4(spec, 1.0f);
 		}
 	}
@@ -106,11 +108,14 @@ void main()
 {	
 	vec3 normal;
 	if (textureSize(normalMap, 0).x > 0){
-		vec3 fragNormal = v_tbnMatrix * normalize( texture( normalMap, v_texCoords ).xyz );
-		fragNormal.x = (fragNormal.x * 2.0) -1;
-		fragNormal.y = (fragNormal.y * 2.0) -1;
-		fragNormal.z = (fragNormal.z * 2.0) -1;
-		normal = fragNormal;		
+		vec3 fn = texture( normalMap, v_texCoords ).xyz;
+		fn.xy = fn.xy * 2.0 - 1.0;
+		//fn = 128.0/255.0 * fn - vec3(1.0, 1.0, 1.0);		
+		vec3 fragNormal = v_tbnMatrix * fn;
+		//fragNormal.x = (fragNormal.x * 2.0) -1;
+		//fragNormal.y = (fragNormal.y * 2.0) -1;
+		//fragNormal.z = (fragNormal.z * 2.0) -1;
+		normal = fragNormal;			
 	}
 	else {
 		normal = normalize(v_normal); 	
@@ -118,12 +123,19 @@ void main()
 	//normal = normalize(v_normal);
 	
 	vec4 map_color = texture(colorMap, v_texCoords);
-	// if (map_color == vec4(0,0,0,0)){
-	// 	map_color = vec4(material0.kd, 1.0);
-	// }
+	vec3 materialSpecular = vec3(0,0,0);
+	if (textureSize(specularMap, 0).x > 0){
+		materialSpecular = texture( specularMap, v_texCoords ).xyz;
+	}
+	else{
+		materialSpecular = material0.ks;
+	}
+	if (map_color == vec4(0,0,0,0)){
+	 	map_color = vec4(material0.kd, 1.0);
+	}
 	vec4 lighting = vec4(0,0,0,1);
-	lighting += CalculatePointLight(plight0, normal);
-	lighting += CalculateDirectionalLight(dlight0, normal);
+	lighting += CalculatePointLight(plight0, normal, materialSpecular);
+	lighting += CalculateDirectionalLight(dlight0, normal, materialSpecular);
 	
 
 	//float attenuation = plight0.ConstAtten + plight0.LinearAtten * dist_to_light + plight0.ExpAtten * dist_to_light * dist_to_light;

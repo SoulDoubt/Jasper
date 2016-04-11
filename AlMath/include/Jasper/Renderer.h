@@ -22,20 +22,22 @@ public:
 	void Initialize();
 	void Destroy();
 
-	void SetFrameInvariants(Material* material);
-	void SetMaterialUniforms(Material* material);
+	
 
 	void RenderScene();
 
 	void RegisterGameObject(GameObject* obj);
 	void UnregisterGameObject(GameObject* obj);
 
-	void SortByMaterial();
-
-	void ReleaseTextures();
+	
 private:
 
 	void ProcessGameObject(const GameObject* go);
+	void SortByMaterial();
+	void ReleaseTextures();
+	void SetFrameInvariants(Material* material);
+	void SetMaterialUniforms(Material* material);
+	void CullGameObjects();
 
 	Scene* m_scene;
 

@@ -98,7 +98,7 @@ void Model::ProcessAiSceneNode(const aiScene* scene, aiNode* node)
 void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 {
 
-	auto m = m_meshManager.CreateInstance<Mesh>();
+	auto m = this->AttachNewComponent<Mesh>();
 	m->Vertices.reserve(aiMesh->mNumVertices);
 	m->Indices.reserve(aiMesh->mNumFaces * 3);
 
@@ -119,6 +119,9 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 			v.Tangent = { tang.x, tang.y, tang.z, 1.f };
 			auto bitang = aiMesh->mBitangents[i];
 			v.Bitangent = { bitang.x, bitang.y, bitang.z };
+
+			//v.Tangent.w = (Dot(Cross(v.Normal, v.Tangent.AsVector3()), v.Bitangent) > 0.0f) ? -1.0f : 1.0f;
+
 		}
 		m->AddVertex(v);
 	}
@@ -185,7 +188,7 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 				texString.Clear();
 				mat->GetTexture(aiTextureType::aiTextureType_SPECULAR, 0, &texString);
 				if (texString.length > 0) {
-					printf("Specular Texture Map Found: ");
+					myMaterial->SetTextureSpecularMap(m_directory + "/" + texString.C_Str());
 				}
 			}
 		}
@@ -204,6 +207,7 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 		renderMaterial->SetTextureDiffuse("./textures/default.png");
 	}
 	auto mr = this->AttachNewComponent<MeshRenderer>(m, renderMaterial);
+	
 	printf("Loaded Model Mesh\n");
 
 }

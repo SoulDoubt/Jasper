@@ -44,24 +44,13 @@ void Scene::Initialize() {
 	m_camera->SetPhysicsWorld(m_physicsWorld.get());
 
 	m_renderer = make_unique<Renderer>(this);
-	/*{
-		float mass = 80.f;
-
-		const float width = 0.8f / 2.f;
-		const float depth = 0.4f / 2.f;
-		const float height = 1.9f / 2.f;		
 		
-		auto camCollider = m_camera->AttachNewComponent<CapsuleCollider>("Camera_Collider", Vector3(width, height, depth), m_physicsWorld.get());
-		camCollider->Mass = mass;
-	}*/
-	
-	
 	auto pm = Matrix4();
 	auto om = Matrix4();
 
 	float aspectRatio = (float)m_windowWidth / (float)m_windowHeight;
 	
-	pm.CreatePerspectiveProjection(60.0f, aspectRatio, 0.1f, 1000.0f);
+	pm.CreatePerspectiveProjection(80.0f, aspectRatio, 0.1f, 1000.0f);
 	om.CreateOrthographicProjection(0.0f, m_windowWidth, m_windowHeight, 0.0f, 1.0f, -1.0f);
 	m_projectionMatrix = pm;
 	m_orthoMatrix = om;
@@ -95,8 +84,8 @@ void Scene::Initialize() {
 	m_fontRenderer->SetOrthoMatrix(m_orthoMatrix);
 
 	auto m1 = m_materialManager.CreateInstance<Material>(defaultShader);
-	m1->SetTextureDiffuse("./textures/154.jpg");
-	m1->SetTextureNormalMap("./textures/154_norm.jpg");
+	m1->SetTextureDiffuse("./textures/196.jpg");
+	m1->SetTextureNormalMap("./textures/196_norm.jpg");
 	m1->Shine = 12.0f;
 	m1->Diffuse = { 0.85f, 0.85f, 0.85f };
 	m1->Ambient = { 0.25f, 0.25f, 0.25f };
@@ -104,7 +93,7 @@ void Scene::Initialize() {
 
 	// Floor
 	auto floor = CreateEmptyGameObject("floor", m_rootNode.get());
-	auto quadMesh = m_meshManager.CreateInstance<Quad>(Vector2(100.0f, 100.0f), 10, 10, Quad::AxisAlignment::XZ);	
+	auto quadMesh = m_meshManager.CreateInstance<Quad>(Vector2(100.0f, 100.0f), 20, 20, Quad::AxisAlignment::XZ);	
 	auto floorMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
 	floorMaterial->SetTextureDiffuse("./textures/tile.jpg");
 	auto mr = floor->AttachNewComponent<MeshRenderer>(quadMesh, m1);		
@@ -114,14 +103,17 @@ void Scene::Initialize() {
 	floorMaterial->Ambient = { 1.0f, 1.0f, 1.0f };	
 	
 
-	auto wall = m_rootNode->AttachNewChild<GameObject>("wall_0");
+	/*auto wall = m_rootNode->AttachNewChild<GameObject>("wall_0");
 	auto wallMesh = m_meshManager.CreateInstance<Cube>( Vector3(10.f, 10.f, 0.2f));
 	auto wallRenderer = wall->AttachNewComponent<MeshRenderer>(wallMesh, m1);
 	auto wallCollider = wall->AttachNewComponent<BoxCollider>("wall_0_collider", wallMesh, m_physicsWorld.get());
 	wallCollider->Mass = 00.0f;	
 	wall->GetLocalTransform().Translate({ 0.0f, 30.0f, -10.0f });
-	wall->GetLocalTransform().Rotate({ 1.0f, 0.f, 0.f }, DEG_TO_RAD(90.f));
+	wall->GetLocalTransform().Rotate({ 1.0f, 0.f, 0.f }, DEG_TO_RAD(90.f));*/
 
+	auto sponza = m_rootNode->AttachNewChild<Model>("crytek_sponza", "./models/crytek-sponza/sponza.obj", defaultShader, false, nullptr);
+	sponza->GetLocalTransform().Scale = { 0.05f, 0.05f, 0.05f };
+	sponza->GetLocalTransform().Translate(0.f, 5.f, 0.f);
 	//auto cube = m_rootNode->AttachNewChild<GameObject>("cube_0");
 	//auto cubeMesh = m_meshManager.CreateInstance<Cube>(Vector3({ 1.5f, 1.5f, 1.5f }));
 	//cubeMesh->FlipTextureCoords();
@@ -145,30 +137,25 @@ void Scene::Initialize() {
 	//model->GetLocalTransform().Scale = Vector3{ 0.025f, 0.025f, 0.025f };
 	////model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));	
 	//
-	auto teapot = m_rootNode->AttachNewChild<Model>("teapot", "./models/teapot/teapot.obj", defaultShader, true, m_physicsWorld.get());
-	teapot->GetLocalTransform().Translate({ 0.0f, 20.0f, 0.0f });
-	teapot->GetLocalTransform().Scale = { 0.1f, 0.1f, 0.10f };
-
-	//auto batman = m_rootNode->AttachNewChild<Model>("oildrum", "./models/BB8/BB 8 rig 1.max", defaultShader, true, m_physicsWorld.get());
-	//batman->GetLocalTransform().Scale = { 0.02f, 0.02f, 0.02f };
-	/*auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/lara/lara.dae", defaultShader, true, m_physicsWorld.get());
-	lara->GetLocalTransform().Rotate({ 1.f, 0.f, 0.f }, DEG_TO_RAD(-90.f));
-	lara->GetLocalTransform().Translate(4.2f, 1.0f, 10.0f);
-	lara->GetLocalTransform().Scale = { 1.25f, 1.25f, 1.25f };*/
-
-	//auto sponza = m_rootNode->AttachNewChild<Model>("sponza", "./models/stormtrooper/stormtrooper.obj", defaultShader, false, nullptr);
-	//sponza->GetLocalTransform().Translate(0.f, 6.6f, 0.f);
-	//sponza->GetLocalTransform().Scale = Vector3(0.07f, 0.07f, 0.07f);
-	
-	
-	
-
-	auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/Joslin_Reyes_Bikini/Joslin_Reyes_Bikini.dae", defaultShader, true, m_physicsWorld.get());
-	lara->GetLocalTransform().Translate({ 10.0f, 1.0f, -3.0f });
-	lara->GetLocalTransform().Scale = { 1.1f, 1.1f, 1.1f };
-	lara->GetLocalTransform().Rotate({ 1.0f, 0.0f, 0.0f }, -DEG_TO_RAD(90.f));
+	//auto teapot = m_rootNode->AttachNewChild<Model>("teapot", "./models/teapot/teapot.obj", defaultShader, true, m_physicsWorld.get());
+	//teapot->GetLocalTransform().Translate({ 0.0f, 20.0f, 0.0f });
+	//teapot->GetLocalTransform().Scale = { 0.07f, 0.07f, 0.07f };
+				
+	//auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/Challenger/CHALLENGER71.obj", defaultShader, true, m_physicsWorld.get());
+	//auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/Joslin_Reyes_Bikini/Joslin_Reyes_Bikini.dae", defaultShader, true, m_physicsWorld.get());
+	//lara->GetLocalTransform().Translate({ 10.0f, 1.0f, -3.0f });
+	//lara->GetLocalTransform().Scale = { 1.6f, 1.6f, 1.6f };
+	//lara->GetLocalTransform().Rotate({ 1.0f, 0.0f, 0.0f }, -DEG_TO_RAD(90.f));
 	//lara->GetLocalTransform().Rotate({ 0.f, 1.f, 0.f }, DEG_TO_RAD(180.f));
 
+	//auto mathias = m_rootNode->AttachNewChild<Model>("mathias", "./models/Mathias/Mathias.obj", defaultShader, true, m_physicsWorld.get());
+	//mathias->GetLocalTransform().Translate({ -10.f, 1.f, -3.f });
+	/*mathias->SetUpdateEvent([&](float dt) {
+		mathias->GetLocalTransform().RotateAround({ -8.f, 1.f, -3.f }, { 0.f, 1.f, 0.f }, 1.f);
+	});*/
+
+	//auto hf = m_rootNode->AttachNewChild<Model>("human_female", "./models/Human_Female/Human_Female.obj", defaultShader, true, m_physicsWorld.get());
+	//hf->GetLocalTransform().Translate(10, 1, 3);
 	/*
 	auto sphereObject = m_rootNode->AttachNewChild<GameObject>("sphere_0");
 	auto sphereMesh = m_meshManager.CreateInstance<Sphere>(1.0f);
@@ -184,7 +171,7 @@ void Scene::Initialize() {
 	light0->ConstAtten = 0.002f;
 	light0->Color = { 1.f, 1.f, 1.f };	
 	light0->AmbientIntensity = 0.15f;
-	light0->DiffuseIntensity = 0.7;
+	light0->DiffuseIntensity = 1.f;
 
 	auto lightMesh = m_meshManager.CreateInstance<Cube>(Vector3(0.1f, 0.1f, 0.1f));
 	auto lightMaterial = m_materialManager.CreateInstance<Material>(defaultShader);
@@ -192,9 +179,9 @@ void Scene::Initialize() {
 	light0->AttachNewComponent<MeshRenderer>(lightMesh, lightMaterial);
 
 	auto dlight = m_rootNode->AttachNewChild<DirectionalLight>("d_light");
-	dlight->Direction = Normalize({ 0.f, -1.f, -1.f });
-	dlight->AmbientIntensity = 0.9f;
-	dlight->Diffuseintensity = 1.2f;
+	dlight->Direction = Normalize({ 0.0, -1.f, -1.f });
+	dlight->AmbientIntensity = 0.3f;
+	dlight->Diffuseintensity = 0.755f;
 
 
 }
@@ -237,7 +224,7 @@ void Scene::Update(float dt)
 	
 	auto light = GetGameObjectByName("p_light");	
 	if (light) {
-		light->GetLocalTransform().RotateAround(Vector3(0.f, 10.f, 0.f), Vector3(0.f, 1.f, 0.f), 1.f);
+		light->GetLocalTransform().RotateAround(Vector3(0.f, 10.f, 0.f), Vector3(0.f, 1.f, 0.f), 0.5f);
 	}
 	m_rootNode->Update(dt);		
 	m_renderer->RenderScene();

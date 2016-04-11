@@ -7,6 +7,7 @@
 #include <typeinfo>
 #include <map>
 #include <typeindex>
+#include <functional>
 #include <vector>
 #include <memory>
 #include "Component.h"
@@ -98,6 +99,8 @@ public:
 
 	template<typename T, typename... Args>
 	T* AttachNewChild(Args&&... args);
+
+	void SetUpdateEvent(const std::function<void(float)>& lambda);
 	
 
 private:
@@ -111,6 +114,9 @@ private:
 	std::vector<std::unique_ptr<GameObject>> m_children;
 
 	GroupedComponentMap m_groupedComponents;
+
+	std::function<void(float)> m_updateEvent;
+	
 
 protected:
 	Scene* m_scene;
@@ -183,6 +189,11 @@ inline void GameObject::SetScene(Scene * scene)
 inline Scene * GameObject::GetScene() const
 {
 	return m_scene;
+}
+
+inline void GameObject::SetUpdateEvent(const std::function<void(float)>& lambda)
+{
+	m_updateEvent = lambda;
 }
 
 template <typename T>

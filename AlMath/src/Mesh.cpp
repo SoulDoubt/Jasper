@@ -98,7 +98,7 @@ void Mesh::CalculateFaceNormals()
 		v.Normal = Normalize(v.Normal);
 		// Gram-Schmidt orthogonalize
 		v.Tangent = { (v.Tangent.AsVector3() - v.Normal * Dot(v.Normal, v.Tangent.AsVector3())).Normalized(), 0.0f };
-		v.Tangent.w = (Dot(Cross(v.Normal, v.Tangent.AsVector3()), v.Bitangent) < 0.0f) ? -1.0f : 1.0f;
+		v.Tangent.w = (Dot(Cross(v.Normal, v.Tangent.AsVector3()), v.Bitangent) > 0.0f) ? -1.0f : 1.0f;
 		Vector4 Tangent = Normalize(v.Tangent);
 	}
 
