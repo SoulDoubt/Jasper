@@ -83,7 +83,9 @@ void Jasper::Renderer::CullGameObjects()
 		auto transform = x->GetWorldTransform();
 		auto meshes = x->GetComponentsByType<Mesh>();
 		for (const auto m : meshes) {
-			
+			auto max = m->GetMaxExtents();
+			auto min = m->GetMinExtents();
+
 		}
 	}
 }

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Jasper\Event.h" />
     <ClInclude Include="include\Jasper\GBuffer.h" />
     <ClInclude Include="include\Jasper\PhysicsDebugDraw.h" />
     <ClInclude Include="include\Jasper\Renderer.h" />

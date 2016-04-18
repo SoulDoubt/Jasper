@@ -40,15 +40,16 @@ void Model::Initialize()
 	m_directory = m_filename.substr(0, m_filename.find_last_of("/"));
 
 	ProcessAiSceneNode(scene, scene->mRootNode);
-
-	size_t sz = m_meshManager.GetSize();
+	
+	auto meshes = this->GetComponentsByType<Mesh>();
+	int sz = meshes.size();
 	printf("\nLoaded %d meshes in model: %s", sz, this->GetName().c_str());
 	uint numTris = 0;
 	uint numVerts = 0;
 	MaxExtents = { -100000.0f, -1000000.0f, -1000000.0f };
 	MinExtents = { 1000000.0f, 1000000.0f, 1000000.0f };
 
-	for (auto& m : m_meshManager.GetCache()) {
+	for (auto& m : meshes) {
 		this->TriCount += m->Indices.size() / 3;
 		this->VertCount += m->Vertices.size();
 		if (m->GetMaxExtents().x > MaxExtents.x) MaxExtents.x = m->GetMaxExtents().x;
@@ -62,7 +63,7 @@ void Model::Initialize()
 	Vector3 localOrigin = { (MinExtents.x + MaxExtents.x) / 2.f, (MinExtents.y + MaxExtents.y) / 2.f , (MinExtents.z + MaxExtents.z) / 2.f };
 	float epsilon = 0.000001f;
 	if (fabs(localOrigin.x) > epsilon || fabs(localOrigin.y) > epsilon || fabs(localOrigin.z) > epsilon) {
-		for (auto& m : m_meshManager.GetCache()) {
+		for (auto& m : meshes) {
 			for (auto& v : m->Vertices) {
 				v.Position -= localOrigin;
 			}

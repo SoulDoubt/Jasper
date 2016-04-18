@@ -12,6 +12,7 @@
 #include <memory>
 #include "Component.h"
 #include "Transform.h"
+#include "Event.h"
 
 namespace Jasper {
 
@@ -100,7 +101,7 @@ public:
 	template<typename T, typename... Args>
 	T* AttachNewChild(Args&&... args);
 
-	void SetUpdateEvent(const std::function<void(float)>& lambda);
+	Event<float> UpdateEvent;
 	
 
 private:
@@ -115,7 +116,7 @@ private:
 
 	GroupedComponentMap m_groupedComponents;
 
-	std::function<void(float)> m_updateEvent;
+	
 	
 
 protected:
@@ -191,10 +192,6 @@ inline Scene * GameObject::GetScene() const
 	return m_scene;
 }
 
-inline void GameObject::SetUpdateEvent(const std::function<void(float)>& lambda)
-{
-	m_updateEvent = lambda;
-}
 
 template <typename T>
 T* GameObject::FindFirstComponentByType() {

@@ -174,13 +174,11 @@ void GameObject::UpdateCurrent(float dt) {
 		modelTrans = physics->GetCurrentWorldTransform();
 		modelTrans.Scale = GetLocalTransform().Scale;
 		SetLocalTransform(modelTrans);
-	}
-	if (m_updateEvent != nullptr) {
-		m_updateEvent(dt);
-	}
+	}	
 	for (auto& comp : m_components) {
 		comp->Update();
 	}
+	UpdateEvent.Call(dt);
 }
 
 void GameObject::UpdateChildren(float dt) {

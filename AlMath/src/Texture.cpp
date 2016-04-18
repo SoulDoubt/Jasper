@@ -76,13 +76,7 @@ namespace Jasper {
 
 	bool CubemapTexture::Load(const std::string & posx, const std::string & negx, const std::string & posy, const std::string & negy, const std::string & posz, const std::string & negz)
 	{
-		string files[6] = { posx, negx, posy, negy, posz, negz };
-		/*GLenum sides[6] = { GL_TEXTURE_CUBE_MAP_POSITIVE_X,
-			GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
-			GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
-			GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
-			GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
-			GL_TEXTURE_CUBE_MAP_NEGATIVE_Z };*/
+		string files[6] = { posx, negx, posy, negy, posz, negz };		
 		glGenTextures(1, &m_cubemapID);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubemapID);
 

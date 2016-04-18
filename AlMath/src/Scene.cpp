@@ -103,17 +103,22 @@ void Scene::Initialize() {
 	floorMaterial->Ambient = { 1.0f, 1.0f, 1.0f };	
 	
 
-	/*auto wall = m_rootNode->AttachNewChild<GameObject>("wall_0");
-	auto wallMesh = m_meshManager.CreateInstance<Cube>( Vector3(10.f, 10.f, 0.2f));
+	auto wall = m_rootNode->AttachNewChild<GameObject>("wall_0");
+	auto wallMesh = m_meshManager.CreateInstance<Cube>( Vector3(50.f, 1.0f, 50.0f));
 	auto wallRenderer = wall->AttachNewComponent<MeshRenderer>(wallMesh, m1);
 	auto wallCollider = wall->AttachNewComponent<BoxCollider>("wall_0_collider", wallMesh, m_physicsWorld.get());
-	wallCollider->Mass = 00.0f;	
-	wall->GetLocalTransform().Translate({ 0.0f, 30.0f, -10.0f });
-	wall->GetLocalTransform().Rotate({ 1.0f, 0.f, 0.f }, DEG_TO_RAD(90.f));*/
+	wallCollider->Mass = 0.0f;	
+	wall->GetLocalTransform().Translate(0.0f, 40.0f, 0.0f);
 
-	auto sponza = m_rootNode->AttachNewChild<Model>("crytek_sponza", "./models/crytek-sponza/sponza.obj", defaultShader, false, nullptr);
-	sponza->GetLocalTransform().Scale = { 0.05f, 0.05f, 0.05f };
-	sponza->GetLocalTransform().Translate(0.f, 5.f, 0.f);
+	//auto citadel = m_rootNode->AttachNewChild<Model>("citadel", "./models/Police - Half-Life 2/Police.obj", defaultShader, false, nullptr);
+	//citadel->GetLocalTransform().Scale = { 1.01f, 1.01f, 1.01f };
+
+	//wall->GetLocalTransform().Translate({ 0.0f, 0.0f, 0.0f });
+	//wall->GetLocalTransform().Rotate({ 1.0f, 0.f, 0.f }, DEG_TO_RAD(90.f));
+
+	//auto sponza = m_rootNode->AttachNewChild<Model>("crytek_sponza", "./models/crytek-sponza/sponza.obj", defaultShader, false, nullptr);
+	//sponza->GetLocalTransform().Scale = { 0.05f, 0.05f, 0.05f };
+	//sponza->GetLocalTransform().Translate(0.f, 5.f, 0.f);
 	//auto cube = m_rootNode->AttachNewChild<GameObject>("cube_0");
 	//auto cubeMesh = m_meshManager.CreateInstance<Cube>(Vector3({ 1.5f, 1.5f, 1.5f }));
 	//cubeMesh->FlipTextureCoords();
@@ -132,24 +137,28 @@ void Scene::Initialize() {
 	cubechild->GetLocalTransform().Translate({0.0f, 2.5f + 5.f, 0.0f});	*/
 	
 
-	//auto model = m_rootNode->AttachNewChild<Model>("teapot", "./models/teapot/teapot.obj", defaultShader, true, m_physicsWorld.get());	
-	//model->GetLocalTransform().Translate(Vector3(0.0f, 0.0f, 0.0f));
-	//model->GetLocalTransform().Scale = Vector3{ 0.025f, 0.025f, 0.025f };
-	////model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));	
+	auto model = m_rootNode->AttachNewChild<Model>("teapot", "./models/teapot/teapot.obj", defaultShader, true, m_physicsWorld.get());	
+	model->GetLocalTransform().Translate(Vector3(0.0f, 30.0f, 0.0f));
+	model->GetLocalTransform().UniformScale(0.025f);
+	model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));
 	//
-	//auto teapot = m_rootNode->AttachNewChild<Model>("teapot", "./models/teapot/teapot.obj", defaultShader, true, m_physicsWorld.get());
-	//teapot->GetLocalTransform().Translate({ 0.0f, 20.0f, 0.0f });
-	//teapot->GetLocalTransform().Scale = { 0.07f, 0.07f, 0.07f };
+	/*auto teapot = m_rootNode->AttachNewChild<Model>("teapot", "./models/teapot/teapot.obj", defaultShader, true, m_physicsWorld.get());
+	teapot->GetLocalTransform().Translate({ 0.0f, 20.0f, 0.0f });
+	teapot->GetLocalTransform().Scale = { 0.04f, 0.04f, 0.04f };*/
+
+	/*teapot->UpdateEvent += [](float dt) {
+		printf("Update Event Called.\n");
+	};*/
 				
-	//auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/Challenger/CHALLENGER71.obj", defaultShader, true, m_physicsWorld.get());
+	auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/Lara/lara.dae", defaultShader, true, m_physicsWorld.get());
 	//auto lara = m_rootNode->AttachNewChild<Model>("lara_croft", "./models/Joslin_Reyes_Bikini/Joslin_Reyes_Bikini.dae", defaultShader, true, m_physicsWorld.get());
-	//lara->GetLocalTransform().Translate({ 10.0f, 1.0f, -3.0f });
+	lara->GetLocalTransform().Translate({ 10.0f, 1.0f, -3.0f });
 	//lara->GetLocalTransform().Scale = { 1.6f, 1.6f, 1.6f };
-	//lara->GetLocalTransform().Rotate({ 1.0f, 0.0f, 0.0f }, -DEG_TO_RAD(90.f));
+	lara->GetLocalTransform().Rotate({ 1.0f, 0.0f, 0.0f }, -DEG_TO_RAD(90.f));
 	//lara->GetLocalTransform().Rotate({ 0.f, 1.f, 0.f }, DEG_TO_RAD(180.f));
 
-	//auto mathias = m_rootNode->AttachNewChild<Model>("mathias", "./models/Mathias/Mathias.obj", defaultShader, true, m_physicsWorld.get());
-	//mathias->GetLocalTransform().Translate({ -10.f, 1.f, -3.f });
+	auto mathias = m_rootNode->AttachNewChild<Model>("mathias", "./models/Mathias/Mathias.obj", defaultShader, true, m_physicsWorld.get());
+	mathias->GetLocalTransform().Translate({ -10.f, 1.f, -3.f });
 	/*mathias->SetUpdateEvent([&](float dt) {
 		mathias->GetLocalTransform().RotateAround({ -8.f, 1.f, -3.f }, { 0.f, 1.f, 0.f }, 1.f);
 	});*/
@@ -180,8 +189,8 @@ void Scene::Initialize() {
 
 	auto dlight = m_rootNode->AttachNewChild<DirectionalLight>("d_light");
 	dlight->Direction = Normalize({ 0.0, -1.f, -1.f });
-	dlight->AmbientIntensity = 0.3f;
-	dlight->Diffuseintensity = 0.755f;
+	dlight->AmbientIntensity = 0.1f;
+	dlight->Diffuseintensity = 0.23f;
 
 
 }
@@ -218,14 +227,14 @@ float CalcFPS(float dt) {
 
 void Scene::Update(float dt)
 {	
+	auto point_light = GetGameObjectByName("p_light");
+	if (point_light) {
+		point_light->GetLocalTransform().RotateAround({ 0.f, 10.f, 0.f }, { 0.f, 1.f, 0.f }, 1.0f);
+	}
+
 	Vector3 position = m_camera->GetPosition();	
 	Vector3 direction = m_camera->GetViewDirection();
-	m_physicsWorld->Update(dt);			
-	
-	auto light = GetGameObjectByName("p_light");	
-	if (light) {
-		light->GetLocalTransform().RotateAround(Vector3(0.f, 10.f, 0.f), Vector3(0.f, 1.f, 0.f), 0.5f);
-	}
+	m_physicsWorld->Update(dt);					
 	m_rootNode->Update(dt);		
 	m_renderer->RenderScene();
 #ifdef DEBUG_DRAW_PHYSICS

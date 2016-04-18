@@ -62,6 +62,8 @@ public:
 	Transform& Translate(const Vector3& tv);
 	Transform& Translate(const float x, const float y, const float z);
 
+	Transform& UniformScale(const float s);	
+
 	Transform& Rotate(const Vector3& axis, float angle);
 
 	Transform& RotateAround(const Vector3& point, const Vector3& axis, const float degrees);
@@ -109,6 +111,11 @@ inline void Transform::SetIdentity() {
 	Position = { 0.f, 0.f, 0.f };
 	Orientation = { 0.f, 0.f, 0.f, 1.f };
 	Scale = { 1.f, 1.f, 1.f };
+}
+
+inline Transform& Transform::UniformScale(const float s) {
+	Scale = { s, s, s };
+	return *this;
 }
 
 }
