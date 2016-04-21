@@ -5,16 +5,26 @@
 #include <Jasper\GLError.h>
 #include <algorithm>
 
+#include <Jasper\GBuffer.h>
+
 using namespace std;
 
 Jasper::Renderer::Renderer(Scene * scene) : m_scene(scene)
 {
+	m_windowWidth = m_scene->m_windowWidth;
+	m_windowHeight = m_scene->m_windowHeight;
 }
 
 void Jasper::Renderer::Initialize()
 {
+	//GBuffer gbuff = GBuffer(1024, 768);
+	//gbuff.Initialize();
 	const auto root = m_scene->GetRootNode();
 	ProcessGameObject(root);
+
+	// create a framebuffer for shadow mapping...
+	//CreateShadowMapObjects();
+
 	SortByMaterial();
 }
 
@@ -88,6 +98,30 @@ void Jasper::Renderer::CullGameObjects()
 
 		}
 	}
+}
+
+void Jasper::Renderer::CreateShadowMapObjects()
+{
+	glGenFramebuffers(1, &m_shadowMapBufferID);
+
+	glGenTextures(1, &m_shadowMapTextureID);
+	glBindTexture(GL_TEXTURE_2D, m_shadowMapTextureID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,m_windowWidth, m_windowHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, m_shadowMapBufferID);
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_shadowMapTextureID, 0);
+	
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+
+}
+
+void Jasper::Renderer::RenderShadowMap() {
+
 }
 
 

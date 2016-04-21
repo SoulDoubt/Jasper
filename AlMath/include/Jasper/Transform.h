@@ -68,6 +68,8 @@ public:
 
 	Transform& RotateAround(const Vector3& point, const Vector3& axis, const float degrees);
 
+	Transform& PositionLerp(const Vector3& start, const Vector3& end, float pct);
+
 
 	friend Transform operator*(const Transform& ps, const Transform& ls);
 	friend Transform& operator*=(Transform& ps, const Transform& ls);

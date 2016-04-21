@@ -67,16 +67,28 @@ void Model::Initialize()
 			for (auto& v : m->Vertices) {
 				v.Position -= localOrigin;
 			}
+			m->CalculateExtents();
 		}
 	}
 	if (m_enablePhysics) {
-		Vector3 hes = { -1000000.0f, -1000000.0f, -1000000.0f };
-		hes.x = (MaxExtents.x - MinExtents.x) / 2.f;
+		
+		int i = 0;
+		for (auto& mesh : meshes) {
+			Vector3 hes;
+			hes.x = (mesh->GetMaxExtents().x - mesh->GetMinExtents().x) / 2.0f;
+			hes.y = (mesh->GetMaxExtents().y - mesh->GetMinExtents().y) / 2.0f;
+			hes.z = (mesh->GetMaxExtents().z - mesh->GetMinExtents().z) / 2.0f;
+			auto collider = AttachNewComponent<BoxCollider>(this->GetName() + "_Collider_" + std::to_string(i), hes, m_physicsWorld);
+			collider->Mass = 0.0f;
+			i++;
+		}
+
+		/*hes.x = (MaxExtents.x - MinExtents.x) / 2.f;
 		hes.y = (MaxExtents.y - MinExtents.y) / 2.f;
 		hes.z = (MaxExtents.z - MinExtents.z) / 2.f;
 		HalfExtents = hes;
 		auto bc = AttachNewComponent<BoxCollider>(this->GetName() + "_Collider", hes, m_physicsWorld);
-		bc->Mass = 20.0f;
+		bc->Mass = 20.0f;*/
 	}
 	printf("\nModel Contains %d Vertices and %d Triangles and %d Materials.", VertCount, TriCount, m_materialManager.GetCache().size());
 

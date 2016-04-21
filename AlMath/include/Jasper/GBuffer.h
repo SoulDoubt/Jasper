@@ -9,6 +9,8 @@ public:
 		Diffuse,
 		Normal,
 		TexCoord,
+		Tangent,
+		Bitangent,
 		NUM_TEXTURES
 	};
 
@@ -20,7 +22,7 @@ public:
 
 private:
 	unsigned int m_fboID;
-	unsigned int m_textureIDs[4];
+	unsigned int m_textureIDs[6];
 	unsigned int m_depthTextureID;
 	int m_height, m_width;
 };

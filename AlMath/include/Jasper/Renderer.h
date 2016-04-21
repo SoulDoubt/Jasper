@@ -22,8 +22,6 @@ public:
 	void Initialize();
 	void Destroy();
 
-	
-
 	void RenderScene();
 
 	void RegisterGameObject(GameObject* obj);
@@ -39,6 +37,10 @@ private:
 	void SetMaterialUniforms(Material* material);
 	void CullGameObjects();
 
+	void CreateShadowMapObjects();
+	void RenderShadowMap();
+
+
 	Scene* m_scene;
 
 	std::vector<GameObject*> m_renderObjects;
@@ -47,7 +49,11 @@ private:
 	Shader* m_currentShader = nullptr;
 	Material* m_currentMaterial = nullptr;
 
+	uint m_shadowMapBufferID;
+	uint m_shadowMapTextureID;
 
+	int m_windowWidth;
+	int m_windowHeight;
 
 };
 

@@ -61,7 +61,7 @@ public:
 		return nullptr;
 	}
 
-
+	int m_windowWidth, m_windowHeight;
 private:
 	std::unique_ptr<GameObject> m_rootNode;
 
@@ -79,7 +79,7 @@ private:
 
 	std::unique_ptr<FontRenderer> m_fontRenderer;
 
-	int m_windowWidth, m_windowHeight;
+	
 
 	std::unique_ptr<Renderer> m_renderer;
 

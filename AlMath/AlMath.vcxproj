@@ -24,6 +24,7 @@
     <ClInclude Include="include\Jasper\PhysicsDebugDraw.h" />
     <ClInclude Include="include\Jasper\Renderer.h" />
     <ClInclude Include="include\Jasper\ResourceManager.h" />
+    <ClInclude Include="include\Jasper\ShadowMapShader.h" />
     <ClInclude Include="include\Jasper\TextureShader.h" />
     <ClInclude Include="SceneRenderer.h" />
     <ClInclude Include="include\Jasper\BasicShader.h" />
@@ -103,6 +104,7 @@
     <ClCompile Include="src\Room.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\ShadowMapShader.cpp" />
     <ClCompile Include="src\SkyboxRenderer.cpp" />
     <ClCompile Include="src\SkyboxShader.cpp" />
     <ClCompile Include="src\Sphere.cpp" />

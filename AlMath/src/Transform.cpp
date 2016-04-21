@@ -19,4 +19,11 @@ Transform& Transform::RotateAround(const Vector3& point, const Vector3& axis, co
 	return *this;
 }
 
+Transform & Transform::PositionLerp(const Vector3 & start, const Vector3 & end, float pct)
+{	
+	Vector3 diff = end - start;
+	this->Position = start + (pct * diff);
+	return *this;
+}
+
 } // namespace Jasper
