@@ -20,6 +20,9 @@ public:
 	~Model();
 
 	float Mass = 0.0f;
+	float Restitution = 1.0f;
+	float Friction = 1.0f;
+
 	PHYSICS_COLLIDER_TYPE ColliderType = PHYSICS_COLLIDER_TYPE::Box;
 
 	virtual void Initialize() override;

@@ -157,7 +157,7 @@ bool ProcessSDLEvent(SDL_Event evt, Scene* scene, double deltaTime) {
 		return true;
 	}
 
-	float rotSpeed = 120.0f;
+	float mouseSensitivity = 0.17;
 
 	switch (evt.type) {
 	case SDL_KEYDOWN:
@@ -205,24 +205,22 @@ bool ProcessSDLEvent(SDL_Event evt, Scene* scene, double deltaTime) {
 	case SDL_MOUSEMOTION:
 		if (MOUSE_MOVE) {
 			if (evt.motion.xrel < 0) {
-				RotateCameraX(scene, 0.1f, evt.motion.xrel * 0.1);
+				RotateCameraX(scene, 0.1f, evt.motion.xrel * mouseSensitivity);
 			}
 			if (evt.motion.xrel > 0) {
-				RotateCameraX(scene, 0.1f, evt.motion.xrel * 0.1);
+				RotateCameraX(scene, 0.1f, evt.motion.xrel * mouseSensitivity);
 			}
 			if (evt.motion.yrel < 0) {
-				RotateCameraY(scene, 0.1f, evt.motion.yrel * 0.1);
+				RotateCameraY(scene, 0.1f, evt.motion.yrel * mouseSensitivity);
 			}
 			if (evt.motion.yrel > 0) {
-				RotateCameraY(scene, 0.1f, evt.motion.yrel * 0.1);
+				RotateCameraY(scene, 0.1f, evt.motion.yrel * mouseSensitivity);
 			}
 		}
 
 		break;
 	}
-
 	
-
 	return false;
 }
 

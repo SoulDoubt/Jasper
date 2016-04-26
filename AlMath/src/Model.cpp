@@ -96,6 +96,8 @@ void Model::Initialize()
 		}
 		if (collider) {
 			collider->Mass = this->Mass;
+			collider->Restitution = this->Restitution;
+			collider->Friction = this->Friction;
 		}
 	}
 

@@ -141,9 +141,12 @@ void Scene::Initialize() {
 	model->GetLocalTransform().UniformScale(0.02f);
 	model->GetLocalTransform().Rotate(Vector3(1.f, 0.f, 0.f), -DEG_TO_RAD(90));*/
 	//
-	/*auto teapot = m_rootNode->AttachNewChild<Model>("teapot", "./models/teapot/teapot.obj", defaultShader, true, m_physicsWorld.get());
+	auto teapot = m_rootNode->AttachNewChild<Model>("teapot", "./models/teapot/teapot.obj", defaultShader, true, m_physicsWorld.get());
 	teapot->GetLocalTransform().Translate({ 0.0f, 20.0f, 0.0f });
-	teapot->GetLocalTransform().Scale = { 0.04f, 0.04f, 0.04f };*/
+	teapot->GetLocalTransform().Scale = { 0.04f, 0.04f, 0.04f };
+	teapot->Mass = 20.f;
+	teapot->Restitution = 1.8f;
+	teapot->ColliderType = PHYSICS_COLLIDER_TYPE::Sphere;
 
 	/*teapot->UpdateEvent += [](float dt) {
 		printf("Update Event Called.\n");
@@ -158,9 +161,10 @@ void Scene::Initialize() {
 
 	auto mathias = m_rootNode->AttachNewChild<Model>("mathias", "./models/mathias/mathias.obj", defaultShader, true, m_physicsWorld.get());
 	mathias->GetLocalTransform().Translate({ -10.f, 30.f, -3.f });
+	mathias->Restitution = 1.2f;
 	//mathias->GetLocalTransform().Scale = { 2.0f, 2.0f, 2.0f };
 	mathias->Mass = 80.f;
-	mathias->ColliderType = PHYSICS_COLLIDER_TYPE::Capsule;
+	mathias->ColliderType = PHYSICS_COLLIDER_TYPE::Box;
 	/*mathias->SetUpdateEvent([&](float dt) {
 		mathias->GetLocalTransform().RotateAround({ -8.f, 1.f, -3.f }, { 0.f, 1.f, 0.f }, 1.f);
 	});*/

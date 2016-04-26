@@ -31,6 +31,10 @@ void SphereCollider::Awake()
 		m_halfExtents = m_mesh->GetHalfExtents();
 	}
 
+	m_halfExtents.x = m_halfExtents.x * trans.Scale.x;
+	m_halfExtents.y = m_halfExtents.y * trans.Scale.y;
+	m_halfExtents.z = m_halfExtents.z * trans.Scale.z;
+
 	auto extents = m_halfExtents.AsFloatPtr();
 	for (int i = 0; i < 3; ++i) {
 		float r = fabs(extents[i]);
