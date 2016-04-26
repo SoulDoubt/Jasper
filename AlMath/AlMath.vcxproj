@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Jasper\ConvexHullCollider.h" />
+    <ClInclude Include="include\Jasper\CylinderCollider.h" />
     <ClInclude Include="include\Jasper\Event.h" />
     <ClInclude Include="include\Jasper\GBuffer.h" />
     <ClInclude Include="include\Jasper\PhysicsDebugDraw.h" />
@@ -78,7 +80,9 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\CharacterController.cpp" />
     <ClCompile Include="src\Component.cpp" />
+    <ClCompile Include="src\ConvexHullCollider.cpp" />
     <ClCompile Include="src\Cube.cpp" />
+    <ClCompile Include="src\CylinderCollider.cpp" />
     <ClCompile Include="src\FontRenderer.cpp" />
     <ClCompile Include="src\FontShader.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
@@ -189,6 +193,7 @@
     <Link>
       <AdditionalLibraryDirectories>C:\Code\Jasper\AlMath\ThirdParty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32s.lib;assimp.lib;Bullet3Common_Debug.lib;BulletCollision_Debug.lib;BulletDynamics_Debug.lib;LinearMath_Debug.lib;glfw3.lib;Bullet3Collision_Debug.lib;Bullet3Dynamics_Debug.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

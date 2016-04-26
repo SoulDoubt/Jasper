@@ -50,6 +50,10 @@ public:
 		return *m_camera;
 	};
 
+	void DoLeftClick(double x, double y);
+
+	
+
 	GameObject* CreateEmptyGameObject(std::string name, GameObject* parent);
 
 	template<typename T> T* GetGameObjectByType() {

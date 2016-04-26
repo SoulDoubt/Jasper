@@ -10,6 +10,9 @@
 #include <Jasper\Material.h>
 #include <Jasper\BoxCollider.h>
 #include <Jasper\CapsuleCollider.h>
+#include <Jasper\ConvexHullCollider.h>
+#include <Jasper\CylinderCollider.h>
+#include <Jasper\SphereCollider.h>
 #include <string>
 
 namespace Jasper {
@@ -40,7 +43,7 @@ void Model::Initialize()
 	m_directory = m_filename.substr(0, m_filename.find_last_of("/"));
 
 	ProcessAiSceneNode(scene, scene->mRootNode);
-	
+
 	auto meshes = this->GetComponentsByType<Mesh>();
 	int sz = meshes.size();
 	printf("\nLoaded %d meshes in model: %s", sz, this->GetName().c_str());
@@ -70,25 +73,41 @@ void Model::Initialize()
 			m->CalculateExtents();
 		}
 	}
-	if (m_enablePhysics) {
-		
-		int i = 0;
-		for (auto& mesh : meshes) {
-			Vector3 hes;
-			hes.x = (mesh->GetMaxExtents().x - mesh->GetMinExtents().x) / 2.0f;
-			hes.y = (mesh->GetMaxExtents().y - mesh->GetMinExtents().y) / 2.0f;
-			hes.z = (mesh->GetMaxExtents().z - mesh->GetMinExtents().z) / 2.0f;
-			auto collider = AttachNewComponent<BoxCollider>(this->GetName() + "_Collider_" + std::to_string(i), hes, m_physicsWorld);
-			collider->Mass = 0.0f;
-			i++;
-		}
 
-		/*hes.x = (MaxExtents.x - MinExtents.x) / 2.f;
-		hes.y = (MaxExtents.y - MinExtents.y) / 2.f;
-		hes.z = (MaxExtents.z - MinExtents.z) / 2.f;
-		HalfExtents = hes;
-		auto bc = AttachNewComponent<BoxCollider>(this->GetName() + "_Collider", hes, m_physicsWorld);
-		bc->Mass = 20.0f;*/
+	if (m_enablePhysics) {
+		Vector3 hes = { (MaxExtents.x - MinExtents.x) / 2, (MaxExtents.y - MinExtents.y) / 2, (MaxExtents.z - MinExtents.z) / 2 };
+		PhysicsCollider* collider = nullptr;
+		switch (this->ColliderType) {
+		case PHYSICS_COLLIDER_TYPE::Box:
+			collider = AttachNewComponent<BoxCollider>(this->GetName() + "_Collider_", hes, m_physicsWorld);			
+			break;
+		case PHYSICS_COLLIDER_TYPE::Capsule:
+			collider = AttachNewComponent<CapsuleCollider>(this->GetName() + "_Collider_", hes, m_physicsWorld);			
+			break;
+		case PHYSICS_COLLIDER_TYPE::Sphere:
+			collider = AttachNewComponent<SphereCollider>(this->GetName() + "_Collider_", hes, m_physicsWorld);			
+			break;
+		case PHYSICS_COLLIDER_TYPE::Cylinder:
+			collider = AttachNewComponent<CylinderCollider>(this->GetName() + "_Collider_", hes, m_physicsWorld);
+			break;
+		case PHYSICS_COLLIDER_TYPE::ConvexHull:
+			collider = AttachNewComponent<ConvexHullCollider>(this->GetName() + "_Collider_", hes, m_physicsWorld);
+			break;
+		}
+		if (collider) {
+			collider->Mass = this->Mass;
+		}
+	}
+
+
+	int i = 0;
+	for (auto mesh : meshes) {
+		//Vector3 meshOrigin = { (mesh->GetMinExtents().x + mesh->GetMaxExtents().x) / 2.f, (mesh->GetMinExtents().y + mesh->GetMaxExtents().y) / 2.f , (mesh->GetMinExtents().z + mesh->GetMaxExtents().z) / 2.f };
+		//auto child = make_unique<GameObject>("child_" + std::to_string(i));
+		//child->GetLocalTransform().Position = meshOrigin;
+		AttachNewComponent<MeshRenderer>(mesh, mesh->m_material);		
+		//this->AttachChild(move(child));
+		i++;
 	}
 	printf("\nModel Contains %d Vertices and %d Triangles and %d Materials.", VertCount, TriCount, m_materialManager.GetCache().size());
 
@@ -170,7 +189,7 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 			}
 			else {
 				myMaterial = m_materialManager.CreateInstance<Material>(m_shader);
-			
+
 				aiColor3D diffuse, ambient, specular;
 				float shine;
 				mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
@@ -219,8 +238,9 @@ void Model::ProcessAiMesh(const aiMesh* aiMesh, const aiScene* scene)
 		renderMaterial = m_materialManager.CreateInstance<Material>(m_shader);
 		renderMaterial->SetTextureDiffuse("./textures/default.png");
 	}
-	auto mr = this->AttachNewComponent<MeshRenderer>(m, renderMaterial);
-	
+	m->m_material = renderMaterial;
+	//auto mr = this->AttachNewComponent<MeshRenderer>(m, renderMaterial);
+
 	printf("Loaded Model Mesh\n");
 
 }

@@ -36,13 +36,22 @@ void Jasper::CapsuleCollider::Awake()
 		halfY = m_halfExtents.y;
 		halfZ = m_halfExtents.z;
 	}
-	halfX *= trans.Scale.x;
+	/*halfX *= trans.Scale.x;
 	halfY *= trans.Scale.y;
-	halfZ *= trans.Scale.z;
+	halfZ *= trans.Scale.z;*/
+
 
 
 	float radius = std::max(halfX, halfZ);
-	float height = (halfY * 2) * trans.Scale.y;
+	if (radius == halfX) {
+		radius *= trans.Scale.x;
+	}
+	else {
+		radius *= trans.Scale.y;
+	}
+	
+	float height = (halfY) * trans.Scale.y * 2;
+	height = height - (2 * radius);
 
 	m_collisionShape = new btCapsuleShape(radius, height);
 

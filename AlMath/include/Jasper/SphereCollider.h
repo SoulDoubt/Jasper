@@ -10,6 +10,7 @@ class SphereCollider :
 {
 public:
 	SphereCollider(const std::string& name, Mesh* mesh, PhysicsWorld* world);
+	SphereCollider(const std::string& name, const Vector3& halfExtents, PhysicsWorld* world);
 	~SphereCollider();
 
 	void Awake() override;

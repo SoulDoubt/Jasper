@@ -11,6 +11,12 @@ SphereCollider::SphereCollider(const std::string & name, Mesh * mesh, PhysicsWor
 
 }
 
+SphereCollider::SphereCollider(const std::string& name, const Vector3& halfExtents, PhysicsWorld* world)
+	:PhysicsCollider(name, halfExtents, world)
+{
+	
+}
+
 SphereCollider::~SphereCollider()
 {
 }
@@ -20,8 +26,12 @@ void SphereCollider::Awake()
 	auto go = GetGameObject();
 	auto& trans = go->GetLocalTransform();
 	auto& btTrans = trans.GetBtTransform();
-	float radius = 0.f;		
-	auto extents = m_mesh->GetHalfExtents().AsFloatPtr();
+	float radius = 0.f;			
+	if (m_mesh) {
+		m_halfExtents = m_mesh->GetHalfExtents();
+	}
+
+	auto extents = m_halfExtents.AsFloatPtr();
 	for (int i = 0; i < 3; ++i) {
 		float r = fabs(extents[i]);
 		if (r > radius) {

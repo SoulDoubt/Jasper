@@ -1,5 +1,5 @@
-#ifndef _MODEL_H_
-#define _MODEL_H_
+#ifndef _JASPER_MODEL_H_
+#define _JASPER_MODEL_H_
 
 #include "Common.h"
 #include "GameObject.h"
@@ -18,6 +18,9 @@ class Model : public GameObject
 public:
 	explicit Model(const std::string& name, const std::string& filename, Shader* shader, bool enablePhysics = false, PhysicsWorld* physicsWorld = nullptr);
 	~Model();
+
+	float Mass = 0.0f;
+	PHYSICS_COLLIDER_TYPE ColliderType = PHYSICS_COLLIDER_TYPE::Box;
 
 	virtual void Initialize() override;
 	virtual void Destroy() override;

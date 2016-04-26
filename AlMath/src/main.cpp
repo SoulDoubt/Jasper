@@ -10,8 +10,9 @@ int main(int argc, char** argv) {
 	std::unique_ptr<GLWindow> window = std::make_unique<GLWindow>(1024, 768, "Jasper");
 	window->Init();
 	window->InitializeScene();
-	window->RunLoop();	
+	window->RunLoop();
 
+	SDL_Quit();
 	return 0;
 }
 

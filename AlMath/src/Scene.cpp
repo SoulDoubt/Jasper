@@ -136,7 +136,6 @@ void Scene::Initialize() {
 	auto mr2 = cubechild->AttachNewComponent<MeshRenderer>(childMesh, m2);
 	cubechild->GetLocalTransform().Translate({0.0f, 2.5f + 5.f, 0.0f});	*/
 	
-
 	/*auto model = m_rootNode->AttachNewChild<Model>("teapot", "./models/teapot/teapot.obj", defaultShader, true, m_physicsWorld.get());	
 	model->GetLocalTransform().Translate(Vector3(0.0f, 30.0f, 0.0f));
 	model->GetLocalTransform().UniformScale(0.02f);
@@ -157,15 +156,18 @@ void Scene::Initialize() {
 	//lara->GetLocalTransform().Rotate({ 1.0f, 0.0f, 0.0f }, -DEG_TO_RAD(90.f));
 	//lara->GetLocalTransform().Rotate({ 0.f, 1.f, 0.f }, DEG_TO_RAD(180.f));
 
-	auto mathias = m_rootNode->AttachNewChild<Model>("mathias", "./models/Mathias/Mathias.obj", defaultShader, true, m_physicsWorld.get());
-	mathias->GetLocalTransform().Translate({ -10.f, 1.f, -3.f });
+	auto mathias = m_rootNode->AttachNewChild<Model>("mathias", "./models/mathias/mathias.obj", defaultShader, true, m_physicsWorld.get());
+	mathias->GetLocalTransform().Translate({ -10.f, 30.f, -3.f });
+	//mathias->GetLocalTransform().Scale = { 2.0f, 2.0f, 2.0f };
+	mathias->Mass = 80.f;
+	mathias->ColliderType = PHYSICS_COLLIDER_TYPE::Capsule;
 	/*mathias->SetUpdateEvent([&](float dt) {
 		mathias->GetLocalTransform().RotateAround({ -8.f, 1.f, -3.f }, { 0.f, 1.f, 0.f }, 1.f);
 	});*/
 
-	auto sponza = m_rootNode->AttachNewChild<Model>("sponza", "./models/sponza/sponza.obj", defaultShader, false, m_physicsWorld.get());
-	sponza->GetLocalTransform().UniformScale(0.05f);
-	sponza->GetLocalTransform().Translate(0.0f, 31.9f, 0.0f);
+	//auto sponza = m_rootNode->AttachNewChild<Model>("sponza", "./models/sponza/sponza.obj", defaultShader, false, m_physicsWorld.get());
+	//sponza->GetLocalTransform().UniformScale(0.05f);
+	//sponza->GetLocalTransform().Translate(0.0f, 31.9f, 0.0f);
 
 	//auto hf = m_rootNode->AttachNewChild<Model>("human_female", "./models/Human_Female/Human_Female.obj", defaultShader, true, m_physicsWorld.get());
 	//hf->GetLocalTransform().Translate(10, 1, 3);
@@ -241,21 +243,17 @@ void Scene::Update(float dt)
 		point_light->GetLocalTransform().RotateAround({ 0.f, 10.f, 0.f }, { 0.f, 1.f, 0.f }, 1.0f);
 	}
 
-	auto mathias = GetGameObjectByName("mathias");
-	Vector3 mp = mathias->GetLocalTransform().Position;
-	currentLerpTime += dt;
-	if (currentLerpTime > lerpTime) {
-		currentLerpTime = lerpTime;
-	}
-	float pct = currentLerpTime / lerpTime;
-
-	mathias->GetLocalTransform().PositionLerp(pa, pb, pct);
-
+	/*auto mathias = GetGameObjectByName("mathias");
+	if (mathias) {
+		mathias->GetLocalTransform().RotateAround({ -5.f, 1.f, 0.f }, { 0.f, 1.f, 0.f }, 0.5f);
+	}*/
+	
 	Vector3 position = m_camera->GetPosition();	
 	Vector3 direction = m_camera->GetViewDirection();
 	m_physicsWorld->Update(dt);					
 	m_rootNode->Update(dt);		
 	m_renderer->RenderScene();
+
 #ifdef DEBUG_DRAW_PHYSICS
 	for (auto& go : m_rootNode->Children()) {
 		auto phys = go->GetComponentsByType<PhysicsCollider>();
@@ -268,7 +266,21 @@ void Scene::Update(float dt)
 			dt.setIdentity();
 			for (auto collider : phys) {
 				m_physicsWorld->DrawPhysicsShape(dt, collider->GetCollisionShape(), { 1.f, 1.f, 1.f });
-			}												
+			}
+		}
+		for (auto& child : go->Children()) {
+			auto phys = child->GetComponentsByType<PhysicsCollider>();
+			if (phys.size() > 0) {
+				auto trans = child->GetWorldTransform();
+				trans.Scale = { 1.f, 1.f, 1.f };
+				auto mvp = m_projectionMatrix * m_camera->GetViewMatrix().Inverted() * trans.TransformMatrix();
+				m_physicsWorld->debugDrawer->mvpMatrix = mvp;
+				btTransform dt;
+				dt.setIdentity();
+				for (auto collider : phys) {
+					m_physicsWorld->DrawPhysicsShape(dt, collider->GetCollisionShape(), { 1.f, 1.f, 1.f });
+				}
+			}
 		}
 	}
 #endif
@@ -313,6 +325,10 @@ GameObject* Scene::CreateEmptyGameObject(std::string name, GameObject* parent)
 	auto ret = goup.get();
 	parent->AttachChild(move(goup));
 	return ret;
+}
+
+void Scene::DoLeftClick(double x, double y) {
+	printf("\n Mouse Click at: %f.2, %f.2", x, y);
 }
 
 } // namespace Jasper

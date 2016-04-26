@@ -74,7 +74,6 @@ void Mesh::CalculateFaceNormals()
 		Vector4 tangent = { sdir, 0.0f };
 		Vector3 bitangent = tdir;
 		
-
 		Vector3 edge1 = v2.Position - v1.Position;
 		Vector3 edge2 = v3.Position - v1.Position;
 

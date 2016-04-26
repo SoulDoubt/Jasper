@@ -12,6 +12,8 @@
 
 namespace Jasper {
 
+class Material;
+
 struct Vertex {
 	Vector3 Position;
 	Vector3 Normal;	
@@ -116,6 +118,8 @@ protected:
 	Vector3 m_minExtents;
 	Vector3 m_maxExtents;
 	Vector3 m_origin;
+
+	Material* m_material = nullptr;
 
 };
 

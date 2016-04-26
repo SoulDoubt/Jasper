@@ -48,9 +48,7 @@ public:
 	void SetLocalTransform(const Transform& newTransform) {
 		m_transform = newTransform;
 	}
-
 	
-
 	virtual void Initialize();
 	virtual void Destroy();
 	virtual void Awake();

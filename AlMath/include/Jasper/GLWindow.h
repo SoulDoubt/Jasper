@@ -1,17 +1,20 @@
 #ifndef _GL_WINDOW_H_
 #define _GL_WINDOW_H_
 
+#include <SDL\SDL.h>
+
+
 #define GLEW_STATIC
 #include <gl\glew.h>
-#include <GLFW\glfw3.h>
+//#include <GLFW\glfw3.h>
 #include <string>
 #include <memory>
 #include "Common.h"
 
 //#include <SDL\SDL.h>
 
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+//#define WIN32_LEAN_AND_MEAN
+//#include <Windows.h>
 
 
 namespace Jasper {
@@ -29,7 +32,8 @@ public:
 	int Height, Width;
 	std::string Title;
 
-	GLFWwindow* m_window;
+	SDL_Window* m_window;
+	SDL_GLContext m_context;
 	//SDL_Window* m_sdlWindow;
 
 	void RunLoop();
@@ -38,7 +42,7 @@ public:
 
 	void SetupGL();
 
-	HWND GetWindowHandle() const;
+	//HWND GetWindowHandle() const;
 
 	void printGLInfo() {
 		printf("Vendor: %s\n", glGetString(GL_VENDOR));

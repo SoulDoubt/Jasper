@@ -167,14 +167,7 @@ void GameObject::StartChildren() {
 	}
 }
 
-void GameObject::UpdateCurrent(float dt) {
-	Transform modelTrans;	
-	auto physics = GetComponentByType<PhysicsCollider>();
-	if (physics) {
-		modelTrans = physics->GetCurrentWorldTransform();
-		modelTrans.Scale = GetLocalTransform().Scale;
-		SetLocalTransform(modelTrans);
-	}	
+void GameObject::UpdateCurrent(float dt) {		
 	for (auto& comp : m_components) {
 		comp->Update();
 	}

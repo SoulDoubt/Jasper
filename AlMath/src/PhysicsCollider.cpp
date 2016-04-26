@@ -1,4 +1,5 @@
 #include <Jasper\PhysicsCollider.h>
+#include <Jasper\GameObject.h>
 
 namespace Jasper {
 
@@ -48,6 +49,10 @@ void PhysicsCollider::FixedUpdate()
 
 void PhysicsCollider::Update()
 {
+	auto go = this->GetGameObject();	
+	Transform t = this->GetCurrentWorldTransform();
+
+	go->SetLocalTransform(t);
 	//Component::Update();
 }
 
@@ -57,9 +62,12 @@ void PhysicsCollider::LateUpdate()
 
 Transform PhysicsCollider::GetCurrentWorldTransform()
 {
+	Transform t = GetGameObject()->GetLocalTransform();
 	btTransform trans;
 	m_rigidBody->getMotionState()->getWorldTransform(trans);
-	return Transform(trans);
+	Transform physTrsnaform = Transform(trans);
+	physTrsnaform.Scale = t.Scale;
+	return physTrsnaform;
 }
 
 

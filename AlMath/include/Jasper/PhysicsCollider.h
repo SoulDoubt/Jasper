@@ -12,6 +12,14 @@ namespace Jasper {
 
 class Mesh;
 
+enum class PHYSICS_COLLIDER_TYPE {
+	Box,
+	Capsule, 
+	ConvexHull,
+	Cylinder,
+	Sphere
+};
+
 class PhysicsCollider :	public Component
 {
 public:
