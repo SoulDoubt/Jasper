@@ -40,8 +40,7 @@ void Scene::Initialize() {
 
 	m_physicsWorld = make_unique<PhysicsWorld>(this);
 	m_physicsWorld->Initialize();
-	m_camera = m_rootNode->AttachNewChild<Camera>(Camera::CameraType::FLYING);
-	m_camera->SetPhysicsWorld(m_physicsWorld.get());
+	
 
 	m_renderer = make_unique<Renderer>(this);
 		
@@ -58,6 +57,11 @@ void Scene::Initialize() {
 	auto debugShader = m_shaderManager.CreateInstance<BasicShader>();
 	m_physicsWorld->debugDrawer->debugShader = debugShader;
 	m_physicsWorld->debugDrawer->Initialize();
+
+	m_camera = m_rootNode->AttachNewChild<Camera>(Camera::CameraType::FLYING);
+	m_camera->SetPhysicsWorld(m_physicsWorld.get());
+	m_camera->AttachNewComponent<CapsuleCollider>("camera_collider", Vector3(1.f, 2.f, 1.f), m_physicsWorld.get());
+	
 
 	// perform actual game object initialization
 
@@ -145,8 +149,8 @@ void Scene::Initialize() {
 	teapot->GetLocalTransform().Translate({ 0.0f, 20.0f, 0.0f });
 	teapot->GetLocalTransform().Scale = { 0.04f, 0.04f, 0.04f };
 	teapot->Mass = 20.f;
-	teapot->Restitution = 1.8f;
-	teapot->ColliderType = PHYSICS_COLLIDER_TYPE::Sphere;
+	teapot->Restitution = 1.2f;
+	teapot->ColliderType = PHYSICS_COLLIDER_TYPE::Box;
 
 	/*teapot->UpdateEvent += [](float dt) {
 		printf("Update Event Called.\n");
@@ -159,12 +163,12 @@ void Scene::Initialize() {
 	//lara->GetLocalTransform().Rotate({ 1.0f, 0.0f, 0.0f }, -DEG_TO_RAD(90.f));
 	//lara->GetLocalTransform().Rotate({ 0.f, 1.f, 0.f }, DEG_TO_RAD(180.f));
 
-	auto mathias = m_rootNode->AttachNewChild<Model>("mathias", "./models/mathias/mathias.obj", defaultShader, true, m_physicsWorld.get());
-	mathias->GetLocalTransform().Translate({ -10.f, 30.f, -3.f });
+	auto mathias = m_rootNode->AttachNewChild<Model>("mathias", "./models/Stormtrooper/stormtrooper.obj", defaultShader, true, m_physicsWorld.get());
+	mathias->GetLocalTransform().Translate({ -10.f, 20.f, -3.f });
 	mathias->Restitution = 1.2f;
 	//mathias->GetLocalTransform().Scale = { 2.0f, 2.0f, 2.0f };
 	mathias->Mass = 80.f;
-	mathias->ColliderType = PHYSICS_COLLIDER_TYPE::Box;
+	mathias->ColliderType = PHYSICS_COLLIDER_TYPE::Capsule;
 	/*mathias->SetUpdateEvent([&](float dt) {
 		mathias->GetLocalTransform().RotateAround({ -8.f, 1.f, -3.f }, { 0.f, 1.f, 0.f }, 1.f);
 	});*/

@@ -22,6 +22,9 @@ void Camera::Awake() {
 	
 	GameObject::Awake();
 	m_collider = GetComponentByType<CapsuleCollider>();
+	/*if (!m_collider) {
+		m_collider = new CapsuleCollider("camera_collider", Vector3(1.0f, 2.0f, 1.0f), m_physicsWorld);
+	}*/
 	//btDefaultMotionState* ms = new btDefaultMotionState(m_transform.GetBtTransform());
 	//btVector3 inertia;
 	//m_collisionShape->calculateLocalInertia(mass, inertia);
@@ -33,6 +36,7 @@ void Camera::Awake() {
 	if (m_collider) {
 		m_collider->GetRigidBody()->setCollisionFlags(m_collider->GetRigidBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 		m_collider->GetRigidBody()->setActivationState(DISABLE_DEACTIVATION);
+		
 	}
 }
 
@@ -124,6 +128,12 @@ void Camera::Rotate(float pitch, float roll, float yaw)
 	}
 	//btt.setRotation(orientation);	
 	m_transform.Orientation = orientation;
+	if (m_collider) {
+		btTransform btt;
+		btt.setRotation(m_transform.Orientation.AsBtQuaternion());
+		btt.setOrigin(m_transform.Position.AsBtVector3());
+		m_collider->SetWorldTransform(btt);
+	}
 
 	/* TEST */
 	/*Transform tr;
