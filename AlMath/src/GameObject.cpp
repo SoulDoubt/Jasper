@@ -1,9 +1,11 @@
 #include <Jasper\GameObject.h>
 #include <Jasper\PhysicsCollider.h>
+#include <chrono>
 
 namespace Jasper {
 
 using namespace std;
+using namespace std::chrono;
 
 GameObject::~GameObject()
 {
@@ -132,9 +134,9 @@ void GameObject::Update(float dt) {
 	UpdateChildren(dt);
 }
 
-void GameObject::Destroy() {
-	DestroyCurrent();
+void GameObject::Destroy() {	
 	DestroyChildren();
+	DestroyCurrent();
 	m_components.clear();
 	m_children.clear();
 	m_isDestroyed = true;
@@ -146,6 +148,7 @@ void GameObject::LateUpdate() {
 }
 
 void GameObject::AwakeCurrent() {
+	this->TimeAwakened = high_resolution_clock::now();
 	for (auto& comp : m_components) {
 		comp->Awake();
 	}

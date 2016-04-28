@@ -15,6 +15,7 @@
 #include <Jasper\Sphere.h>
 #include <Jasper\SphereCollider.h>
 
+
 namespace Jasper {
 
 using namespace std;
@@ -58,11 +59,21 @@ void Scene::Initialize() {
 	m_physicsWorld->debugDrawer->debugShader = debugShader;
 	m_physicsWorld->debugDrawer->Initialize();
 
+	// create the player
+	btPairCachingGhostObject* ghost = new btPairCachingGhostObject();
+	//ghost->setBroadphaseHandle(m_physicsWorld->get());
+	auto playerShape = new btCapsuleShape(0.5f, 1.76f);
+	m_player = make_unique<CharacterController>(ghost, playerShape, 1.0f, m_physicsWorld.get());
+	
+
+	//m_player = make_unique<CharacterController>()
+
 	m_camera = m_rootNode->AttachNewChild<Camera>(Camera::CameraType::FLYING);
 	m_camera->SetPhysicsWorld(m_physicsWorld.get());
 	m_camera->AttachNewComponent<CapsuleCollider>("camera_collider", Vector3(1.f, 2.f, 1.f), m_physicsWorld.get());
 	
 
+	
 	// perform actual game object initialization
 
 	// create the skybox
@@ -263,12 +274,13 @@ void Scene::Update(float dt)
 	m_renderer->RenderScene();
 
 #ifdef DEBUG_DRAW_PHYSICS
+	auto viewMatrix = m_camera->GetViewMatrix().Inverted();
 	for (auto& go : m_rootNode->Children()) {
 		auto phys = go->GetComponentsByType<PhysicsCollider>();
 		if (phys.size() > 0) {
 			auto trans = go->GetWorldTransform();
 			trans.Scale = { 1.f, 1.f, 1.f };
-			auto mvp = m_projectionMatrix * m_camera->GetViewMatrix().Inverted() * trans.TransformMatrix();
+			auto mvp = m_projectionMatrix * viewMatrix * trans.TransformMatrix();
 			m_physicsWorld->debugDrawer->mvpMatrix = mvp;
 			btTransform dt;
 			dt.setIdentity();
@@ -281,16 +293,23 @@ void Scene::Update(float dt)
 			if (phys.size() > 0) {
 				auto trans = child->GetWorldTransform();
 				trans.Scale = { 1.f, 1.f, 1.f };
-				auto mvp = m_projectionMatrix * m_camera->GetViewMatrix().Inverted() * trans.TransformMatrix();
+				auto mvp = m_projectionMatrix * viewMatrix * trans.TransformMatrix();
 				m_physicsWorld->debugDrawer->mvpMatrix = mvp;
 				btTransform dt;
 				dt.setIdentity();
 				for (auto collider : phys) {
-					m_physicsWorld->DrawPhysicsShape(dt, collider->GetCollisionShape(), { 1.f, 1.f, 1.f });
+					m_physicsWorld->DrawPhysicsShape(dt, collider->GetCollisionShape(),  { 1.f, 1.f, 1.f });
 				}
 			}
 		}
 	}
+	auto playerTrans = m_player->GetGhostWorldTransform();
+	playerTrans.UniformScale(1.0f);
+	auto mvp = m_projectionMatrix * viewMatrix * playerTrans.TransformMatrix();
+	m_physicsWorld->debugDrawer->mvpMatrix = mvp;
+	btTransform btt;
+	btt.setIdentity();
+	m_physicsWorld->DrawPhysicsShape(btt, m_player->GetCollisionShape(), {1.f, 1.f, 1.f});
 #endif
 	string pos = "Position: " + position.ToString();
 	string dir = "Direction: " + direction.ToString();
@@ -337,6 +356,12 @@ GameObject* Scene::CreateEmptyGameObject(std::string name, GameObject* parent)
 
 void Scene::DoLeftClick(double x, double y) {
 	printf("\n Mouse Click at: %f.2, %f.2", x, y);
+}
+
+void Scene::DestroyGameObject(std::unique_ptr<GameObject> object) {
+	GameObject* go = object.release();
+	go->Destroy();
+	delete go;
 }
 
 } // namespace Jasper

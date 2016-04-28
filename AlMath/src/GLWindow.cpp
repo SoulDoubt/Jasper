@@ -226,6 +226,7 @@ bool ProcessSDLEvent(SDL_Event evt, Scene* scene, double deltaTime) {
 
 void DoMovement(Scene* scene, double deltaTime) {
 	Camera& cam = scene->GetCamera();
+	auto player = scene->GetPlayer();
 	float speed = 7.5f;
 	float rotSpeed = 120.0f;
 	float moveBy = speed * deltaTime;
@@ -233,6 +234,7 @@ void DoMovement(Scene* scene, double deltaTime) {
 
 
 	if (MOVING_FORWARD) {
+		player->StepPlayer(deltaTime);
 		cam.Translate({ 0.0f, 0.0f, -moveBy });
 	}
 	if (MOVING_BACKWARD) {

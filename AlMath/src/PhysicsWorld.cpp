@@ -21,7 +21,7 @@ void PhysicsWorld::Initialize()
 	m_collisionDispatcher = new btCollisionDispatcher(m_collisionConfig);
 	m_solver = new btSequentialImpulseConstraintSolver();
 	m_world = new btDiscreteDynamicsWorld(m_collisionDispatcher, m_broadphase, m_solver, m_collisionConfig);
-	m_world->setGravity({ 0.0f, -9.81f, 0.0f });
+	m_world->setGravity({ 0.0f, -12.81f, 0.0f });
 	debugDrawer = new PhysicsDebugDrawer(scene);
 	debugDrawer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	m_world->setDebugDrawer(debugDrawer);
@@ -77,7 +77,8 @@ void PhysicsWorld::AddRigidBody(btRigidBody * rb)
 
 void PhysicsWorld::AddCollider(PhysicsCollider* collider)
 {
-	m_world->addRigidBody(collider->GetRigidBody());
+	auto rb = collider->GetRigidBody();
+	m_world->addRigidBody(rb);
 	m_shapes.push_back(collider->GetCollisionShape());
 	m_bodies.push_back(collider->GetRigidBody());
 }

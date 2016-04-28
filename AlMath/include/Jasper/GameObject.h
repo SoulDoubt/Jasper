@@ -13,6 +13,7 @@
 #include "Component.h"
 #include "Transform.h"
 #include "Event.h"
+#include <chrono>
 
 namespace Jasper {
 
@@ -44,6 +45,8 @@ public:
 	Transform& GetLocalTransform() {
 		return m_transform;
 	}
+
+	std::chrono::high_resolution_clock::time_point TimeAwakened;
 
 	void SetLocalTransform(const Transform& newTransform) {
 		m_transform = newTransform;

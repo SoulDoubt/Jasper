@@ -37,6 +37,7 @@ void Camera::Awake() {
 		m_collider->GetRigidBody()->setCollisionFlags(m_collider->GetRigidBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 		m_collider->GetRigidBody()->setActivationState(DISABLE_DEACTIVATION);
 		
+		
 	}
 }
 

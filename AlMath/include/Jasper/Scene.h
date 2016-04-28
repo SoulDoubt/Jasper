@@ -14,6 +14,7 @@
 #include "Mesh.h"
 #include "FontRenderer.h"
 #include <Jasper\Renderer.h>
+#include <Jasper\CharacterController.h>
 
 namespace Jasper {
 
@@ -50,9 +51,13 @@ public:
 		return *m_camera;
 	};
 
+	CharacterController* GetPlayer() {
+		return m_player.get();
+	}
+
 	void DoLeftClick(double x, double y);
 
-	
+	void DestroyGameObject(std::unique_ptr<GameObject> object);
 
 	GameObject* CreateEmptyGameObject(std::string name, GameObject* parent);
 
@@ -64,6 +69,7 @@ public:
 		}
 		return nullptr;
 	}
+	
 
 	int m_windowWidth, m_windowHeight;
 private:
@@ -86,6 +92,8 @@ private:
 	
 
 	std::unique_ptr<Renderer> m_renderer;
+
+	std::unique_ptr<CharacterController> m_player;
 
 	void Initialize();
 

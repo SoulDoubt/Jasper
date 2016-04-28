@@ -38,6 +38,10 @@ public:
 
 	PhysicsDebugDrawer* debugDrawer;
 
+	btDiscreteDynamicsWorld* GetBtWorld() {
+		return m_world;
+	}
+
 private:
 	
 	btBroadphaseInterface* m_broadphase;
