@@ -47,7 +47,6 @@ Camera::~Camera()
 	
 }
 
-
 Matrix4 Camera::GetViewMatrix()
 {
 
@@ -183,15 +182,19 @@ void Camera::Translate(const Vector3& vec)
 		to.setOrigin(after.AsBtVector3());
 
 		btCollisionWorld::ClosestConvexResultCallback cb(current.AsBtVector3(), after.AsBtVector3());
-		cb.m_collisionFilterMask = btBroadphaseProxy::DefaultFilter;
+		cb.m_collisionFilterMask = btBroadphaseProxy::DefaultFilter | btBroadphaseProxy::StaticFilter;
 
 		btConvexShape* cs = static_cast<btConvexShape*>(m_collider->GetRigidBody()->getCollisionShape());
 		m_physicsWorld->ConvexSweepTest(cs, from, to, cb);
-		if (cb.hasHit()) {
-			float epsilon = 0.000001;
-			float min = btMax(epsilon, cb.m_closestHitFraction);
+		if (cb.hasHit() && cb.m_hitCollisionObject != m_collider->GetRigidBody()) {
+			/*if () {
+				printf("\nHit Self");
+			}*/
+			float epsilon = 0.0001;
+			float min = btMax(epsilon, cb.m_closestHitFraction);			
+			current += -forwards * 0.1;
 			btVector3 newPos = current.AsBtVector3();
-			newPos.setInterpolate3(current.AsBtVector3(), after.AsBtVector3(), min);			
+			//newPos.setInterpolate3(current.AsBtVector3(), after.AsBtVector3(), min);			
 			m_transform.Position = Vector3(newPos);
 		}
 		else {			

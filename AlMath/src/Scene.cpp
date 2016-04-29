@@ -71,9 +71,7 @@ void Scene::Initialize() {
 	m_camera = m_rootNode->AttachNewChild<Camera>(Camera::CameraType::FLYING);
 	m_camera->SetPhysicsWorld(m_physicsWorld.get());
 	m_camera->AttachNewComponent<CapsuleCollider>("camera_collider", Vector3(1.f, 2.f, 1.f), m_physicsWorld.get());
-	
-
-	
+		
 	// perform actual game object initialization
 
 	// create the skybox
@@ -118,12 +116,12 @@ void Scene::Initialize() {
 	floorMaterial->Ambient = { 1.0f, 1.0f, 1.0f };	
 	
 
-	/*auto wall = m_rootNode->AttachNewChild<GameObject>("wall_0");
-	auto wallMesh = m_meshManager.CreateInstance<Cube>( Vector3(50.f, 1.0f, 50.0f));
+	auto wall = m_rootNode->AttachNewChild<GameObject>("wall_0");
+	auto wallMesh = m_meshManager.CreateInstance<Cube>( Vector3(50.f, 50.0f, 0.2f));
 	auto wallRenderer = wall->AttachNewComponent<MeshRenderer>(wallMesh, m1);
 	auto wallCollider = wall->AttachNewComponent<BoxCollider>("wall_0_collider", wallMesh, m_physicsWorld.get());
 	wallCollider->Mass = 0.0f;	
-	wall->GetLocalTransform().Translate(0.0f, 40.0f, 0.0f);*/
+	wall->GetLocalTransform().Translate(0.0f, 25.0f, -20.0f);
 
 	//auto citadel = m_rootNode->AttachNewChild<Model>("citadel", "./models/Police - Half-Life 2/Police.obj", defaultShader, false, nullptr);
 	//citadel->GetLocalTransform().Scale = { 1.01f, 1.01f, 1.01f };

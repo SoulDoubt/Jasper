@@ -234,7 +234,7 @@ void DoMovement(Scene* scene, double deltaTime) {
 
 
 	if (MOVING_FORWARD) {
-		player->StepPlayer(deltaTime);
+		//player->StepPlayer(deltaTime);
 		cam.Translate({ 0.0f, 0.0f, -moveBy });
 	}
 	if (MOVING_BACKWARD) {
