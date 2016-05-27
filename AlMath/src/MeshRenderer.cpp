@@ -68,11 +68,13 @@ void MeshRenderer::Awake() {
 	size_t normalOffset = offsetof(Vertex, Normal);
 	size_t texOffset = offsetof(Vertex, TexCoords);
 	size_t tangentOffset = offsetof(Vertex, Tangent);
+	
+	size_t stride = sizeof(Vertex);
 
-	shader->SetAttributeArray(positionLocation, GL_FLOAT, (void*)positionOffset, 3, sizeof(Vertex));
-	shader->SetAttributeArray(normalLocation, GL_FLOAT, (void*)normalOffset, 3, sizeof(Vertex));
-	shader->SetAttributeArray(texLocation, GL_FLOAT, (void*)texOffset, 2, sizeof(Vertex));
-	shader->SetAttributeArray(tangentLocation, GL_FLOAT, (void*)tangentOffset, 4, sizeof(Vertex));
+	shader->SetAttributeArray(positionLocation, GL_FLOAT, (void*)positionOffset, 3, stride);
+	shader->SetAttributeArray(normalLocation, GL_FLOAT, (void*)normalOffset, 3, stride);
+	shader->SetAttributeArray(texLocation, GL_FLOAT, (void*)texOffset, 2, stride);
+	shader->SetAttributeArray(tangentLocation, GL_FLOAT, (void*)tangentOffset, 4, stride);
 
 	glBindVertexArray(0);
 	GLERRORCHECK;
