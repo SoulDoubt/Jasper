@@ -40,12 +40,6 @@ void SkyboxRenderer::Render()
 	auto pv = projection * view;
 	shader->SetProjectionMatrix(projection);
 	shader->SetViewMatrix(view);
-	//auto mvp = (projection * view) * modelMatrix;
-	//auto normalMatrix = modelView.NormalMatrix();
-
-	//shader->SetModelViewMatrix(modelView);
-	//shader->SetModelViewProjectionMatrix(pv);
-	//shader->SetNormalMatrix(normalMatrix);
 
 	glBindVertexArray(m_vaoID);
 	glActiveTexture(GL_TEXTURE0 + 0);
@@ -57,6 +51,6 @@ void SkyboxRenderer::Render()
 	shader->Release();
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	glBindVertexArray(0);
-	//GLERRORCHECK;
+	
 }
 }
