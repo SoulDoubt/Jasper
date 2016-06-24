@@ -93,7 +93,6 @@ void MeshRenderer::LateUpdate() {}
 
 void MeshRenderer::Render() {
 
-	
 	GLERRORCHECK;
 	glBindVertexArray(m_vaoID);
 	glDrawElements(GL_TRIANGLES, m_elementCount, GL_UNSIGNED_INT, 0);
